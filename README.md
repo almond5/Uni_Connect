@@ -3,17 +3,17 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ## Getting Started
 
 ```bash
-'git clone https://github.com/adrianhossen5/COP4710_Term_Project' to clone the repo into your file directory.
+Clone the repo into your file directory: 'git clone https://github.com/adrianhossen5/COP4710_Term_Project'
 
-'npm run i' to install all the dependencies
+Install all the dependencies: 'npm run i'
 
-'npm run dev' to run the development server
+Run the development server: 'npm run dev'
 
-'git pull' to pull all pending changes
+Pull all pending changes: 'git pull'
 
-'git commit -a -m "name of commit"' to commit your changes
+Commit your changes: 'git commit -a -m "name of commit"'
 
-'git push' to push your commits
+Push your commits: 'git push' 
 ```
 
 ## Extra:
