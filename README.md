@@ -5,6 +5,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ```bash
 Clone the repo into your file directory: 'git clone https://github.com/adrianhossen5/COP4710_Term_Project'
 
+Create a ```bash .env ```to store the keys/secrets.
+
 Install all the dependencies: 'npm run i'
 
 Run the development server: 'npm run dev'
