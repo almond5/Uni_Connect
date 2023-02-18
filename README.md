@@ -2,28 +2,16 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, fork the repository as PRIVATE and install it locally,
-
-Second, install all the dependencies:
-
 ```bash
-npm run i
+'git clone https://github.com/adrianhossen5/COP4710_Term_Project' to clone the repo into your file directory.
+'npm run i' to install all the dependencies
+'npm run dev' to run the development server
+'git pull' to pull all pending changes
+'git commit -a -m "name of commit"' to commit your changes
+'git push' to push your commits
 ```
 
-Third, run the development server:
-
-```bash
-npm run dev
-```
-
-Fourth, work within your PRIVATE repository:
-```bash
-Proceed with your own work within your repository.
-Create a PR to merge into the main branch.
-```
-Fifth, get A in Dr. Vu's class.
-
-Extra:
+## Extra:
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result of 'npm run dev'.
 
