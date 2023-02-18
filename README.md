@@ -3,9 +3,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ## Getting Started
 
 First, fork the repository as PRIVATE and install it locally,
-```bash
+
 Second, install all the dependencies:
-```
 
 ```bash
 npm run i
