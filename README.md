@@ -2,18 +2,31 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, install all the dependencies:
+First, fork the repository as PRIVATE and install it locally,
+```bash
+Second, install all the dependencies:
+```
+
 ```bash
 npm run i
 ```
 
-First, run the development server:
+Third, run the development server:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Fourth, work within your PRIVATE repository:
+```bash
+Proceed with your own work within your repository.
+Create a PR to merge into the main branch.
+```
+Fifth, get A in Dr. Vu's class.
+
+Extra:
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result of 'npm run dev'.
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
