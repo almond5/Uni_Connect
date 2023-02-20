@@ -9,6 +9,19 @@ datasource db {
   relationMode = "prisma"
 }
 
+enum Role {
+  USER
+  STUDENT
+  ADMIN
+  SUPERADMIN
+}
+
+enum Type {
+  PUBLIC
+  PRIVATE
+  RSO_EVENT
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -17,6 +30,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  role          Role      @default(USER)
+  rso           RSO[]
 }
 
 model Account {
@@ -32,7 +47,8 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
   @@index([userId])
 }
@@ -43,6 +59,7 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
 }
 
@@ -50,5 +67,91 @@ model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
+
   @@unique([identifier, token])
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  eventId     String    @unique
+  name        String
+  category    String?
+  description String?
+  time        String?
+  date        String?
+  phone_no    Int?
+  email       String?
+  location    Location?
+  type        Type
+  feedback    Feedback? @relation(fields: [feedbackId], references: [id])
+  feedbackId  String?
+
+  @@index([eventId, feedbackId])
+}
+
+model Feedback {
+  id         String    @id @default(cuid())
+  feedbackId String?
+  comments   Comment[]
+  ratings    Rating[]
+  Event      Event[]
+
+  @@index([feedbackId])
+}
+
+model Comment {
+  id         String    @id @default(cuid())
+  comment    String
+  Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
+  feedbackId String?
+}
+
+model Rating {
+  id         String    @id @default(cuid())
+  rating     Int
+  Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
+  feedbackId String?
+}
+
+model Location {
+  id        String      @id @default(cuid())
+  name      String
+  latitude  Int
+  longitude Int
+  uniId     String?     @unique
+  eventId   String?     @unique
+  event     Event?      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  uni       University? @relation(fields: [uniId], references: [id], onDelete: Cascade)
+
+  @@index([uniId, eventId])
+}
+
+model University {
+  id           String    @id @default(cuid())
+  uniId        String    @unique
+  name         String
+  description  String?
+  num_students Int?
+  Location     Location?
+
+  @@index([uniId])
+}
+
+model RSO {
+  id      String   @id @default(cuid())
+  name    String
+  members Member[]
+  userId  String
+  rsoId   String
+  admin   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([id, rsoId])
+}
+
+model Member {
+  id    String @id @default(cuid())
+  rsoId String
+  rso   RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
+
+  @@index([id, rsoId])
 }
