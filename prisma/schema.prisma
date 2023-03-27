@@ -17,12 +17,11 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  role          Role      @default(USER)
+  role          Role      @default(STUDENT)
   rso           RSO[]
 }
 
 enum Role {
-  USER
   STUDENT
   ADMIN
   SUPERADMIN
