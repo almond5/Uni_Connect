@@ -1,9 +1,40 @@
+import { getSession, useSession } from 'next-auth/react';
 import LoginView from '../components/loginView';
-import { useSession } from 'next-auth/react';
-import LandingPage from './welcomePage';
+import prisma from '../lib/prismadb';
+import Role from '@prisma/client';
+import { useState } from 'react';
+import WelcomePage from './welcomePage';
 
-const Index = () => {
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: session?.user?.email,
+      },
+    });
+
+    return {
+      props: {
+        rolesFromDB: user?.role,
+      },
+    };
+  } catch (error) {
+    const role = null;
+
+    return {
+      props: {
+        rolesFromDB: Role?.Role.USER,
+      },
+    };
+  }
+}
+
+const Index = ({ rolesFromDB }: { rolesFromDB: any }) => {
   const { status: session } = useSession();
+  const role = useState(rolesFromDB);
+  
   if (session === 'loading') {
     return null;
   }
@@ -12,7 +43,7 @@ const Index = () => {
     return <LoginView />;
   }
 
-  return <LandingPage />;
+  return <WelcomePage role={role} />;
 };
 
 export default Index;

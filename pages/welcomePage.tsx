@@ -1,13 +1,21 @@
 import { signOut, useSession } from 'next-auth/react';
 import LoginView from '../components/loginView';
-import Leave from '../components/svgs/Leave.svg';
 import React, { useState } from 'react';
+import prisma from '../lib/prismadb';
 import Link from 'next/link';
 
-const WelcomePage = () => {
-  const { status: sesh } = useSession();
+const Roles = {
+  USER: 'USER',
+  STUDENT: 'STUDENT',
+  ADMIN: 'ADMIN',
+  SUPERADMIN: 'SUPERADMIN'
+};
+
+const WelcomePage = (props: { role: any }) => {
+  const { status: sesh, data: sess } = useSession();
   const [viewEvents, setViewEvents] = useState(false);
   const [viewRSOs, setViewRSOs] = useState(false);
+  const role = props.role;
   // add other views
 
   if (sesh === 'loading') {
@@ -16,6 +24,11 @@ const WelcomePage = () => {
 
   if (sesh === 'unauthenticated') {
     return <LoginView />;
+  }
+
+  if (role[0] === Roles.ADMIN)
+  {
+    return <div> Just a user </div>
   }
 
   return (

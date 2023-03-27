@@ -9,6 +9,18 @@ datasource db {
   relationMode = "prisma"
 }
 
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  role          Role      @default(USER)
+  rso           RSO[]
+}
+
 enum Role {
   USER
   STUDENT
@@ -20,18 +32,6 @@ enum Type {
   PUBLIC
   PRIVATE
   RSO_EVENT
-}
-
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  role          Role      @default(USER)
-  rso           RSO[]
 }
 
 model Account {
