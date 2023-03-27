@@ -1,6 +1,6 @@
 import LoginView from '../components/loginView';
 import { useSession } from 'next-auth/react';
-import LandingPage from './landingPage';
+import LandingPage from './welcomePage';
 
 const Index = () => {
   const { status: session } = useSession();
