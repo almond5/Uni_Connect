@@ -34,6 +34,11 @@ const WelcomePage = (props: { role: any }) => {
     return <SuperAdminWelcomePage />;
   }
 
+  if (role[0] === null) {
+    return <LoginView />;
+
+  }
+
   return (
     <div className="py-10">
       <div className="absolute top-0 right-10 py-9">
