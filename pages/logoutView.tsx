@@ -5,7 +5,7 @@ const LogoutView = () => {
   return (
     <div className="py-10">
       <div
-        className="mx-auto rounded-[4rem] w-max border-[0.25rem] border-neutral-700 px-12 
+        className="mx-auto rounded-[2rem] w-max border-[0.25rem] border-neutral-700 px-12 
         py-2 font-bold transition bg-neutral-50 hover:text-gray-800 text-Lg flex flex-col
         text-center"
       >

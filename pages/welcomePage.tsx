@@ -47,12 +47,6 @@ const WelcomePage = () => {
           Welcome!
         </div>
       </div>
-      {/* <div className={`${createNoteView ? '' : 'hidden'}`}>
-      <NoteCreate />
-    </div>
-    <div className={`${myNotesView ? '' : 'hidden'}`}>
-      <NoteDelete notes={notes} />
-    </div> */}
     </div>
   );
 };
