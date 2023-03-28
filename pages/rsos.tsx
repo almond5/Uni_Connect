@@ -1,8 +1,9 @@
 import { signOut, useSession } from 'next-auth/react';
 import LoginView from '../components/loginView';
 import Leave from '../components/svgs/Leave.svg';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import prisma from '../lib/prismadb';
 
 const Roles = {
   STUDENT: 'STUDENT',
@@ -10,8 +11,39 @@ const Roles = {
   SUPERADMIN: 'SUPERADMIN',
 };
 
-const RSOs = (props: { role: any }) => {
+export async function getServerSideProps() {
+  try {
+    const rsos = await prisma.rso.findMany({
+      where: {},
+    });
+
+    return {
+      props: {
+        rsosFromDB: rsos,
+      },
+    };
+
+  } catch(error) {
+    const rsos = null;
+
+    return {
+      props: {
+        rsosFromDB: rsos,
+      },
+    };
+  }
+}
+const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
+  const [studentView, setStudentView] = useState(false);
+  const [adminView, setAdminView] = useState(false);
+  const [superAdminView, setSuperAdminView] = useState(false);
   const { status: sesh } = useSession();
+
+  useEffect(() => {
+      if(window?.location.search.includes(Roles.STUDENT)) setStudentView(true);
+      else if(window?.location.search.includes(Roles.ADMIN)) setAdminView(true);
+      else if(window?.location.search.includes(Roles.SUPERADMIN)) setSuperAdminView(true);
+  }, []);
 
   if (sesh === 'loading') {
     return null;
@@ -20,15 +52,6 @@ const RSOs = (props: { role: any }) => {
   if (sesh === 'unauthenticated') {
     return <LoginView />;
   }
-
-  // if (window?.location.search.includes(Roles.STUDENT)) {
-
-  // } else if (window?.location.search.includes(Roles.ADMIN)) {
-
-  // } else (window?.location.search.includes(Roles.SUPERADMIN)) {
-
-  // }
-
   return (
     <div className="py-10">
       <div className="absolute top-0 left-10 py-9">
