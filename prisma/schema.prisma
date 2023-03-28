@@ -62,10 +62,9 @@ model VerificationToken {
 
 model Event {
   id          String    @id @default(cuid())
-  eventId     String    @unique
-  name        String
-  category    String?
-  description String?
+  name        String    @db.Text
+  category    String?   @db.Text
+  description String?   @db.Text
   time        String?
   date        String?
   phone_no    Int?
@@ -75,7 +74,7 @@ model Event {
   location    Location?
   feedback    Feedback? @relation(fields: [feedbackId], references: [id])
 
-  @@index([eventId, feedbackId])
+  @@index([id, feedbackId])
 }
 
 model Feedback {

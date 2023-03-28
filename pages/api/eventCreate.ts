@@ -8,6 +8,18 @@ export default async function handler(
   if (req.method === 'POST') {
     const {body, title} = JSON.parse(req.body);
 
+    try {
+      const eventCreation = await prisma.event.create({
+        data: {
+          name: title,
+          // date: newDate,
+        },
+            });
+
+    } catch (error) {
+      
+    }
+
     res.status(201).json(null)
   } else {
     res.status(201).json(null)

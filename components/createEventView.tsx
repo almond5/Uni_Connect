@@ -4,18 +4,10 @@ import React, { useState } from 'react';
 const EventsCreateView = () => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
-  const { data: session } = useSession();
-
+  
   const submitEvent = async (note: {
     title: string;
     body: string;
-    user:
-      | {
-          name?: string | null | undefined;
-          email?: string | null | undefined;
-          image?: string | null | undefined;
-        }
-      | undefined;
   }) => {
     const response = await fetch('/api/eventCreate', {
       method: 'POST',
@@ -32,8 +24,7 @@ const EventsCreateView = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    const user = session?.user;
-    const event = { title, body, user };
+    const event = { title, body };
     await submitEvent(event);
     await timeout(1000);
     window.location.reload();

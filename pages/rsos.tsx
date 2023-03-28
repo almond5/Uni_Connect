@@ -1,6 +1,5 @@
 import { signOut, useSession } from 'next-auth/react';
 import LoginView from '../components/loginView';
-import Leave from '../components/svgs/Leave.svg';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import prisma from '../lib/prismadb';
@@ -13,7 +12,7 @@ const Roles = {
 
 export async function getServerSideProps() {
   try {
-    const rsos = await prisma.rso.findMany({
+    const rsos = await prisma.rSO.findMany({
       where: {},
     });
 
@@ -33,6 +32,7 @@ export async function getServerSideProps() {
     };
   }
 }
+
 const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
