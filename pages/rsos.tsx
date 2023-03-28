@@ -45,13 +45,24 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
 
   const [rsoListView, setRSOListView] = useState(false);
   const [createRSOView, setCreateRSOView] = useState(false);
+  const [approvalRSOView, setApprovalRSOView] = useState(false);
 
   const toggleRSOsListView = () => {
     rsoListView ? setRSOListView(false) : setRSOListView(true);
+    setCreateRSOView(false);
+    setApprovalRSOView(false);
   };
 
   const toggleCreateRSOView = () => {
     createRSOView ? setCreateRSOView(false) : setCreateRSOView(true);
+    setRSOListView(false);
+    setApprovalRSOView(false);
+  };
+
+  const toggleApprovalsView = () => {
+    approvalRSOView ? setApprovalRSOView(false) : setApprovalRSOView(true);
+    setRSOListView(false);
+    setCreateRSOView(false);
   };
   
 
@@ -89,13 +100,31 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
         </button>
       </div>
       <div className="flex justify-center">
-        <div className="text-shadow px-4 font-bold text-2xl">
-          <div className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800">
-            All RSOs:
+      <div className="px-4 font-bold text-2xl">
+        <div className={`${
+          !rsoListView
+            ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+            : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+          }`}
+        >
+              {' '}
+              <button onClick={() => {toggleRSOsListView();}}>View RSOs</button>
+            </div>
           </div>
+        <div className="px-4 font-bold text-2xl">
+        <div className={`${
+          !createRSOView
+            ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+            : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+          }`}
+        >
+              {' '}
+              <button onClick={() => {toggleCreateRSOView();}}>Create RSO</button>
+            </div>
         </div>
       </div>
-      <div className='py-10'>
+      
+      <div className={`${rsoListView ? 'py-10' : 'hidden'}`}>
           <RSOSListView rsos={rsos} />
       </div>
     </div>
@@ -130,10 +159,7 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
           }`}
         >
               {' '}
-              <button onClick={() => {
-                toggleRSOsListView();
-                setCreateRSOView(false);
-              }}>View RSOs</button>
+              <button onClick={() => {toggleRSOsListView();}}>View RSOs</button>
             </div>
           </div>
         <div className="px-4 font-bold text-2xl">
@@ -144,17 +170,22 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
           }`}
         >
               {' '}
-              <button
-                onClick={() => {
-                  toggleCreateRSOView();
-                  setRSOListView(false);
-                }}
-              >Create RSO</button>
+              <button onClick={() => {toggleCreateRSOView();}}>Create RSO</button>
             </div>
         </div>
+        <div className="px-4 font-bold text-2xl">
+            <div
+              className={`${
+                !approvalRSOView
+                  ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+                  : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+              }`}
+            >
+              <button onClick={() => {toggleApprovalsView();}}>Approvals</button>
+            </div>
+          </div>
       </div>
       
-
       <div className={`${rsoListView ? 'py-10' : 'hidden'}`}>
           <RSOSListView rsos={rsos} />
       </div>

@@ -9,7 +9,7 @@ const RSOView = (props: { rso: any }) => {
                 <div className="flex justify-between">
                     <div>
                     <button className="p-2 rounded-full py-0.5 font-bold transition hover:bg-neutral-400hover:text-gray-800 text-Lg" onClick={() => console.log("yes")}>
-                        Request Approval
+                        Request to Join
                     </button>
                     </div>
                 </div>
