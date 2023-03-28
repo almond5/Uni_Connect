@@ -4,7 +4,13 @@ import Leave from '../components/svgs/Leave.svg';
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-const RSOs = () => {
+const Roles = {
+  STUDENT: 'STUDENT',
+  ADMIN: 'ADMIN',
+  SUPERADMIN: 'SUPERADMIN',
+};
+
+const RSOs = (props: { role: any }) => {
   const { status: sesh } = useSession();
 
   if (sesh === 'loading') {
@@ -14,6 +20,14 @@ const RSOs = () => {
   if (sesh === 'unauthenticated') {
     return <LoginView />;
   }
+
+  // if (window?.location.search.includes(Roles.STUDENT)) {
+
+  // } else if (window?.location.search.includes(Roles.ADMIN)) {
+
+  // } else (window?.location.search.includes(Roles.SUPERADMIN)) {
+
+  // }
 
   return (
     <div className="py-10">

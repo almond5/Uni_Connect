@@ -1,9 +1,42 @@
-import { signOut, useSession } from 'next-auth/react';
+import { getSession, signOut, useSession } from 'next-auth/react';
 import LoginView from '../components/loginView';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import prisma from '../lib/prismadb';
 
-const Events = () => {
+const Roles = {
+  STUDENT: 'STUDENT',
+  ADMIN: 'ADMIN',
+  SUPERADMIN: 'SUPERADMIN',
+};
+
+export async function getServerSideProps() {
+  try {
+    const events = await prisma.event.findMany({
+      where: {},
+    });
+
+    return {
+      props: {
+        eventsFromDB: events,
+      },
+    };
+  } catch (error) {
+    const events = null;
+
+    return {
+      props: {
+        eventsFromDB: events,
+      },
+    };
+  }
+}
+
+const Events = ({ eventsFromDB }: { eventsFromDB: any }) => {
+  const [events] = useState<Event[]>(eventsFromDB);
+  const [studentView, setStudentView] = useState(false);
+  const [adminView, setAdminView] = useState(false);
+  const [superAdminView, setSuperAdminView] = useState(false);
   const { status: sesh } = useSession();
 
   if (sesh === 'loading') {
@@ -13,6 +46,13 @@ const Events = () => {
   if (sesh === 'unauthenticated') {
     return <LoginView />;
   }
+
+  if (window?.location.search.includes(Roles.STUDENT)) 
+    setStudentView(true);
+  else if (window?.location.search.includes(Roles.ADMIN)) 
+    setAdminView(true);
+  else if (window?.location.search.includes(Roles.SUPERADMIN))
+    setSuperAdminView(true);
 
   return (
     <div className="py-10">

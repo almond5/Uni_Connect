@@ -10,15 +10,17 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?     @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  role          Role      @default(STUDENT)
+  role          Role        @default(STUDENT)
   rso           RSO[]
+  uni           University? @relation(fields: [universityId], references: [id])
+  universityId  String?
 }
 
 enum Role {
@@ -27,7 +29,7 @@ enum Role {
   SUPERADMIN
 }
 
-enum Type {
+enum EventType {
   PUBLIC
   PRIVATE
   RSO_EVENT
@@ -81,7 +83,7 @@ model Event {
   phone_no    Int?
   email       String?
   location    Location?
-  type        Type
+  type        EventType @default(PUBLIC)
   feedback    Feedback? @relation(fields: [feedbackId], references: [id])
   feedbackId  String?
 
@@ -132,6 +134,7 @@ model University {
   description  String?
   num_students Int?
   Location     Location?
+  User         User[]
 
   @@index([uniId])
 }
