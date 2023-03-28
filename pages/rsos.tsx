@@ -84,6 +84,9 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
           </div>
         </div>
       </div>
+      <div className='py-10'>
+          <RSOSListView rsos={rsos} />
+      </div>
     </div>
   );
   }
