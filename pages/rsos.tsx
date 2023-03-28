@@ -34,10 +34,13 @@ export async function getServerSideProps() {
   }
 }
 const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
+  const [rsos] = useState<Event[]>(rsosFromDB);
+  const { status: sesh } = useSession();
+  
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
   const [superAdminView, setSuperAdminView] = useState(false);
-  const { status: sesh } = useSession();
+  
 
   useEffect(() => {
       if(window?.location.search.includes(Roles.STUDENT)) setStudentView(true);
@@ -52,6 +55,7 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
   if (sesh === 'unauthenticated') {
     return <LoginView />;
   }
+  if(studentView) {
   return (
     <div className="py-10">
       <div className="absolute top-0 left-10 py-10">
@@ -80,6 +84,13 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
       </div>
     </div>
   );
+  }
+  else {
+    <div className="py-10">
+
+
+    </div>
+  }
 };
 
 export default RSOs;
