@@ -91,6 +91,7 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
   );
   }
   else {
+    return (
     <div className="py-10">
       <div className="absolute top-0 left-10 py-10">
         <Link href={'/'}>
@@ -120,6 +121,7 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
           <RSOSListView rsos={rsos} />
       </div>
     </div>
+  );
   }
 };
 
