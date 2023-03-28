@@ -1,12 +1,13 @@
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers-pro';
+import { DatePicker, DateTimePicker, DesktopTimePicker, LocalizationProvider, MobileDateTimePicker, StaticTimePicker, TimePicker } from '@mui/x-date-pickers-pro';
 import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const EventsCreateView = () => {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState<Date | null>(null);
+  const [time, setTime] = useState<string | null>(null);
   const [type, setType] = useState('PUBLIC');
   const [body, setBody] = useState('');
 
@@ -51,6 +52,8 @@ const EventsCreateView = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
+    if (date === null)
+      setDate(new Date)
 
     const event = { title, body, type, date };
     await submitEvent(event);
@@ -100,7 +103,7 @@ const EventsCreateView = () => {
             >
               <ThemeProvider theme={theme}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DatePicker
+                  <DateTimePicker
                     className="w-full"
                     value={date}
                     onChange={(newValue) => setDate(newValue)}
@@ -109,6 +112,28 @@ const EventsCreateView = () => {
               </ThemeProvider>
             </div>
           </div>
+          {/* <div className="mb-4 text-lg">
+            <div
+              className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
+            >
+              Time:
+            </div>
+            <div
+              className="block w-full text-sm text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+                rounded-tl-none border-neutral-700"
+            >
+              <ThemeProvider theme={theme}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <TimePicker
+                    className="w-full"
+                    value={time}
+                    onChange={(newTime) => setTime(newTime)}
+                  />
+                </LocalizationProvider>
+              </ThemeProvider>
+            </div>
+          </div> */}
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 

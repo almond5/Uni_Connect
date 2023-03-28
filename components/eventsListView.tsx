@@ -26,11 +26,16 @@ const EventsListView = (props: { events: any }) => {
     );
   else {
     return (
-      <>
+      <div
+        className="py-[4.4rem] flex-col text-center mx-auto max-w-sm xs:max-w-sm 
+      sm:max-w-md md:max-w-md lg:max-w-lg xl:max-w-md 2xl:max-w-lg grid md:grid-cols-1 
+      lg:grid-cols-1"
+      >
+        {' '}
         {events.map((event: any) => (
           <EventView event={event}></EventView>
         ))}
-      </>
+      </div>
     );
   }
 };
