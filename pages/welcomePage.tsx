@@ -30,9 +30,9 @@ const WelcomePage = (props: { role: any }) => {
 
   return (
     <div className="py-10">
-      <div className="absolute top-0 right-10 py-9">
+      <div className="absolute top-0 right-10 py-10">
         <button
-          className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50 text-gray-800"
+          className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50"
           onClick={() =>
             signOut({ callbackUrl: 'http://localhost:3000/logoutView' })
           }
@@ -53,7 +53,7 @@ const WelcomePage = (props: { role: any }) => {
         </div>
       </div>
       <div className={`${!viewRSOs && !viewEvents ? 'py-16' : 'hidden'}`}>
-        <div className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50 text-gray-800">
+        <div className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50">
           Welcome!
         </div>
       </div>
