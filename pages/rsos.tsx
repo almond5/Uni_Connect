@@ -3,6 +3,7 @@ import LoginView from '../components/loginView';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import prisma from '../lib/prismadb';
+import EventsListView from '@/components/eventsListView';
 
 const Roles = {
   STUDENT: 'STUDENT',
@@ -78,9 +79,12 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
       <div className="flex justify-center">
         <div className="text-shadow px-4 font-bold text-2xl">
           <div className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800">
-            Here are the all the rsos:
+            All RSOs:
           </div>
         </div>
+      </div>
+      <div className="py-10">
+        <EventsListView events={rsos} />
       </div>
     </div>
   );
