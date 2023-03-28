@@ -42,6 +42,17 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
   const [superAdminView, setSuperAdminView] = useState(false);
+
+  const [rsoListView, setRSOListView] = useState(false);
+  const [createRSOView, setCreateRSOView] = useState(false);
+
+  const toggleRSOsListView = () => {
+    rsoListView ? setRSOListView(false) : setRSOListView(true);
+  };
+
+  const toggleCreateRSOView = () => {
+    createRSOView ? setCreateRSOView(false) : setCreateRSOView(true);
+  };
   
 
   useEffect(() => {
@@ -111,13 +122,40 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
         </button>
       </div>
       <div className="flex justify-center">
-        <div className="text-shadow px-4 font-bold text-2xl">
-          <div className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800">
-            All RSOs:
+      <div className="px-4 font-bold text-2xl">
+        <div className={`${
+          !rsoListView
+            ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+            : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+          }`}
+        >
+              {' '}
+              <button onClick={() => {
+                toggleRSOsListView();
+                setCreateRSOView(false);
+              }}>View RSOs</button>
+            </div>
           </div>
+        <div className="px-4 font-bold text-2xl">
+        <div className={`${
+          !createRSOView
+            ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+            : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+          }`}
+        >
+              {' '}
+              <button
+                onClick={() => {
+                  toggleCreateRSOView();
+                  setRSOListView(false);
+                }}
+              >Create RSO</button>
+            </div>
         </div>
       </div>
-      <div className='py-10'>
+      
+
+      <div className={`${rsoListView ? 'py-10' : 'hidden'}`}>
           <RSOSListView rsos={rsos} />
       </div>
     </div>
