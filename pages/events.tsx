@@ -39,6 +39,13 @@ const Events = ({ eventsFromDB }: { eventsFromDB: any }) => {
   const [superAdminView, setSuperAdminView] = useState(false);
   const { status: sesh } = useSession();
 
+  useEffect(() => {
+    if (window?.location.search.includes(Roles.STUDENT)) setStudentView(true);
+    else if (window?.location.search.includes(Roles.ADMIN)) setAdminView(true);
+    else if (window?.location.search.includes(Roles.SUPERADMIN))
+      setSuperAdminView(true);
+  }, []);
+
   if (sesh === 'loading') {
     return null;
   }
@@ -46,13 +53,6 @@ const Events = ({ eventsFromDB }: { eventsFromDB: any }) => {
   if (sesh === 'unauthenticated') {
     return <LoginView />;
   }
-
-  if (window?.location.search.includes(Roles.STUDENT)) 
-    setStudentView(true);
-  else if (window?.location.search.includes(Roles.ADMIN)) 
-    setAdminView(true);
-  else if (window?.location.search.includes(Roles.SUPERADMIN))
-    setSuperAdminView(true);
 
   return (
     <div className="py-10">
