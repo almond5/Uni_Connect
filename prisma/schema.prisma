@@ -15,24 +15,12 @@ model User {
   email         String?     @unique
   emailVerified DateTime?
   image         String?
+  role          Role        @default(STUDENT)
+  universityId  String?
   accounts      Account[]
   sessions      Session[]
-  role          Role        @default(STUDENT)
   rso           RSO[]
   uni           University? @relation(fields: [universityId], references: [id])
-  universityId  String?
-}
-
-enum Role {
-  STUDENT
-  ADMIN
-  SUPERADMIN
-}
-
-enum EventType {
-  PUBLIC
-  PRIVATE
-  RSO_EVENT
 }
 
 model Account {
@@ -74,20 +62,19 @@ model VerificationToken {
 
 model Event {
   id          String    @id @default(cuid())
-  eventId     String    @unique
-  name        String
-  category    String?
-  description String?
+  name        String    @db.Text
+  category    String?   @db.Text
+  description String?   @db.Text
   time        String?
   date        String?
   phone_no    Int?
   email       String?
-  location    Location?
-  type        EventType @default(PUBLIC)
-  feedback    Feedback? @relation(fields: [feedbackId], references: [id])
+  type        EventType
   feedbackId  String?
+  location    Location?
+  feedback    Feedback? @relation(fields: [feedbackId], references: [id])
 
-  @@index([eventId, feedbackId])
+  @@index([id, feedbackId])
 }
 
 model Feedback {
@@ -103,15 +90,15 @@ model Feedback {
 model Comment {
   id         String    @id @default(cuid())
   comment    String
-  Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
   feedbackId String?
+  Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
 }
 
 model Rating {
   id         String    @id @default(cuid())
   rating     Int
-  Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
   feedbackId String?
+  Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
 }
 
 model Location {
@@ -142,9 +129,9 @@ model University {
 model RSO {
   id      String   @id @default(cuid())
   name    String
-  members Member[]
   userId  String
   rsoId   String
+  members Member[]
   admin   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([id, rsoId])
@@ -156,4 +143,16 @@ model Member {
   rso   RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
 
   @@index([id, rsoId])
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+  SUPERADMIN
+}
+
+enum EventType {
+  PUBLIC
+  PRIVATE
+  RSO_EVENT
 }
