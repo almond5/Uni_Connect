@@ -78,6 +78,22 @@ model Event {
   @@index([id, feedbackId])
 }
 
+model EventApproval {
+  id              String         @id @default(cuid())
+  name            String         @db.Text
+  category        String?        @db.Text
+  description     String?        @db.Text
+  time            String?        @db.Text
+  date            String?        @db.Text
+  phone_no        Int?
+  email           String?        @db.Text
+  type            EventType
+  eventLocation   EventLocation? @relation(fields: [eventLocationId], references: [id])
+  eventLocationId String?
+
+  @@index([id])
+}
+
 model Feedback {
   id         String    @id @default(cuid())
   feedbackId String?
@@ -114,13 +130,14 @@ model Location {
 }
 
 model EventLocation {
-  id        String  @id @default(cuid())
-  name      String  @db.Text
-  latitude  Float
-  longitude Float
-  uniId     String
-  eventId   String
-  Event     Event[]
+  id            String          @id @default(cuid())
+  name          String          @db.Text
+  latitude      Float
+  longitude     Float
+  uniId         String?
+  eventId       String?
+  Event         Event[]
+  EventApproval EventApproval[]
 
   @@index([uniId, eventId])
 }

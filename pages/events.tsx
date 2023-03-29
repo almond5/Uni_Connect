@@ -3,9 +3,11 @@ import LoginView from '../components/loginView';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import prisma from '../lib/prismadb';
-import EventsListView from '@/components/eventsListView';
-import EventsCreateView from '@/components/createEventView';
-import { University } from '@prisma/client';
+import EventsListView from '@/components/events/eventsListView';
+import EventsCreateView from '@/components/events/superAdminCreateEventView';
+import { EventApproval, University } from '@prisma/client';
+import AdminEventsCreateView from '@/components/events/adminCreateEventView';
+import ApprovalsEventsListView from '@/components/events/approvalsListView';
 
 const Roles = {
   STUDENT: 'STUDENT',
@@ -20,31 +22,47 @@ export async function getServerSideProps() {
     });
 
     const unis = await prisma.university.findMany({
-      where: {}
-    })
+      where: {},
+    });
+
+    const approvals = await prisma.eventApproval.findMany({
+      where: {},
+    });
 
     return {
       props: {
         eventsFromDB: events,
-        unisFromDB: unis
+        unisFromDB: unis,
+        approvalsFromDB: approvals,
       },
     };
   } catch (error) {
     const events = null;
-    const unisFromDB = null
+    const unisFromDB = null;
+    const approvals = null;
 
     return {
       props: {
         eventsFromDB: events,
-        unisFromDB: unisFromDB
+        unisFromDB: unisFromDB,
+        approvalsFromDB: approvals,
       },
     };
   }
 }
 
-const Events = ({ eventsFromDB, unisFromDB }: { eventsFromDB: any; unisFromDB: any }) => {
+const Events = ({
+  eventsFromDB,
+  unisFromDB,
+  approvalsFromDB,
+}: {
+  eventsFromDB: any;
+  unisFromDB: any;
+  approvalsFromDB: any;
+}) => {
   const [events] = useState<Event[]>(eventsFromDB);
   const [unis] = useState<University[]>(unisFromDB);
+  const [eventApprovals] = useState<EventApproval[]>(approvalsFromDB);
 
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
@@ -85,19 +103,19 @@ const Events = ({ eventsFromDB, unisFromDB }: { eventsFromDB: any; unisFromDB: a
     return <LoginView />;
   }
 
-  if (studentView) {
+  if (adminView) {
     return (
       <div className="py-10">
         <div className="absolute top-0 left-10 py-10">
           <Link href={'/'}>
-            <button className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50">
+            <button className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50 text-gray-800">
               Back
             </button>
           </Link>
         </div>
         <div className="absolute top-0 right-10 py-10">
           <button
-            className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50"
+            className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50 text-gray-800"
             onClick={() =>
               signOut({ callbackUrl: 'http://localhost:3000/logoutView' })
             }
@@ -107,17 +125,102 @@ const Events = ({ eventsFromDB, unisFromDB }: { eventsFromDB: any; unisFromDB: a
         </div>
         <div className="flex justify-center">
           <div className="px-4 font-bold text-2xl">
-            <div className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg">
-              Events:
+            <div
+              className={`${
+                !eventListView
+                  ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+                  : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+              }`}
+            >
+              {' '}
+              <button
+                onClick={() => {
+                  toggleEventsListView();
+                  setCreateEventsView(false);
+                  setApprovalEventView(false);
+                }}
+              >
+                View Events
+              </button>
+            </div>
+          </div>
+          <div className="px-4 font-bold text-2xl">
+            <div
+              className={`${
+                !createEventsView
+                  ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+                  : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+              }`}
+            >
+              {' '}
+              <button
+                onClick={() => {
+                  toggleCreateEventsView();
+                  setEventListView(false);
+                  setApprovalEventView(false);
+                }}
+              >
+                Create Event
+              </button>
             </div>
           </div>
         </div>
-        <div className='py-10'>
+        <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
+          <EventsListView events={events} />
+        </div>
+        <div className={`${createEventsView ? '' : 'hidden'}`}>
+          <AdminEventsCreateView unis={unis} />
+        </div>
+      </div>
+    );
+  } else if (studentView) {
+    return (
+      <div className="py-10">
+        <div className="absolute top-0 left-10 py-10">
+          <Link href={'/'}>
+            <button className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50 text-gray-800">
+              Back
+            </button>
+          </Link>
+        </div>
+        <div className="absolute top-0 right-10 py-10">
+          <button
+            className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50 text-gray-800"
+            onClick={() =>
+              signOut({ callbackUrl: 'http://localhost:3000/logoutView' })
+            }
+          >
+            Sign-Out
+          </button>
+        </div>
+        <div className="flex justify-center">
+          <div className="px-4 font-bold text-2xl">
+            <div
+              className={`${
+                !eventListView
+                  ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+                  : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+              }`}
+            >
+              {' '}
+              <button
+                onClick={() => {
+                  toggleEventsListView();
+                  setCreateEventsView(false);
+                  setApprovalEventView(false);
+                }}
+              >
+                View Events
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
           <EventsListView events={events} />
         </div>
       </div>
     );
-  } else {
+  } else if (superAdminView) {
     return (
       <div className="py-10">
         <div className="absolute top-0 left-10 py-10">
@@ -202,7 +305,10 @@ const Events = ({ eventsFromDB, unisFromDB }: { eventsFromDB: any; unisFromDB: a
           <EventsListView events={events} />
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
-          <EventsCreateView unis={unis}/>
+          <EventsCreateView unis={unis} />
+        </div>
+        <div className={`${approvalEventView ? 'py-10' : 'hidden'}`}>
+          <ApprovalsEventsListView approvals={eventApprovals} />
         </div>
       </div>
     );

@@ -13,7 +13,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { title, body, type, date, phoneNumber, lat, lng, locationName, uniId } = JSON.parse(req.body);
+      const { title, body, type, date, phoneNumber, lat, lng, locationName, uniId, email } = JSON.parse(req.body);
       const dateForDb = new Date(date);
       const eventID = lat + lng + title
 
@@ -24,6 +24,7 @@ export default async function handler(
           description: body,
           date: dateForDb.toLocaleString(),
           phone_no: phoneNumber,
+          email: email,
           eventlocation: {
             create: {
               name: locationName,

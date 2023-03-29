@@ -3,9 +3,8 @@ import LoginView from '../components/loginView';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import prisma from '../lib/prismadb';
-import RSOSListView from '@/components/rsosListView';
-import RSOCreateView from '@/components/createRSOView';
-
+import RSOSListView from '@/components/rsos/rsosListView';
+import RSOCreateView from '@/components/rsos/createRSOView';
 
 const Roles = {
   STUDENT: 'STUDENT',

@@ -3,8 +3,8 @@ import LoginView from '../components/loginView';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import prisma from '../lib/prismadb';
-import UniListView from '@/components/uniListView';
-import UniCreateView from '@/components/uniCreateView';
+import UniListView from '@/components/unis/uniListView';
+import UniCreateView from '@/components/unis/uniCreateView';
 import { University } from '@prisma/client';
 
 const Roles = {
