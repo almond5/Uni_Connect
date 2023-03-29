@@ -1,6 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { type } from 'os';
-import { stringify } from 'querystring';
 import prisma from '../../lib/prismadb';
 
 const EventType = {
@@ -15,18 +13,34 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const {title, body, type, date, phoneNumber } = JSON.parse(req.body);
+      const { title, body, type, date, phoneNumber, lat, lng, locationName, uniId } = JSON.parse(req.body);
       const dateForDb = new Date(date);
 
-      const eventCreation = await prisma.event.create({
-        data: {
-          name: title,
-          type: type,
-          description: body,
-          date: dateForDb.toLocaleString(),
-          phone_no: phoneNumber
-        }
-      });
+      if (uniId !== null && uniId !== undefined && uniId !== '') {
+        const eventCreation = await prisma.event.create({
+          data: {
+            name: title,
+            type: type,
+            description: body,
+            date: dateForDb.toLocaleString(),
+            phone_no: phoneNumber,
+            location: {
+              create: {
+                name: locationName,
+                latitude: lat,
+                longitude: lng,
+                uni: {
+                  connect: {
+                    uniId: uniId
+                  },
+                },
+              }
+            }
+          }
+        });
+      }
+
+
     } catch (error) {
       console.log(error)
     }

@@ -5,14 +5,16 @@ import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import GoogleMapView from './googleMapView';
 
-const EventsCreateView = () => {
+const EventsCreateView = (props: { unis: any }) => {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState<Date | null>(null);
   const [type, setType] = useState('PUBLIC');
   const [body, setBody] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [lat, setLat] = useState('');
-  const [lng, setLng] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState(0);
+  const [lat, setLat] = useState(28.6024);
+  const [lng, setLng] = useState(-81.2001);
+  const [locationName, setLocatioName] = useState('');
+  const [uniID, setUniID] = useState('');
 
   const fontFamily = 'system-ui';
   const theme = createTheme({
@@ -32,8 +34,11 @@ const EventsCreateView = () => {
     body: string | undefined | null;
     type: string | undefined | null;
     date: Date | undefined | null;
-    phoneNumber: string | undefined | null;
-    // location: string | undefined | null;
+    phoneNumber: number | undefined | null;
+    lat: number | undefined | null;
+    lng: number | undefined | null;
+    locationName: string | undefined | null;
+    uniID: string | undefined | null;
   }) => {
     const response = await fetch('/api/eventCreate', {
       method: 'POST',
@@ -59,7 +64,17 @@ const EventsCreateView = () => {
     e.preventDefault();
     if (date === null) setDate(new Date());
 
-    const event = { title, body, type, date, phoneNumber };
+    const event = {
+      title,
+      body,
+      type,
+      date,
+      phoneNumber,
+      lat,
+      lng,
+      locationName,
+      uniID,
+    };
     await submitEvent(event);
     await timeout(1000);
     window.location.reload();
@@ -67,7 +82,10 @@ const EventsCreateView = () => {
     setTitle('');
     setType('PUBLIC');
     setDate(null);
-    setPhoneNumber('');
+    setPhoneNumber(0);
+    setLat(28.6024);
+    setLng(-81.2001);
+    setLocatioName('');
   };
 
   return (
@@ -91,7 +109,7 @@ const EventsCreateView = () => {
               required
               rows={1}
               cols={1}
-              className="block p-2.5 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+              className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
               rounded-tl-none border-neutral-700 "
             ></textarea>{' '}
           </div>
@@ -117,6 +135,7 @@ const EventsCreateView = () => {
               </ThemeProvider>
             </div>
           </div>
+
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
@@ -126,17 +145,18 @@ const EventsCreateView = () => {
             </div>
             <div>
               <textarea
-                maxLength={30}
+                maxLength={300}
                 value={body}
                 onChange={(e) => [setBody(e.target.value)]}
                 required
                 rows={7}
                 cols={1}
-                className="block p-2.5 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+                className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
                 rounded-tl-none border-neutral-700"
               ></textarea>{' '}
             </div>
           </div>
+
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
@@ -145,7 +165,7 @@ const EventsCreateView = () => {
               Event Type:
             </div>
             <div
-              className="flex flex-col p-2.5 w-32 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+              className="flex flex-col p-2 w-32 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
                 rounded-tl-none border-neutral-700"
             >
               <select
@@ -160,6 +180,31 @@ const EventsCreateView = () => {
               </select>
             </div>
           </div>
+
+          <div className="mb-4 text-lg">
+            <div
+              className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
+            >
+              University:
+            </div>
+            <div
+              className="flex flex-col p-2 w-32 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+                rounded-tl-none border-neutral-700"
+            >
+              <select
+                name="type"
+                required
+                defaultValue="None"
+                onChange={selectChange}
+              >
+                {/* {props.unis.map((university: any) => (
+                  <option value={university.name}>{university.name}</option>
+                ))} */}
+              </select>
+            </div>
+          </div>
+
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
@@ -168,29 +213,74 @@ const EventsCreateView = () => {
               Phone #:
             </div>
             <input
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              type="text"
-              className="block p-2.5 w-36 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+              required
+              onChange={(e) => setPhoneNumber(Number(e.target.value))}
+              type="number"
+              className="block p-2 w-36 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
               rounded-tl-none border-neutral-700"
               name="phone"
               maxLength={11}
             />
           </div>
-        </div>
 
-        <div>
-          <div
-            className="mx-auto rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
-          border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg "
-          >
-            Location:
+          <div className="mb-4 text-lg">
+            <div
+              className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
+            >
+              Location Name:
+            </div>
+            <input
+              required
+              onChange={(e) => setLocatioName(e.target.value)}
+              type="text"
+              className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+              rounded-tl-none border-neutral-700"
+              name="location"
+              maxLength={50}
+            />
           </div>
-          <GoogleMapView
-            lat={undefined}
-            length={undefined}
-            setLat={undefined}
-            setLng={undefined}
-          ></GoogleMapView>
+          <div className="flex justify-between">
+            <div>
+              <div
+                className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
+              >
+                Latitude:
+              </div>
+              <textarea
+                maxLength={32}
+                style={{ overflow: 'hidden' }}
+                value={lat}
+                disabled
+                rows={1}
+                cols={18}
+                className="block p-2 w-max text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+                rounded-tl-none border-neutral-700"
+              ></textarea>{' '}
+            </div>
+
+            <div>
+              <div
+                className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
+              >
+                Longitude:
+              </div>
+              <textarea
+                maxLength={0}
+                style={{ overflow: 'hidden' }}
+                value={lng}
+                disabled
+                rows={1}
+                cols={18}
+                className="block p-2  w-max text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+                rounded-tl-none border-neutral-700"
+              ></textarea>{' '}
+            </div>
+          </div>
+
+          <GoogleMapView setLat={setLat} setLng={setLng}></GoogleMapView>
         </div>
 
         <div className="py-[32px]">

@@ -65,12 +65,12 @@ model Event {
   name        String    @db.Text
   category    String?   @db.Text
   description String?   @db.Text
-  time        String?
-  date        String?
-  phone_no    Int?
-  email       String?
+  time        String?   @db.Text
+  date        String?   @db.Text
+  phone_no    Int?      
+  email       String?   @db.Text
   type        EventType
-  feedbackId  String?
+  feedbackId  String?   
   location    Location?
   feedback    Feedback? @relation(fields: [feedbackId], references: [id])
 
@@ -103,9 +103,9 @@ model Rating {
 
 model Location {
   id        String      @id @default(cuid())
-  name      String
-  latitude  Int
-  longitude Int
+  name      String      @db.Text
+  latitude  Float       
+  longitude Float      
   uniId     String?     @unique
   eventId   String?     @unique
   event     Event?      @relation(fields: [eventId], references: [id], onDelete: Cascade)

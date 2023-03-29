@@ -5,6 +5,7 @@ import Link from 'next/link';
 import prisma from '../lib/prismadb';
 import EventsListView from '@/components/eventsListView';
 import EventsCreateView from '@/components/createEventView';
+import { University } from '@prisma/client';
 
 const Roles = {
   STUDENT: 'STUDENT',
@@ -18,24 +19,33 @@ export async function getServerSideProps() {
       where: {},
     });
 
-    return {
-      props: {
-        eventsFromDB: events,
-      },
-    };
-  } catch (error) {
-    const events = null;
+    const unis = await prisma.university.findMany({
+      where: {}
+    })
 
     return {
       props: {
         eventsFromDB: events,
+        unisFromDB: unis
+      },
+    };
+  } catch (error) {
+    const events = null;
+    const unisFromDB = null
+
+    return {
+      props: {
+        eventsFromDB: events,
+        unisFromDB: unisFromDB
       },
     };
   }
 }
 
-const Events = ({ eventsFromDB }: { eventsFromDB: any }) => {
+const Events = ({ eventsFromDB, unisFromDB }: { eventsFromDB: any; unisFromDB: any }) => {
   const [events] = useState<Event[]>(eventsFromDB);
+  const [unis] = useState<University[]>(unisFromDB);
+
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
   const [superAdminView, setSuperAdminView] = useState(false);
@@ -192,7 +202,7 @@ const Events = ({ eventsFromDB }: { eventsFromDB: any }) => {
           <EventsListView events={events} />
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
-          <EventsCreateView />
+          <EventsCreateView unis={unis}/>
         </div>
       </div>
     );

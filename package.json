@@ -31,9 +31,11 @@
     "query-string": "^8.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "4.9.5"
+    "typescript": "4.9.5",
+    "use-places-autocomplete": "^4.0.0"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.52.4",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
     "prisma": "^4.10.1",
