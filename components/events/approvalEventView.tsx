@@ -7,7 +7,8 @@ const ApprovalEventView = (props: { approval: any }) => {
   const handleDecline = async () => {
     await accepted(approval);
     await timeout(1000);
-    window.location.reload();  };
+    window.location.reload();  
+  };
 
   const handleAccept = async () => {
     await accepted(approval);
@@ -19,7 +20,17 @@ const ApprovalEventView = (props: { approval: any }) => {
     return new Promise((res) => setTimeout(res, delay));
   };
 
-  const accepted = async (approval: any) => {
+  const accepted = async (approval: {
+    title: string | undefined | null;
+    body: string | undefined | null;
+    type: string | undefined | null;
+    date: Date | undefined | null;
+    phoneNumber: number | undefined | null;
+    lat: number | undefined | null;
+    lng: number | undefined | null;
+    locationName: string | undefined | null;
+    id: string | undefined | null
+  }) => {
     const response = await fetch('/api/eventApprovalAccepted', {
       method: 'POST',
       body: JSON.stringify(approval),
@@ -28,8 +39,11 @@ const ApprovalEventView = (props: { approval: any }) => {
     const data = await response.json();
     console.log(data);
   };
+  
 
-  const declined = async (approval: any) => {
+  const declined = async (approval: {
+    id: string | undefined | null
+  }) => {
     const response = await fetch('/api/eventApprovalDeclined', {
       method: 'POST',
       body: JSON.stringify(approval),
