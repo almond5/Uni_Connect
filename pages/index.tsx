@@ -12,7 +12,7 @@ const Roles = {
 
 export async function getServerSideProps(context: any) {
   const session = await getSession(context);
-
+  
   try {
     const user = await prisma.user.findFirst({
       where: {

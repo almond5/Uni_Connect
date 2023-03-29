@@ -1,15 +1,18 @@
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
-import { DatePicker, DateTimePicker, DesktopTimePicker, LocalizationProvider, MobileDateTimePicker, StaticTimePicker, TimePicker } from '@mui/x-date-pickers-pro';
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import GoogleMapView from './googleMapView';
 
 const EventsCreateView = () => {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState<Date | null>(null);
-  const [time, setTime] = useState<string | null>(null);
   const [type, setType] = useState('PUBLIC');
   const [body, setBody] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [lat, setLat] = useState('');
+  const [lng, setLng] = useState('');
 
   const fontFamily = 'system-ui';
   const theme = createTheme({
@@ -29,6 +32,8 @@ const EventsCreateView = () => {
     body: string | undefined | null;
     type: string | undefined | null;
     date: Date | undefined | null;
+    phoneNumber: string | undefined | null;
+    // location: string | undefined | null;
   }) => {
     const response = await fetch('/api/eventCreate', {
       method: 'POST',
@@ -45,17 +50,16 @@ const EventsCreateView = () => {
 
   const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     let value = event.target.value;
-    setType(value)
+    setType(value);
 
-    return (<div>{value}</div>);
+    return <div>{value}</div>;
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    if (date === null)
-      setDate(new Date)
+    if (date === null) setDate(new Date());
 
-    const event = { title, body, type, date };
+    const event = { title, body, type, date, phoneNumber };
     await submitEvent(event);
     await timeout(1000);
     window.location.reload();
@@ -63,6 +67,7 @@ const EventsCreateView = () => {
     setTitle('');
     setType('PUBLIC');
     setDate(null);
+    setPhoneNumber('');
   };
 
   return (
@@ -112,28 +117,6 @@ const EventsCreateView = () => {
               </ThemeProvider>
             </div>
           </div>
-          {/* <div className="mb-4 text-lg">
-            <div
-              className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
-                border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
-            >
-              Time:
-            </div>
-            <div
-              className="block w-full text-sm text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
-                rounded-tl-none border-neutral-700"
-            >
-              <ThemeProvider theme={theme}>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <TimePicker
-                    className="w-full"
-                    value={time}
-                    onChange={(newTime) => setTime(newTime)}
-                  />
-                </LocalizationProvider>
-              </ThemeProvider>
-            </div>
-          </div> */}
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
@@ -162,7 +145,7 @@ const EventsCreateView = () => {
               Event Type:
             </div>
             <div
-              className="flex flex-col p-2.5 w-28 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+              className="flex flex-col p-2.5 w-32 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
                 rounded-tl-none border-neutral-700"
             >
               <select
@@ -171,23 +154,45 @@ const EventsCreateView = () => {
                 defaultValue="PUBLIC"
                 onChange={selectChange}
               >
-                <option
-                  value="PUBLIC"
-                >
-                  Public
-                </option>
-                <option
-                  value="PRIVATE"
-                >
-                  Private
-                </option>
-                <option value="RSO">
-                  RSO
-                </option>
+                <option value="PUBLIC">Public</option>
+                <option value="PRIVATE">Private</option>
+                <option value="RSO">RSO</option>
               </select>
             </div>
           </div>
+          <div className="mb-4 text-lg">
+            <div
+              className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
+            >
+              Phone #:
+            </div>
+            <input
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              type="text"
+              className="block p-2.5 w-36 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+              rounded-tl-none border-neutral-700"
+              name="phone"
+              maxLength={11}
+            />
+          </div>
         </div>
+
+        <div>
+          <div
+            className="mx-auto rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
+          border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg "
+          >
+            Location:
+          </div>
+          <GoogleMapView
+            lat={undefined}
+            length={undefined}
+            setLat={undefined}
+            setLng={undefined}
+          ></GoogleMapView>
+        </div>
+
         <div className="py-[32px]">
           <button>
             <div

@@ -116,7 +116,7 @@ model Location {
 
 model University {
   id           String    @id @default(cuid())
-  uniId        String    @unique
+  uniId        String    
   name         String
   description  String?
   num_students Int?

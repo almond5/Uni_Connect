@@ -15,7 +15,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const {title, body, type, date } = JSON.parse(req.body);
+      const {title, body, type, date, phoneNumber } = JSON.parse(req.body);
       const dateForDb = new Date(date);
 
       const eventCreation = await prisma.event.create({
@@ -23,10 +23,10 @@ export default async function handler(
           name: title,
           type: type,
           description: body,
-          date: dateForDb.toLocaleString()
+          date: dateForDb.toLocaleString(),
+          phone_no: phoneNumber
         }
       });
-
     } catch (error) {
       console.log(error)
     }
