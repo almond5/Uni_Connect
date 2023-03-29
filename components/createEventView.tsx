@@ -1,4 +1,3 @@
-import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';

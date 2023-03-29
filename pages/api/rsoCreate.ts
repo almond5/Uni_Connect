@@ -8,9 +8,11 @@ export default async function handler(
     if (req.method === 'POST') {
       try {
         const {name, members, admin} = JSON.parse(req.body);
+        const rsoId = name + members
 
         const rsoCreation = await prisma.rSO.create({
             data:{
+                rsoId: rsoId,
                 name: name,
                 members: members,
                 admin: admin,

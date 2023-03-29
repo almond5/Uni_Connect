@@ -61,18 +61,19 @@ model VerificationToken {
 }
 
 model Event {
-  id          String    @id @default(cuid())
-  name        String    @db.Text
-  category    String?   @db.Text
-  description String?   @db.Text
-  time        String?   @db.Text
-  date        String?   @db.Text
-  phone_no    Int?      
-  email       String?   @db.Text
-  type        EventType
-  feedbackId  String?   
-  location    Location?
-  feedback    Feedback? @relation(fields: [feedbackId], references: [id])
+  id              String         @id @default(cuid())
+  name            String         @db.Text
+  category        String?        @db.Text
+  description     String?        @db.Text
+  time            String?        @db.Text
+  date            String?        @db.Text
+  phone_no        Int?
+  email           String?        @db.Text
+  type            EventType
+  feedbackId      String?
+  feedback        Feedback?      @relation(fields: [feedbackId], references: [id])
+  eventlocation   EventLocation? @relation(fields: [eventlocationId], references: [id])
+  eventlocationId String?
 
   @@index([id, feedbackId])
 }
@@ -102,26 +103,37 @@ model Rating {
 }
 
 model Location {
-  id        String      @id @default(cuid())
-  name      String      @db.Text
-  latitude  Float       
-  longitude Float      
-  uniId     String?     @unique
-  eventId   String?     @unique
-  event     Event?      @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  uni       University? @relation(fields: [uniId], references: [id], onDelete: Cascade)
+  id         String       @id @default(cuid())
+  name       String       @db.Text
+  latitude   Float
+  longitude  Float
+  uniId      String
+  University University[]
+
+  @@index([uniId])
+}
+
+model EventLocation {
+  id        String  @id @default(cuid())
+  name      String  @db.Text
+  latitude  Float
+  longitude Float
+  uniId     String
+  eventId   String
+  Event     Event[]
 
   @@index([uniId, eventId])
 }
 
 model University {
   id           String    @id @default(cuid())
-  uniId        String    
+  uniId        String
   name         String
   description  String?
   num_students Int?
-  Location     Location?
+  Location     Location? @relation(fields: [locationId], references: [id])
   User         User[]
+  locationId   String?
 
   @@index([uniId])
 }

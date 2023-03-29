@@ -15,30 +15,26 @@ export default async function handler(
     try {
       const { title, body, type, date, phoneNumber, lat, lng, locationName, uniId } = JSON.parse(req.body);
       const dateForDb = new Date(date);
+      const eventID = lat + lng + title
 
-      if (uniId !== null && uniId !== undefined && uniId !== '') {
-        const eventCreation = await prisma.event.create({
-          data: {
-            name: title,
-            type: type,
-            description: body,
-            date: dateForDb.toLocaleString(),
-            phone_no: phoneNumber,
-            location: {
-              create: {
-                name: locationName,
-                latitude: lat,
-                longitude: lng,
-                uni: {
-                  connect: {
-                    uniId: uniId
-                  },
-                },
-              }
+      const eventCreation = await prisma.event.create({
+        data: {
+          name: title,
+          type: type,
+          description: body,
+          date: dateForDb.toLocaleString(),
+          phone_no: phoneNumber,
+          eventlocation: {
+            create: {
+              name: locationName,
+              latitude: lat,
+              longitude: lng,
+              uniId: uniId,
+              eventId: eventID
             }
           }
-        });
-      }
+        }
+      });
 
 
     } catch (error) {
