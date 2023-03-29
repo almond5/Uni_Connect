@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import prisma from '../lib/prismadb';
 import RSOSListView from '@/components/rsosListView';
+import RSOCreateView from '@/components/createRSOView';
 
 
 const Roles = {
@@ -188,6 +189,9 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
       
       <div className={`${rsoListView ? 'py-10' : 'hidden'}`}>
           <RSOSListView rsos={rsos} />
+      </div>
+      <div className={`${createRSOView ? '' : 'hidden'}`}>
+          <RSOCreateView />
       </div>
     </div>
   );
