@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 import RSOView from './rsoView';
-import Login from './loginView';
+import Login from '../loginView';
 
 const RSOSListView = (props: { rsos: any }) => {
     const { status: sesh } = useSession();

@@ -15,6 +15,7 @@ const EventsCreateView = (props: { unis: any }) => {
   const [locationName, setLocatioName] = useState('');
   const [uniID, setUniID] = useState('');
 
+
   const fontFamily = 'system-ui';
   const theme = createTheme({
     components: {
@@ -195,11 +196,11 @@ const EventsCreateView = (props: { unis: any }) => {
                 name="type"
                 required
                 defaultValue="None"
-                onChange={selectChange}
+                onChange={(e) => setUniID(e.target.value)}
               >
-                {/* {props.unis.map((university: any) => (
+                {props.unis.map((university: any) => (
                   <option value={university.name}>{university.name}</option>
-                ))} */}
+                ))}
               </select>
             </div>
           </div>

@@ -122,6 +122,7 @@ const AdminEventsCreateView = (props: { unis: any }) => {
     setLng(-81.2001);
     setLocatioName('');
   };
+  console.log(props.unis)
 
   return (
     <div className="flex-col text-center py-24">
@@ -275,9 +276,10 @@ const AdminEventsCreateView = (props: { unis: any }) => {
                 defaultValue="None"
                 onChange={selectChange}
               >
-                {/* {props.unis.map((university: any) => (
+                {props.unis.map((university: any) => (
+                  
                   <option value={university.name}>{university.name}</option>
-                ))} */}
+                ))}
               </select>
             </div>
           </div>

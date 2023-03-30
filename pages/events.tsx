@@ -51,6 +51,7 @@ export async function getServerSideProps() {
   }
 }
 
+
 const Events = ({
   eventsFromDB,
   unisFromDB,

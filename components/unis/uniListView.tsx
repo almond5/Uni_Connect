@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 import UniView from './uniView';
-import Login from './loginView';
+import Login from '../loginView';
 
 const UniListView = (props: { universities: any }) => {
   const [deleteModalView, setDeleteModalView] = useState(false);
