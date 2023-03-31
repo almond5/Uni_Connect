@@ -5,7 +5,7 @@ import Link from 'next/link';
 import prisma from '../lib/prismadb';
 import EventsListView from '@/components/events/eventsListView';
 import EventsCreateView from '@/components/events/superAdminCreateEventView';
-import { EventApproval, University } from '@prisma/client';
+import { EventApproval, RSO, University } from '@prisma/client';
 import AdminEventsCreateView from '@/components/events/adminCreateEventView';
 import ApprovalsEventsListView from '@/components/events/approvalsListView';
 
@@ -29,23 +29,30 @@ export async function getServerSideProps() {
       where: {},
     });
 
+    const rsos = await prisma.rSO.findMany({
+      where: {},
+    })
+
     return {
       props: {
         eventsFromDB: events,
         unisFromDB: unis,
         approvalsFromDB: approvals,
+        rsosFromDB: rsos
       },
     };
   } catch (error) {
     const events = null;
     const unisFromDB = null;
     const approvals = null;
+    const rsosFromDB = null;
 
     return {
       props: {
         eventsFromDB: events,
         unisFromDB: unisFromDB,
         approvalsFromDB: approvals,
+        rsosFromDB: rsosFromDB
       },
     };
   }
@@ -56,14 +63,17 @@ const Events = ({
   eventsFromDB,
   unisFromDB,
   approvalsFromDB,
+  rsosFromDB
 }: {
   eventsFromDB: any;
   unisFromDB: any;
   approvalsFromDB: any;
+  rsosFromDB: any
 }) => {
   const [events] = useState<Event[]>(eventsFromDB);
   const [unis] = useState<University[]>(unisFromDB);
   const [eventApprovals] = useState<EventApproval[]>(approvalsFromDB);
+  const [rsos] = useState<RSO[]>(rsosFromDB);
 
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
@@ -170,7 +180,7 @@ const Events = ({
           <EventsListView events={events} />
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
-          <AdminEventsCreateView unis={unis} />
+          <AdminEventsCreateView unis={unis} rsos={rsos} />
         </div>
       </div>
     );
@@ -306,7 +316,7 @@ const Events = ({
           <EventsListView events={events} />
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
-          <EventsCreateView unis={unis} />
+          <EventsCreateView unis={unis} rsos={rsos} />
         </div>
         <div className={`${approvalEventView ? 'py-10' : 'hidden'}`}>
           <ApprovalsEventsListView approvals={eventApprovals} />

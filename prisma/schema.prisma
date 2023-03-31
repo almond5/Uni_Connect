@@ -134,7 +134,7 @@ model EventLocation {
   name          String          @db.Text
   latitude      Float
   longitude     Float
-  uniId         String?
+  uniId         String?        
   eventId       String?
   Event         Event[]
   EventApproval EventApproval[]

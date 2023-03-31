@@ -4,7 +4,9 @@ import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import GoogleMapView from '../googleMapView';
 
-const EventsCreateView = (props: { unis: any }) => {
+const EventsCreateView = (props: {
+  rsos: any; unis: any 
+}) => {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState<Date | null>(null);
   const [type, setType] = useState('PUBLIC');
@@ -13,8 +15,8 @@ const EventsCreateView = (props: { unis: any }) => {
   const [lat, setLat] = useState(28.6024);
   const [lng, setLng] = useState(-81.2001);
   const [locationName, setLocatioName] = useState('');
-  const [uniID, setUniID] = useState('');
-
+  const [uniSelected, setUni] = useState('');
+  const [rsoSelected, setRso] = useState('');
 
   const fontFamily = 'system-ui';
   const theme = createTheme({
@@ -38,7 +40,8 @@ const EventsCreateView = (props: { unis: any }) => {
     lat: number | undefined | null;
     lng: number | undefined | null;
     locationName: string | undefined | null;
-    uniID: string | undefined | null;
+    uniSelected: string | undefined | null;
+    rsoSelected: string | undefined | null;
   }) => {
     const response = await fetch('/api/eventCreate', {
       method: 'POST',
@@ -56,8 +59,16 @@ const EventsCreateView = (props: { unis: any }) => {
   const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     let value = event.target.value;
     setType(value);
+  };
 
-    return <div>{value}</div>;
+  const selectRSO = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    let value = event.target.value;
+    setRso(value);
+  };
+
+  const selectUni = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    let value = event.target.value;
+    setUni(value);
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -73,7 +84,8 @@ const EventsCreateView = (props: { unis: any }) => {
       lat,
       lng,
       locationName,
-      uniID,
+      uniSelected,
+      rsoSelected,
     };
     await submitEvent(event);
     await timeout(1000);
@@ -86,6 +98,8 @@ const EventsCreateView = (props: { unis: any }) => {
     setLat(28.6024);
     setLng(-81.2001);
     setLocatioName('');
+    setUni('');
+    setRso('');
   };
 
   return (
@@ -180,7 +194,31 @@ const EventsCreateView = (props: { unis: any }) => {
               </select>
             </div>
           </div>
-
+          <div className={`${type === 'RSO' ? 'mb-4' : 'hidden'}`}>
+            <div
+              className="rounded-[0.175rem] w-max border-l-[0.175rem] 
+                border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition 
+                bg-neutral-300 text-lg"
+            >
+              Select RSO
+            </div>
+            <div
+              className="flex flex-col p-2 w-32 text-md text-gray-900 
+              bg-neutral-50 rounded-lg border-[0.175rem] 
+                rounded-tl-none border-neutral-700"
+            >
+              <select
+                name="rsoDropDown"
+                defaultValue="N/A"
+                onChange={selectRSO}
+              >
+                {props.rsos.map((rso: any) => (
+                  <option value={rso.id}>{rso.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
@@ -196,10 +234,10 @@ const EventsCreateView = (props: { unis: any }) => {
                 name="type"
                 required
                 defaultValue="None"
-                onChange={(e) => setUniID(e.target.value)}
+                onChange={selectUni}
               >
                 {props.unis.map((university: any) => (
-                  <option value={university.name}>{university.name}</option>
+                  <option value={university.id}>{university.name}</option>
                 ))}
               </select>
             </div>

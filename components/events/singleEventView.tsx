@@ -1,4 +1,3 @@
-import { Comment } from '@mui/icons-material';
 import React, { useState } from 'react';
 import CommentModal from '../commentModalView';
 

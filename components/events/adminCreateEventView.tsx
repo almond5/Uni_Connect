@@ -4,7 +4,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import GoogleMapView from '../googleMapView';
 
-const AdminEventsCreateView = (props: { unis: any }) => {
+const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState<Date | null>(null);
   const [type, setType] = useState('PUBLIC');
@@ -13,7 +13,8 @@ const AdminEventsCreateView = (props: { unis: any }) => {
   const [lat, setLat] = useState(28.6024);
   const [lng, setLng] = useState(-81.2001);
   const [locationName, setLocatioName] = useState('');
-  const [uniID, setUniID] = useState('');
+  const [uniSelected, setUni] = useState('');
+  const [rsoSelected, setRso] = useState('');
 
   const fontFamily = 'system-ui';
   const theme = createTheme({
@@ -37,7 +38,8 @@ const AdminEventsCreateView = (props: { unis: any }) => {
     lat: number | undefined | null;
     lng: number | undefined | null;
     locationName: string | undefined | null;
-    uniID: string | undefined | null;
+    uniSelected: string | undefined | null;
+    rsoSelected: string | undefined | null;
   }) => {
     const response = await fetch('/api/eventCreate', {
       method: 'POST',
@@ -57,6 +59,8 @@ const AdminEventsCreateView = (props: { unis: any }) => {
     lat: number | undefined | null;
     lng: number | undefined | null;
     locationName: string | undefined | null;
+    uniSelected: string | undefined | null;
+    rsoSelected: string | undefined | null;
   }) => {
     const response = await fetch('/api/eventApprovalForm', {
       method: 'POST',
@@ -71,11 +75,19 @@ const AdminEventsCreateView = (props: { unis: any }) => {
     return new Promise((res) => setTimeout(res, delay));
   };
 
-  const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const selectType = (event: React.ChangeEvent<HTMLSelectElement>) => {
     let value = event.target.value;
     setType(value);
+  };
 
-    return <div>{value}</div>;
+  const selectRSO = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    let value = event.target.value;
+    setRso(value);
+  };
+
+  const selectUni = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    let value = event.target.value;
+    setUni(value);
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -92,7 +104,8 @@ const AdminEventsCreateView = (props: { unis: any }) => {
         lat,
         lng,
         locationName,
-        uniID,
+        uniSelected,
+        rsoSelected
       };
       await submitApproval(event);
       await timeout(1000);
@@ -107,7 +120,8 @@ const AdminEventsCreateView = (props: { unis: any }) => {
         lat,
         lng,
         locationName,
-        uniID,
+        uniSelected,
+        rsoSelected
       };
       await submitEvent(event);
       await timeout(1000);
@@ -122,7 +136,7 @@ const AdminEventsCreateView = (props: { unis: any }) => {
     setLng(-81.2001);
     setLocatioName('');
   };
-  console.log(props.unis)
+  console.log(props.unis);
 
   return (
     <div className="flex-col text-center py-24">
@@ -219,7 +233,7 @@ const AdminEventsCreateView = (props: { unis: any }) => {
                 name="type"
                 required
                 defaultValue="PUBLIC"
-                onChange={selectChange}
+                onChange={selectType}
               >
                 <option value="PUBLIC">Public</option>
                 <option value="PRIVATE">Private</option>
@@ -243,46 +257,46 @@ const AdminEventsCreateView = (props: { unis: any }) => {
                 rounded-tl-none border-neutral-700"
             >
               <select
-                name="type"
-                // required
-                defaultValue="None"
-                onChange={selectChange}
+                name="rsoDropDown"
+                defaultValue="N/A"
+                onChange={selectRSO}
               >
-                {/* {props.unis.map((university: any) => (
-                  <option value={university.name}>{university.name}</option>
-                ))} */}
-              </select>
-            </div>
-          </div>
-          <div className={`${type === 'PRIVATE' || type === 'RSO' ? 'mb-4' : 'hidden'}`}>
-
-          <div className="mb-4 text-lg">
-            <div
-              className="rounded-[0.175rem] w-max border-l-[0.175rem] 
-              border-t-[0.175rem] border-r-[0.175rem] 
-                border-neutral-700 px-2 font-bold transition 
-                bg-neutral-300 text-lg"
-            >
-              University:
-            </div>
-            <div
-              className="flex flex-col p-2 w-32 text-md text-gray-900 
-              bg-neutral-50 rounded-lg border-[0.175rem] 
-                rounded-tl-none border-neutral-700"
-            >
-              <select
-                name="type"
-                // required
-                defaultValue="None"
-                onChange={selectChange}
-              >
-                {props.unis.map((university: any) => (
-                  
-                  <option value={university.name}>{university.name}</option>
+                {props.rsos.map((rso: any) => (
+                  <option value={rso.id}>{rso.name}</option>
                 ))}
               </select>
             </div>
           </div>
+          <div
+            className={`${
+              type === 'PRIVATE' || type === 'RSO' ? 'mb-4' : 'hidden'
+            }`}
+          >
+            <div className="mb-4 text-lg">
+              <div
+                className="rounded-[0.175rem] w-max border-l-[0.175rem] 
+              border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition 
+                bg-neutral-300 text-lg"
+              >
+                University:
+              </div>
+              <div
+                className="flex flex-col p-2 w-32 text-md text-gray-900 
+              bg-neutral-50 rounded-lg border-[0.175rem] 
+                rounded-tl-none border-neutral-700"
+              >
+                <select
+                  name="University"
+                  defaultValue="N/A"
+                  onChange={selectUni}
+                >
+                  {props.unis.map((university: any) => (
+                    <option value={university.id}>{university.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
           <div className="mb-4 text-lg">
             <div
