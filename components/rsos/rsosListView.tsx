@@ -26,7 +26,7 @@ const RSOSListView = (props: { rsos: any }) => {
       return (
         <>
           {rsos.map((rso: any) => (
-            <RSOView rso={rso}></RSOView>
+            <RSOView key={rso.id} rso={rso}></RSOView>
           ))}
         </>
       );

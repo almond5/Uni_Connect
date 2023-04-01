@@ -104,7 +104,7 @@ const Events = ({
     else if (window?.location.search.includes(Roles.SUPERADMIN))
       setSuperAdminView(true);
     else if (window?.location.search.includes(Roles.ADMIN)) setAdminView(true);
-  });
+  },[]);
 
   if (sesh === 'loading') {
     return null;

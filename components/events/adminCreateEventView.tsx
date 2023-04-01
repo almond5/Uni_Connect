@@ -262,7 +262,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
                 onChange={selectRSO}
               >
                 {props.rsos.map((rso: any) => (
-                  <option value={rso.id}>{rso.name}</option>
+                  <option key={rso.id} value={rso.id}>{rso.name}</option>
                 ))}
               </select>
             </div>
@@ -292,7 +292,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
                   onChange={selectUni}
                 >
                   {props.unis.map((university: any) => (
-                    <option value={university.id}>{university.name}</option>
+                    <option key={university.id} value={university.id}>{university.name}</option>
                   ))}
                 </select>
               </div>

@@ -20,7 +20,10 @@ const EventsListView = (props: { events: any }) => {
       >
         {' '}
         {events.map((event: any) => (
+          <div key={event.id}>
           <EventView event={event}></EventView>
+          </div>
+
         ))}
       </div>
     );

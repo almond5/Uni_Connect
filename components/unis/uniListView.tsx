@@ -33,7 +33,7 @@ const UniListView = (props: { universities: any }) => {
       >
         {' '}
         {universities.map((university: any) => (
-          <UniView university={university}></UniView>
+          <UniView key={university.id} university={university}></UniView>
         ))}
       </div>
     );

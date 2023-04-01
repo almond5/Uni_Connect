@@ -13,8 +13,6 @@ const WelcomePage = (props: { role: any }) => {
   const { status: sesh } = useSession();
   const [viewEvents, setViewEvents] = useState(false);
   const [viewRSOs, setViewRSOs] = useState(false);
-  const role = props.role[0];
-  // add other views
 
   if (sesh === 'loading') {
     return null;
@@ -24,7 +22,11 @@ const WelcomePage = (props: { role: any }) => {
     return <LoginView />;
   }
 
-  if (role[0] === null) {
+  if (props.role === null){
+    return <LoginView />;
+  }
+
+  if (props.role[0] === null) {
     return <LoginView />;
   }
 
@@ -43,7 +45,7 @@ const WelcomePage = (props: { role: any }) => {
       <div className="flex justify-center">
         <div className="px-4 font-bold text-2xl">
           <div className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800">
-            <Link href={{ pathname: '/events', query: role }}>Events</Link>
+            <Link href={{ pathname: '/events', query:  props.role[0] }}>Events</Link>
           </div>
         </div>
         <div className="px-4 font-bold text-2xl">
@@ -51,7 +53,7 @@ const WelcomePage = (props: { role: any }) => {
             <Link href={'/rsos'}>RSOs</Link>
           </div>
         </div>
-        <div className={`${(role === "SUPERADMIN") ? '' : 'hidden'}`}>
+        <div className={`${( props.role[0] === "SUPERADMIN") ? '' : 'hidden'}`}>
           <div className="px-4 font-bold text-2xl">
             <div className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800">
               <Link href={'/universities'}>Universities</Link>

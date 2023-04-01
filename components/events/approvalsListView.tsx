@@ -19,7 +19,9 @@ const ApprovalsListView = (props: { approvals: any }) => {
       >
         {' '}
         {approvals.map((approval: any) => (
-          <ApprovalEventView approval={approval}></ApprovalEventView>
+          <div key={approval.id}>
+            <ApprovalEventView approval={approval}></ApprovalEventView>
+          </div>
         ))}
       </div>
     );
