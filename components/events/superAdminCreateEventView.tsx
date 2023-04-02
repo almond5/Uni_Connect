@@ -4,9 +4,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import GoogleMapView from '../googleMapView';
 
-const EventsCreateView = (props: {
-  rsos: any; unis: any 
-}) => {
+const EventsCreateView = (props: { rsos: any; unis: any }) => {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState<Date | null>(null);
   const [type, setType] = useState('PUBLIC');
@@ -159,7 +157,7 @@ const EventsCreateView = (props: {
             </div>
             <div>
               <textarea
-                maxLength={300}
+                maxLength={322}
                 value={body}
                 onChange={(e) => [setBody(e.target.value)]}
                 required
@@ -214,7 +212,9 @@ const EventsCreateView = (props: {
                 onChange={selectRSO}
               >
                 {props.rsos.map((rso: any) => (
-                  <option key={rso.id} value={rso.id}>{rso.name}</option>
+                  <option key={rso.id} value={rso.id}>
+                    {rso.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -237,7 +237,9 @@ const EventsCreateView = (props: {
                 onChange={selectUni}
               >
                 {props.unis.map((university: any) => (
-                  <option key={university.id} value={university.id}>{university.name}</option>
+                  <option key={university.id} value={university.id}>
+                    {university.name}
+                  </option>
                 ))}
               </select>
             </div>

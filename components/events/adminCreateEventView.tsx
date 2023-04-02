@@ -203,7 +203,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
             </div>
             <div>
               <textarea
-                maxLength={300}
+                maxLength={322}
                 value={body}
                 onChange={(e) => [setBody(e.target.value)]}
                 required
