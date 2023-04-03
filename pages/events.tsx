@@ -19,6 +19,7 @@ export async function getServerSideProps() {
   try {
     const events = await prisma.event.findMany({
       where: {},
+      include: { eventlocation: true, feedback: true }
     });
 
     const unis = await prisma.university.findMany({

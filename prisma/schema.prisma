@@ -21,6 +21,8 @@ model User {
   sessions      Session[]
   rso           RSO[]
   uni           University? @relation(fields: [universityId], references: [id])
+  Comment       Comment[]
+  Rating        Rating[]
 }
 
 model Account {
@@ -70,10 +72,10 @@ model Event {
   phone_no        Int?
   email           String?        @db.Text
   type            EventType
-  feedbackId      String?
+  feedbackId      String?        @unique
   feedback        Feedback?      @relation(fields: [feedbackId], references: [id])
   eventlocation   EventLocation? @relation(fields: [eventlocationId], references: [id])
-  eventlocationId String?
+  eventlocationId String?        @unique
 
   @@index([id, feedbackId])
 }
@@ -89,7 +91,7 @@ model EventApproval {
   email           String?        @db.Text
   type            EventType
   eventLocation   EventLocation? @relation(fields: [eventLocationId], references: [id])
-  eventLocationId String?
+  eventLocationId String?        @unique
 
   @@index([id])
 }
@@ -99,21 +101,26 @@ model Feedback {
   feedbackId String?
   comments   Comment[]
   ratings    Rating[]
-  Event      Event[]
+  eventId    String    @unique
+  Event      Event?
 
-  @@index([feedbackId])
+  @@index([feedbackId, eventId])
 }
 
 model Comment {
   id         String    @id @default(cuid())
   comment    String
   feedbackId String?
+  user       User?     @relation(fields: [userId], references: [id])
   Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
+  userId     String?
 }
 
 model Rating {
   id         String    @id @default(cuid())
   rating     Int
+  userId     String?
+  user       User?     @relation(fields: [userId], references: [id])
   feedbackId String?
   Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
 }
@@ -130,14 +137,14 @@ model Location {
 }
 
 model EventLocation {
-  id            String          @id @default(cuid())
-  name          String          @db.Text
+  id            String         @id @default(cuid())
+  name          String         @db.Text
   latitude      Float
   longitude     Float
-  uniId         String?        
+  uniId         String?
   eventId       String?
-  Event         Event[]
-  EventApproval EventApproval[]
+  Event         Event?
+  EventApproval EventApproval?
 
   @@index([uniId, eventId])
 }
@@ -147,8 +154,9 @@ model University {
   uniId        String
   name         String
   description  String?
-  num_students Int?
-  Location     Location? @relation(fields: [locationId], references: [id])
+  num_students Float
+  phone_no     Int?
+  location     Location? @relation(fields: [locationId], references: [id])
   User         User[]
   locationId   String?
 

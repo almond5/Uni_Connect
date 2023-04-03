@@ -7,50 +7,24 @@ const UniView = (props: { university: any }) => {
   const university = props.university;
 
   return (
-    <div className={`${del ? 'hidden' : 'py-[0.6rem]'}`}>
-      <div className={`${deleteModalView ? '' : 'hidden'}`}>
-        {/* <DeleteModal
-          setDeleteModalView={setDeleteModalView}
-          notes={note}
-          setDeleted={setDeleted}
-          count={props.count}
-          setCount={props.counter}
-        /> */}
-      </div>
-      <div className={`${editModalView ? '' : 'hidden'}`}>
-        {/* <EditModal
-          setEditModalView={setEditModalView}
-          notes={note}
-        /> */}
-      </div>
+    <div className="py-[0.8rem]">
       <div
-        className="h-[17rem] outline bg-stone-50
+        className="h-[22rem] outline bg-stone-50
             p-7 rounded-lg"
       >
-        <div className="flex justify-between">
-          <div>
-            <button
-              className="p-2 rounded-full py-0.5 font-bold transition hover:bg-neutral-400
-          hover:text-gray-800 text-Lg"
-              onClick={() => setEditModalView(true)}
-            >
-              {/* <FaEdit style={{ fontSize: '25px' }} /> */}
-              Edit
-            </button>
-            <button
-            className="px-2 rounded-full py-0.5 font-bold transition hover:bg-neutral-400
-            hover:text-gray-800 text-Lg"
-              onClick={() => setDeleteModalView(true)}
-            >
-              {/* <FaTrashAlt style={{ fontSize: '25px' }} /> */}
-              Delete
-            </button>
+        <div className="h-0 min-h-[78%]">
+          <div className="mb-2 mt-2 text-lg font-bold">{university.name}</div>
+          <div className="flex flex-col text-left">
+            <div className="flex">
+              <div className="font-bold">Location:&nbsp;</div>
+              {/* <div> {university.location.name}</div> */}
+            </div>
           </div>
-
-          <div className="text-right break-all"></div>
+          <p className="mb-4 text-md text-left break-all">
+            <div className="font-bold">Description:&nbsp;</div>
+            {university.description}
+          </p>
         </div>
-        <div className="mb-1 text-lg font-bold">{university.name}</div>
-        <p className="mb-4 text-md text-left break-all">{university.description}</p>
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { title, body, num_students, lat, lng, locationName, } = JSON.parse(req.body);
+      const { title, body, num_students, lat, lng, locationName, phoneNumber } = JSON.parse(req.body);
       const uniId = title + title.length
 
       const uniCreation = await prisma.university.create({
@@ -19,7 +19,8 @@ export default async function handler(
           uniId: uniId,
           num_students: num_students,
           description: body,
-          Location: {
+          phone_no: phoneNumber,
+          location: {
             create: {
               latitude: lat,
               longitude: lng,

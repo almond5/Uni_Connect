@@ -1,73 +1,52 @@
 import React, { useState } from 'react';
-import CommentModal from '../commentModalView';
+import CommentModal from './commentModalView';
 import DeleteModal from './deleteModal';
-import EditModal from './editModal';
 
 const SingleEventView = (props: { event: any }) => {
   const [deleteModalView, setDeleteModalView] = useState(false);
-  const [editModalView, setEditModalView] = useState(false);
   const [commentModalView, setCommentModalView] = useState(false);
-  const [del, setDeleted] = useState(false);
   const event = props.event;
-  
-  const toggleEditModalView = () => {
-    setEditModalView(!editModalView)
-  }
 
   return (
-    <div className={`${del ? 'hidden' : 'py-[0.8rem]'}`}>
+    <div className="py-[0.8rem]">
       <div className={`${commentModalView ? '' : 'hidden'}`}>
-        <CommentModal setCommentModalView={setCommentModalView} />
+        <CommentModal setCommentModalView={setCommentModalView} event={event} />
       </div>
       <div className={`${!commentModalView ? '' : 'hidden'}`}>
         <div className={`${deleteModalView ? '' : 'hidden'}`}>
           <DeleteModal setDeleteModalView={setDeleteModalView} event={event} />
         </div>
-        <div className={`${editModalView ? '' : 'hidden'}`}>
-          <EditModal
-          toggleEditModalView={toggleEditModalView}
-          event={event}
-        />
-        </div>
-
         <div
-          className="h-[20rem] outline bg-stone-50
+          className="h-[22rem] outline bg-stone-50
             p-7 rounded-lg"
         >
-          <div className="flex justify-between">
-            <div>
-              <button
-                className="p-2 rounded-full py-0.5 font-bold transition hover:bg-neutral-400
-          hover:text-gray-800 text-Lg"
-                onClick={() => setEditModalView(true)}
-              >
-                Edit
-              </button>
-              <button
-                className="px-2 rounded-full py-0.5 font-bold transition hover:bg-neutral-400
-            hover:text-gray-800 text-Lg"
-                onClick={() => setDeleteModalView(true)}
-              >
-                Delete
-              </button>
-            </div>
-            <div className="text-right break-all"></div>
-            {event.date}
-            {event.time}
-          </div>
           <div className="h-0 min-h-[78%]">
             <div className="mb-2 mt-2 text-lg font-bold">{event.name}</div>
+            <div className="flex flex-col text-left">
+              <div className="flex">
+                <div className="font-bold">Time: &nbsp;</div>
+                <div>
+                  {event.date}
+                  {event.time}
+                </div>
+              </div>
+              <div className="flex">
+                <div className="font-bold">Location:&nbsp;</div>
+                <div> {event.eventlocation.name}</div>
+              </div>
+            </div>
             <p className="mb-4 text-md text-left break-all">
+              <div className="font-bold">Description:&nbsp;</div>
               {event.description}
             </p>
           </div>
-          <div>
+          <div className="mt-8">
             <button
-              className="px-2 rounded-full py-0.5 font-bold transition hover:bg-neutral-400
-            hover:text-gray-800 text-Lg"
+              className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-0.5 font-bold transition
+             bg-neutral-50 text-md hover:bg-neutral-400 hover:text-gray-800"
               onClick={() => setCommentModalView(true)}
             >
-              See Comments
+              View Comments
             </button>
           </div>
         </div>

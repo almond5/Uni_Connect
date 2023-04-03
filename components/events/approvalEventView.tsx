@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 
 const ApprovalEventView = (props: { approval: any }) => {
-  const [del, setDeleted] = useState(false);
   const approval = props.approval;
 
   const handleDecline = async () => {
-    await accepted(approval);
+    await declined(approval);
     await timeout(1000);
     window.location.reload();
   };
@@ -51,7 +50,7 @@ const ApprovalEventView = (props: { approval: any }) => {
   };
 
   return (
-    <div className={`${del ? 'hidden' : 'py-[0.6rem]'}`}>
+    <div className="py-[0.6rem]">
       <div
         className="h-[17rem] outline bg-stone-50
             p-7 rounded-lg"

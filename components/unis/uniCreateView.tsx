@@ -5,9 +5,12 @@ const UniCreateView = () => {
   const [title, setTitle] = useState('');
   const [num_students, setNumStudents] = useState(0);
   const [body, setBody] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState(0);
   const [lat, setLat] = useState(28.6024);
   const [lng, setLng] = useState(-81.2001);
-  const [locationName, setLocatioName] = useState('');
+  const [locationName, setLocationName] = useState('');
+  const [uniSelected, setUni] = useState('');
+  const [rsoSelected, setRso] = useState('');
 
   const submitUni = async (university: {
     title: string | undefined | null;
@@ -16,6 +19,7 @@ const UniCreateView = () => {
     lat: number | undefined | null;
     lng: number | undefined | null;
     locationName: string | undefined | null;
+    phoneNumber: number | undefined | null;
   }) => {
     const response = await fetch('/api/universityCreate', {
       method: 'POST',
@@ -40,15 +44,19 @@ const UniCreateView = () => {
       lat,
       lng,
       locationName,
+      phoneNumber
     };
     await submitUni(university);
     await timeout(1000);
     window.location.reload();
     setBody('');
     setTitle('');
+    setPhoneNumber(0);
     setLat(28.6024);
     setLng(-81.2001);
-    setLocatioName('');
+    setLocationName('');
+    setUni('');
+    setRso('');
   };
 
   return (
@@ -63,7 +71,7 @@ const UniCreateView = () => {
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
                 border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
             >
-              University Name:
+              Event Name:
             </div>
             <textarea
               maxLength={30}
@@ -72,26 +80,11 @@ const UniCreateView = () => {
               required
               rows={1}
               cols={1}
-              className="block p-2.5 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+              className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
               rounded-tl-none border-neutral-700 "
             ></textarea>{' '}
           </div>
-          <div className="mb-4 text-lg">
-            <div
-              className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
-                border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
-            >
-              Number of Students:
-            </div>
-            <input
-              type="number"
-              pattern="[0-9]*"
-              value={num_students}
-              onChange={(e) => setNumStudents(+e.target.value)}
-              className="block p-2.5 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
-              rounded-tl-none border-neutral-700 "
-            ></input>{' '}
-          </div>
+
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
@@ -101,18 +94,36 @@ const UniCreateView = () => {
             </div>
             <div>
               <textarea
-                maxLength={30}
+                maxLength={322}
                 value={body}
                 onChange={(e) => [setBody(e.target.value)]}
                 required
                 rows={7}
                 cols={1}
-                className="block p-2.5 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+                className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
                 rounded-tl-none border-neutral-700"
               ></textarea>{' '}
             </div>
           </div>
-          
+
+          <div className="mb-4 text-lg">
+            <div
+              className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
+            >
+              Phone #:
+            </div>
+            <input
+              required
+              onChange={(e) => setPhoneNumber(Number(e.target.value))}
+              type="number"
+              className="block p-2 w-36 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+              rounded-tl-none border-neutral-700"
+              name="phone"
+              maxLength={11}
+            />
+          </div>
+
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
@@ -122,7 +133,7 @@ const UniCreateView = () => {
             </div>
             <input
               required
-              onChange={(e) => setLocatioName(e.target.value)}
+              onChange={(e) => setLocationName(e.target.value)}
               type="text"
               className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
               rounded-tl-none border-neutral-700"
@@ -169,8 +180,10 @@ const UniCreateView = () => {
               ></textarea>{' '}
             </div>
           </div>
+
           <GoogleMapView setLat={setLat} setLng={setLng}></GoogleMapView>
         </div>
+
         <div className="py-[32px]">
           <button>
             <div

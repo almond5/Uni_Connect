@@ -15,7 +15,7 @@ export default async function handler(
     try {
       const { title, body, type, date, phoneNumber, lat, lng, locationName, email, id } = JSON.parse(req.body);
       const dateForDb = new Date(date);
-      const eventID = lat + lng + title
+      const eventID = lat + lng + dateForDb.toUTCString()
 
       const eventCreation = await prisma.event.create({
         data: {

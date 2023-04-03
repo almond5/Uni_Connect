@@ -112,7 +112,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
                 border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
             >
-              Title:
+              Event Name:
             </div>
             <textarea
               maxLength={30}
