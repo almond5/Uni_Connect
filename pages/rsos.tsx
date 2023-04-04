@@ -1,4 +1,4 @@
-import { signOut, useSession } from 'next-auth/react';
+import { signOut, useSession, getSession } from 'next-auth/react';
 import LoginView from '../components/loginView';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -6,13 +6,17 @@ import prisma from '../lib/prismadb';
 import RSOSListView from '@/components/rsos/rsosListView';
 import RSOCreateView from '@/components/rsos/createRSOView';
 
+
 const Roles = {
   STUDENT: 'STUDENT',
   ADMIN: 'ADMIN',
   SUPERADMIN: 'SUPERADMIN',
 };
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+  const user = session?.user;
+  
   try {
     const rsos = await prisma.rSO.findMany({
       where: {},
@@ -21,6 +25,7 @@ export async function getServerSideProps() {
     return {
       props: {
         rsosFromDB: rsos,
+        userFromDB: user
       },
     };
 
@@ -30,14 +35,16 @@ export async function getServerSideProps() {
     return {
       props: {
         rsosFromDB: rsos,
+        userFromDB: user
       },
     };
   }
 }
 
-const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
+const RSOs = ({ rsosFromDB, userFromDB } : { rsosFromDB: any, userFromDB: any}) => {
   const [rsos] = useState<Event[]>(rsosFromDB);
   const { status: sesh } = useSession();
+  const user = useState(userFromDB);
   
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
@@ -190,7 +197,7 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any }) => {
           <RSOSListView rsos={rsos} />
       </div>
       <div className={`${createRSOView ? '' : 'hidden'}`}>
-          <RSOCreateView />
+          <RSOCreateView user = {user}/>
       </div>
     </div>
   );
