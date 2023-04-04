@@ -71,7 +71,7 @@ const UniCreateView = () => {
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
                 border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
             >
-              Event Name:
+              University Name:
             </div>
             <textarea
               maxLength={30}

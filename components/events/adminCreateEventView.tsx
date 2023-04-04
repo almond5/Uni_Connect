@@ -105,7 +105,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
         lng,
         locationName,
         uniSelected,
-        rsoSelected
+        rsoSelected,
       };
       await submitApproval(event);
       await timeout(1000);
@@ -121,7 +121,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
         lng,
         locationName,
         uniSelected,
-        rsoSelected
+        rsoSelected,
       };
       await submitEvent(event);
       await timeout(1000);
@@ -262,7 +262,9 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
                 onChange={selectRSO}
               >
                 {props.rsos.map((rso: any) => (
-                  <option key={rso.id} value={rso.id}>{rso.name}</option>
+                  <option key={rso.id} value={rso.id}>
+                    {rso.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -292,7 +294,9 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
                   onChange={selectUni}
                 >
                   {props.unis.map((university: any) => (
-                    <option key={university.id} value={university.id}>{university.name}</option>
+                    <option key={university.id} value={university.id}>
+                      {university.name}
+                    </option>
                   ))}
                 </select>
               </div>
