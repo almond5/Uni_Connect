@@ -2,8 +2,9 @@ import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 import EventView from './singleEventView';
 
-const EventsListView = (props: { events: any }) => {
+const EventsListView = (props: { events: any; role: any }) => {
   const events = props.events;
+  const role = props.role;
 
   if (events === null || events === undefined || events.length === 0)
     return (
@@ -21,7 +22,7 @@ const EventsListView = (props: { events: any }) => {
         {' '}
         {events.map((event: any) => (
           <div key={event.id}>
-          <EventView event={event}></EventView>
+          <EventView event={event} role={role}></EventView>
           </div>
 
         ))}

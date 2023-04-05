@@ -26,6 +26,7 @@ export default async function handler(
               comment: body!,
               user: { connect: { id: user!.id } },
               author: user!.name!,
+              email: user!.email!,
             },
           },
         },

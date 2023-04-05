@@ -24,26 +24,26 @@ const DeleteModalView = (props: {
     await timeout(1000);
   };
 
-  const deleteNote = async (note: {
-    title: string;
-    body: string;
-    date: string;
-    user:
-      | {
-          name?: string | null | undefined;
-          email?: string | null | undefined;
-          image?: string | null | undefined;
-        }
-      | undefined;
-  }) => {
-    const response = await fetch('/api/noteDelete', {
-      method: 'POST',
-      body: JSON.stringify(note),
-    });
+  // const deleteNote = async (note: {
+  //   title: string;
+  //   body: string;
+  //   date: string;
+  //   user:
+  //     | {
+  //         name?: string | null | undefined;
+  //         email?: string | null | undefined;
+  //         image?: string | null | undefined;
+  //       }
+  //     | undefined;
+  // }) => {
+  //   const response = await fetch('/api/noteDelete', {
+  //     method: 'POST',
+  //     body: JSON.stringify(note),
+  //   });
 
-    const data = await response.json();
-    console.log(data);
-  };
+  //   const data = await response.json();
+  //   console.log(data);
+  // };
 
   return (
     <div

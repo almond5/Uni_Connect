@@ -180,7 +180,7 @@ const Events = ({
           </div>
         </div>
         <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} />
+          <EventsListView events={events} role={'ADMIN'}/>
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
           <AdminEventsCreateView unis={unis} rsos={rsos} />
@@ -230,7 +230,7 @@ const Events = ({
           </div>
         </div>
         <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} />
+          <EventsListView events={events} role={'STUDENT'}/>
         </div>
       </div>
     );
@@ -316,7 +316,7 @@ const Events = ({
           </div>
         </div>
         <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} />
+          <EventsListView events={events} role={'SUPERADMIN'}/>
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
           <EventsCreateView unis={unis} rsos={rsos} />

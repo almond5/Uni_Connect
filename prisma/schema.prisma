@@ -111,6 +111,7 @@ model Comment {
   comment    String
   feedbackId String?
   author     String
+  email      String
   user       User?     @relation(fields: [userId], references: [id])
   Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
   userId     String?

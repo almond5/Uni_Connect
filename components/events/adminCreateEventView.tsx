@@ -108,8 +108,6 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
         rsoSelected,
       };
       await submitApproval(event);
-      await timeout(1000);
-      window.location.reload();
     } else {
       const event = {
         title,
@@ -124,9 +122,11 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
         rsoSelected,
       };
       await submitEvent(event);
-      await timeout(1000);
-    }
 
+    }
+    
+    await timeout(1000);
+    window.location.reload();
     setBody('');
     setTitle('');
     setType('PUBLIC');
@@ -136,7 +136,6 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
     setLng(-81.2001);
     setLocatioName('');
   };
-  console.log(props.unis);
 
   return (
     <div className="flex-col text-center py-24">

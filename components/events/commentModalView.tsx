@@ -2,8 +2,14 @@ import React, { useState } from 'react';
 import CommentListView from './commentsListView';
 import CommentCreateView from './commentCreateView';
 
-const CommentModalView = (props: { setCommentModalView: any; event: any }) => {
+const CommentModalView = (props: {
+  setCommentModalView: any;
+  event: any;
+  role: any;
+}) => {
   const [newComment, setNewComment] = useState(false);
+  const event = props.event;
+  const role = props.role;
 
   const handleClose = () => {
     props.setCommentModalView(false);
@@ -42,7 +48,7 @@ const CommentModalView = (props: { setCommentModalView: any; event: any }) => {
         </div>
       </div>
       <div className={`${newComment ? '' : 'hidden'}`}>
-        <CommentCreateView event={props.event}></CommentCreateView>
+        <CommentCreateView event={event}></CommentCreateView>
       </div>
       <div
         className="py-[.5rem] flex-col text-center mx-auto max-w-sm xs:max-w-sm 
@@ -50,7 +56,7 @@ const CommentModalView = (props: { setCommentModalView: any; event: any }) => {
       lg:grid-cols-1"
       >
         <div className={`${!newComment ? '' : 'hidden'}`}>
-          <CommentListView feedback={props.event.feedback}></CommentListView>
+          <CommentListView feedback={event.feedback} role={role}></CommentListView>
         </div>
       </div>
     </div>

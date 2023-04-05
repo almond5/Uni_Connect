@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import CommentModal from './commentModalView';
 import DeleteModal from './deleteModal';
 
-const SingleEventView = (props: { event: any; feedback: any }) => {
+const SingleEventView = (props: { event: any; role: any; }) => {
   const [deleteModalView, setDeleteModalView] = useState(false);
   const [commentModalView, setCommentModalView] = useState(false);
   const event = props.event;
-  const feedback = props.feedback;
+  const role = props.role;
 
   return (
     <div className="py-[0.8rem]">
       <div className={`${commentModalView ? '' : 'hidden'}`}>
-        <CommentModal setCommentModalView={setCommentModalView} event={event} feedback={feedback} />
+        <CommentModal setCommentModalView={setCommentModalView} event={event} role={role}/>
       </div>
       <div className={`${!commentModalView ? '' : 'hidden'}`}>
-        <div className={`${deleteModalView ? '' : 'hidden'}`}>
+        <div className={`${deleteModalView && (role === 'SUPERADMIN') ? '' : 'hidden'}`}>
           <DeleteModal setDeleteModalView={setDeleteModalView} event={event} />
         </div>
         <div
