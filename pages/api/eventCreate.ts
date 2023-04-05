@@ -13,9 +13,19 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { title, body, type, date, phoneNumber, lat, lng, locationName, uniId, email } = JSON.parse(req.body);
+      const {
+        title,
+        body,
+        type,
+        date,
+        phoneNumber,
+        lat,
+        lng,
+        locationName,
+        uniId,
+        email,
+      } = JSON.parse(req.body);
       const dateForDb = new Date(date);
-      const eventID = lat + lng + title
 
       const eventCreation = await prisma.event.create({
         data: {
@@ -31,19 +41,32 @@ export default async function handler(
               latitude: lat,
               longitude: lng,
               uniId: uniId,
-              eventId: eventID
-            }
-          }
-        }
+            },
+          },
+        },
       });
 
+      const feedback = await prisma.feedback.create({
+        data: {
+          eventId: eventCreation.id,
+          comments: {
+            create: {
+              comment: 'This is a test comment',
+            },
+          },
+        },
+      });
 
+      const event = await prisma.event.update({
+        where: { id: eventCreation.id },
+        data: { feedbackId: feedback.id },
+      })
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
 
-    res.status(201).json(null)
+    res.status(201).json(null);
   } else {
-    res.status(201).json(null)
+    res.status(201).json(null);
   }
 }

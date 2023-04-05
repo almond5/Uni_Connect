@@ -19,7 +19,10 @@ export async function getServerSideProps() {
   try {
     const events = await prisma.event.findMany({
       where: {},
-      include: { eventlocation: true, feedback: false }
+      include: {
+        eventlocation: true,
+        feedback: { include: { comments: true } },  
+      },
     });
 
     const unis = await prisma.university.findMany({
@@ -32,14 +35,14 @@ export async function getServerSideProps() {
 
     const rsos = await prisma.rSO.findMany({
       where: {},
-    })
+    });
 
     return {
       props: {
         eventsFromDB: events,
         unisFromDB: unis,
         approvalsFromDB: approvals,
-        rsosFromDB: rsos
+        rsosFromDB: rsos,
       },
     };
   } catch (error) {
@@ -53,23 +56,22 @@ export async function getServerSideProps() {
         eventsFromDB: events,
         unisFromDB: unisFromDB,
         approvalsFromDB: approvals,
-        rsosFromDB: rsosFromDB
+        rsosFromDB: rsosFromDB,
       },
     };
   }
 }
 
-
 const Events = ({
   eventsFromDB,
   unisFromDB,
   approvalsFromDB,
-  rsosFromDB
+  rsosFromDB,
 }: {
   eventsFromDB: any;
   unisFromDB: any;
   approvalsFromDB: any;
-  rsosFromDB: any
+  rsosFromDB: any;
 }) => {
   const [events] = useState<Event[]>(eventsFromDB);
   const [unis] = useState<University[]>(unisFromDB);
@@ -105,7 +107,7 @@ const Events = ({
     else if (window?.location.search.includes(Roles.SUPERADMIN))
       setSuperAdminView(true);
     else if (window?.location.search.includes(Roles.ADMIN)) setAdminView(true);
-  },[]);
+  }, []);
 
   if (sesh === 'loading') {
     return null;

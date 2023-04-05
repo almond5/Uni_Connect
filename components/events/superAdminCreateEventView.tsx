@@ -211,7 +211,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
                 defaultValue="N/A"
                 onChange={selectRSO}
               >
-                {props.rsos.map((rso: any) => (
+                {props.rsos?.map((rso: any) => (
                   <option key={rso.id} value={rso.id}>
                     {rso.name}
                   </option>
@@ -236,7 +236,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
                 defaultValue="None"
                 onChange={selectUni}
               >
-                {props.unis.map((university: any) => (
+                {props.unis?.map((university: any) => (
                   <option key={university.id} value={university.id}>
                     {university.name}
                   </option>

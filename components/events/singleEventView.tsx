@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import CommentModal from './commentModalView';
 import DeleteModal from './deleteModal';
 
-const SingleEventView = (props: { event: any }) => {
+const SingleEventView = (props: { event: any; feedback: any }) => {
   const [deleteModalView, setDeleteModalView] = useState(false);
   const [commentModalView, setCommentModalView] = useState(false);
   const event = props.event;
+  const feedback = props.feedback;
 
   return (
     <div className="py-[0.8rem]">
       <div className={`${commentModalView ? '' : 'hidden'}`}>
-        <CommentModal setCommentModalView={setCommentModalView} event={event} />
+        <CommentModal setCommentModalView={setCommentModalView} event={event} feedback={feedback} />
       </div>
       <div className={`${!commentModalView ? '' : 'hidden'}`}>
         <div className={`${deleteModalView ? '' : 'hidden'}`}>

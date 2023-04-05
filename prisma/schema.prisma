@@ -97,14 +97,13 @@ model EventApproval {
 }
 
 model Feedback {
-  id         String    @id @default(cuid())
-  feedbackId String?
-  comments   Comment[]
-  ratings    Rating[]
-  eventId    String    @unique
-  Event      Event?
+  id       String    @id @default(cuid())
+  comments Comment[]
+  ratings  Rating[]
+  eventId  String    @unique
+  Event    Event[]
 
-  @@index([feedbackId, eventId])
+  @@index([id, eventId])
 }
 
 model Comment {
@@ -130,7 +129,7 @@ model Location {
   name       String       @db.Text
   latitude   Float
   longitude  Float
-  uniId      String
+  uniId      String       @unique
   University University[]
 
   @@index([uniId])
@@ -158,7 +157,7 @@ model University {
   phone_no     Int?
   location     Location? @relation(fields: [locationId], references: [id])
   User         User[]
-  locationId   String?
+  locationId   String?   @unique
 
   @@index([uniId])
 }

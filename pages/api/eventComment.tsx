@@ -10,13 +10,21 @@ export default async function handler(
       const { email, event, body } = JSON.parse(req.body);
       const feedbackId = event.name + new Date().toUTCString();
 
-      const newComment = await prisma.feedback.create({
+      const findEvent = await prisma.event.findUnique({
+        where: { id: event.id },
+        include: { feedback: true },
+      });
+
+      const feedback = await prisma.feedback.update({
+        where: { eventId: findEvent?.id },
         data: {
-          eventId: event.eventId
-          // event: {
-          //   connect
-          // }
-        }
+          comments: {
+            create: {
+              comment: body,
+              user: { connect: { email: email } },
+            },
+          },
+        },
       });
     } catch (error) {
       console.log(error);

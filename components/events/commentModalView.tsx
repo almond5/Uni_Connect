@@ -50,7 +50,7 @@ const CommentModalView = (props: { setCommentModalView: any; event: any }) => {
       lg:grid-cols-1"
       >
         <div className={`${!newComment ? '' : 'hidden'}`}>
-          {/* <CommentListView comments={props.event.feedback.comments}></CommentListView> */}
+          <CommentListView feedback={props.event.feedback}></CommentListView>
         </div>
       </div>
     </div>
