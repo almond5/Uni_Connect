@@ -21,7 +21,7 @@ export async function getServerSideProps() {
       where: {},
       include: {
         eventlocation: true,
-        feedback: { include: { comments: true } },  
+        feedback: { include: { comments: true } },
       },
     });
 

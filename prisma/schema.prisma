@@ -12,7 +12,7 @@ datasource db {
 model User {
   id            String      @id @default(cuid())
   name          String?
-  email         String?     @unique
+  email         String      @unique
   emailVerified DateTime?
   image         String?
   role          Role        @default(STUDENT)
@@ -110,6 +110,7 @@ model Comment {
   id         String    @id @default(cuid())
   comment    String
   feedbackId String?
+  author     String
   user       User?     @relation(fields: [userId], references: [id])
   Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
   userId     String?

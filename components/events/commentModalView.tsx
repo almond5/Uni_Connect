@@ -16,7 +16,7 @@ const CommentModalView = (props: { setCommentModalView: any; event: any }) => {
   return (
     <div
       className="h-[22rem] outline bg-stone-50
-        p-7 rounded-lg"
+        p-7 rounded-lg overflow-y-scroll"
     >
       <div className="flex justify-between mb-4">
         <div>
@@ -45,7 +45,7 @@ const CommentModalView = (props: { setCommentModalView: any; event: any }) => {
         <CommentCreateView event={props.event}></CommentCreateView>
       </div>
       <div
-        className="py-[4.4rem] flex-col text-center mx-auto max-w-sm xs:max-w-sm 
+        className="py-[.5rem] flex-col text-center mx-auto max-w-sm xs:max-w-sm 
       sm:max-w-md md:max-w-md lg:max-w-lg xl:max-w-md 2xl:max-w-lg grid md:grid-cols-1 
       lg:grid-cols-1"
       >

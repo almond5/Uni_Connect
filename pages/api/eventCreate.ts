@@ -49,11 +49,6 @@ export default async function handler(
       const feedback = await prisma.feedback.create({
         data: {
           eventId: eventCreation.id,
-          comments: {
-            create: {
-              comment: 'This is a test comment',
-            },
-          },
         },
       });
 

@@ -8,11 +8,14 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       const { email, event, body } = JSON.parse(req.body);
-      const feedbackId = event.name + new Date().toUTCString();
 
       const findEvent = await prisma.event.findUnique({
         where: { id: event.id },
         include: { feedback: true },
+      });
+
+      const user = await prisma.user.findUnique({
+        where: { email: email },
       });
 
       const feedback = await prisma.feedback.update({
@@ -20,8 +23,9 @@ export default async function handler(
         data: {
           comments: {
             create: {
-              comment: body,
-              user: { connect: { email: email } },
+              comment: body!,
+              user: { connect: { id: user!.id } },
+              author: user!.name!,
             },
           },
         },
