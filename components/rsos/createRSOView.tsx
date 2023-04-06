@@ -5,16 +5,16 @@ import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import prisma from '../../lib/prismadb';
 
-import { User } from '@prisma/client';
+import { Member, RSO, User } from '@prisma/client';
 
-const RSOCreateView = (props: {user: any, findUser: any}) => {
+const RSOCreateView = (props: {user: any, users: any}) => {
     const [name, setName] = useState('');
-    const [members, setMembers] = useState<string[]>([]);
+    const [members, setMembers] = useState<string[]>([]); //array of user id for members
     const [admin, setAdmin] = useState<User>();
-    const [member, setMember] = useState('');
+    const [member, setMember] = useState({email: '', userId: ''});
     const [memberErr, setMemberErr] = useState('');
     const user = props.user[0];
-    const findUserInDB = props.findUser;
+    const users = props.users;
 
     const fontFamily = 'system-ui';
     const theme = createTheme({
@@ -30,20 +30,57 @@ const RSOCreateView = (props: {user: any, findUser: any}) => {
      });
 
     
+     const findUserInDB = (memEmail: string) =>{
+      let result = ''
+      users.forEach((element: any) => {
+        if(element.email.localeCompare(memEmail) === 0){
+          //email was found
+          result = element.id
+        }
+      })
 
-     const handleAddMems = async (e: { preventDefault: () => void }) => {
+      if(result != ''){
+        return result
+      }
+      else{
+        //nothing was found return -1
+        console.log("nothing")
+        return -1
+      }
+      
+     }
+
+     const handleAddMems = (e: { preventDefault: () => void }) => {
       e.preventDefault();
-      const res = findUserInDB(member)
+      const res = findUserInDB(member.email)
       //check if entered member in db
-      if(await res === -1){
+      if(res === -1){
         //user not in db
         setMemberErr("This email does not belong to a user!");
       }
       else{
-        setMembers([...members, member]);
-        setMember('');
+        // let tempObj = {email: member.email,
+        //                userId: res
+        //               }
+        setMembers([...members, res]);
+        setMember({email: '', userId: ''});
+        setMemberErr('')
       }
      };
+
+    //  const createMember = async (member: {
+    //   rsoId: string | undefined | null;
+    //   userId: string | undefined |  null;
+    //   rso: RSO | undefined | null;
+    //  }) => {
+    //   const response = await fetch('/api/memberCreate', {
+    //     method: 'POST',
+    //     body: JSON.stringify(member),
+    //   });
+  
+    //   const data = await response.json();
+    //   console.log(data);
+    //  }
 
      const timeout = (delay: number) => {
         return new Promise((res) => setTimeout(res, delay));
@@ -111,8 +148,8 @@ const RSOCreateView = (props: {user: any, findUser: any}) => {
                     </div>
                     <textarea
                       maxLength={30}
-                      value={member}
-                      onChange={(e) => setMember(e.target.value)}
+                      value={member.email}
+                      onChange={(e) => setMember({email: (e.target.value), userId: ''})}
                       rows={1}
                       cols={1}
                       className="block p-2.5 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 

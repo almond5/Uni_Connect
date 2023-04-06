@@ -5,6 +5,8 @@ import Link from 'next/link';
 import prisma from '../lib/prismadb';
 import RSOSListView from '@/components/rsos/rsosListView';
 import RSOCreateView from '@/components/rsos/createRSOView';
+import { useDateRangeValidation } from '@mui/x-date-pickers-pro/internal/hooks/validation/useDateTimeRangeValidation';
+import { User } from '@prisma/client';
 
 
 const Roles = {
@@ -22,48 +24,40 @@ export async function getServerSideProps(context: any) {
       where: {},
     });
 
+    const userList = await prisma.user.findMany({
+      where: {}
+    })
+    
     return {
       props: {
         rsosFromDB: rsos,
-        userFromDB: user
+        userFromDB: user,
+        usersFromDB: userList
       },
     };
-
   } catch(error) {
     const rsos = null;
+    const userList = await prisma.user.findMany({
+      where: {}
+    })
+
+    console.log(userList)
 
     return {
       props: {
         rsosFromDB: rsos,
-        userFromDB: user
+        userFromDB: user,
+        usersFromDB: userList
       },
     };
   }
 }
 
-export async function findUserInDB(memEmail: string) {
-  try{
-    const getUser = await prisma.user.findUnique({
-      where: {
-        email: memEmail,
-      },
-    })
-    if(getUser === null){
-      return -1
-    }
-    else{
-      return getUser?.id
-    }
-    
-  } catch(error){
-    return -1
-  }
- }
-
-const RSOs = ({ rsosFromDB, userFromDB } : { rsosFromDB: any, userFromDB: any}) => {
+const RSOs = ({ rsosFromDB, userFromDB, usersFromDB } : { rsosFromDB: any, userFromDB: any, usersFromDB: any}) => {
   const [rsos] = useState<Event[]>(rsosFromDB);
   const { status: sesh } = useSession();
   const user = useState(userFromDB);
+  const [users] = useState<User[]>(usersFromDB);
   
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
@@ -216,7 +210,7 @@ const RSOs = ({ rsosFromDB, userFromDB } : { rsosFromDB: any, userFromDB: any}) 
           <RSOSListView rsos={rsos} />
       </div>
       <div className={`${createRSOView ? '' : 'hidden'}`}>
-          <RSOCreateView user = {user} findUser = {findUserInDB}/>
+          <RSOCreateView user = {user} users ={users}/>
       </div>
     </div>
   );
