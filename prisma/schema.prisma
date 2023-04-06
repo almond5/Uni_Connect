@@ -176,9 +176,10 @@ model RSO {
 }
 
 model Member {
-  id    String @id @default(cuid())
-  rsoId String
-  rso   RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  rsoId  String
+  userId String
+  rso    RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
 
   @@index([id, rsoId])
 }

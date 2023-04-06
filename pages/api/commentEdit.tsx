@@ -13,7 +13,7 @@ export default async function handler(
         where: { id: commentId },
         data: {
           comment: body,
-        }
+        },
       });
     } catch (error) {
       console.log(error);
