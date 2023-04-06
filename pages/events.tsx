@@ -17,6 +17,8 @@ const Roles = {
 
 export async function getServerSideProps() {
   try {
+    // personalize props based on roles
+    
     const events = await prisma.event.findMany({
       where: {},
       include: {
