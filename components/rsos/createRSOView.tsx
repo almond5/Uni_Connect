@@ -27,7 +27,11 @@ const RSOCreateView = (props: {user: any}) => {
         },
      });
 
-    
+     const handleAddMems = (e: { preventDefault: () => void }) => {
+      setMembers([...members, member]);
+      setMember('');
+      console.log("correct")
+     };
 
      const timeout = (delay: number) => {
         return new Promise((res) => setTimeout(res, delay));
@@ -50,6 +54,7 @@ const RSOCreateView = (props: {user: any}) => {
 
      const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
+        console.log('AGGHHHH')
        // setAdmin(user);
         //const userId = user.id;
         const userId = '';
@@ -58,11 +63,12 @@ const RSOCreateView = (props: {user: any}) => {
         await timeout(1000);
         window.location.reload();
         setName('');
+        
       };
 
      return (
         <div className="flex-col text-center py-24">
-            <form onSubmit={handleSubmit}>
+            <form >
                 <div className="mx-auto max-w-md text-xl text-left xs:max-w-md sm:max-w-md md:max-w-md lg:max-w-md xl:max-w-md 2xl:max-w-md">
                   <div className="mb-4 text-lg">
                     <div className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg">
@@ -78,12 +84,11 @@ const RSOCreateView = (props: {user: any}) => {
                         className="block p-2.5 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
                         rounded-tl-none border-neutral-700 "
                     ></textarea>{' '}
-                  </div>
-                  <div className="mb-4 text-lg">
                     <div className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
                     border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg" >
                       Members:
                     </div>
+                    <div>
                     <textarea
                       maxLength={30}
                       value={member}
@@ -93,11 +98,9 @@ const RSOCreateView = (props: {user: any}) => {
                       className="block p-2.5 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
                       rounded-tl-none border-neutral-700 "
                     ></textarea>{' '}
+                    </div>
                     <div>
-                      <button onClick={() =>{
-                        setMembers([...members, member]);
-                        setMember('');
-                        }} 
+                      <button onClick={handleAddMems}
                       >
                        <div
                       className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition
@@ -123,7 +126,7 @@ const RSOCreateView = (props: {user: any}) => {
                     </div>
                 </div>
                 <div className="py-[32px]">
-                  <button>
+                  <button type = "submit" onClick={handleSubmit}>
                     <div
                       className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition
                       bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800"
