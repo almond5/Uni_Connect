@@ -176,7 +176,7 @@ const RSOCreateView = (props: {user: any, users: any}) => {
                       rounded-tl-none border-neutral-700 ">
                       {members.map((mem: any, index) => (
                        <div key={index}>
-                          {mem}
+                          {mem.email}
                         </div>
                       ))}
                       </div>
