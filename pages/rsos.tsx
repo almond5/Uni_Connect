@@ -16,7 +16,7 @@ const Roles = {
 export async function getServerSideProps(context: any) {
   const session = await getSession(context);
   const user = session?.user;
-  
+
   try {
     const rsos = await prisma.rSO.findMany({
       where: {},
@@ -40,6 +40,25 @@ export async function getServerSideProps(context: any) {
     };
   }
 }
+
+export async function findUserInDB(memEmail: string) {
+  try{
+    const getUser = await prisma.user.findUnique({
+      where: {
+        email: memEmail,
+      },
+    })
+    if(getUser === null){
+      return -1
+    }
+    else{
+      return getUser?.id
+    }
+    
+  } catch(error){
+    return -1
+  }
+ }
 
 const RSOs = ({ rsosFromDB, userFromDB } : { rsosFromDB: any, userFromDB: any}) => {
   const [rsos] = useState<Event[]>(rsosFromDB);
@@ -197,7 +216,7 @@ const RSOs = ({ rsosFromDB, userFromDB } : { rsosFromDB: any, userFromDB: any}) 
           <RSOSListView rsos={rsos} />
       </div>
       <div className={`${createRSOView ? '' : 'hidden'}`}>
-          <RSOCreateView user = {user}/>
+          <RSOCreateView user = {user} findUser = {findUserInDB}/>
       </div>
     </div>
   );

@@ -4,16 +4,18 @@ import { DatePicker, DateTimePicker, DesktopTimePicker, LocalizationProvider, Mo
 import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import prisma from '../../lib/prismadb';
+
 import { User } from '@prisma/client';
 
-const RSOCreateView = (props: {user: any}) => {
+const RSOCreateView = (props: {user: any, findUser: any}) => {
     const [name, setName] = useState('');
     const [members, setMembers] = useState<string[]>([]);
     const [admin, setAdmin] = useState<User>();
     const [member, setMember] = useState('');
-    const user = useState<User>(props.user);
+    const [memberErr, setMemberErr] = useState('');
+    const user = props.user[0];
+    const findUserInDB = props.findUser;
 
-   // console.log(user)
     const fontFamily = 'system-ui';
     const theme = createTheme({
         components: {
@@ -27,10 +29,20 @@ const RSOCreateView = (props: {user: any}) => {
         },
      });
 
-     const handleAddMems = (e: { preventDefault: () => void }) => {
-      setMembers([...members, member]);
-      setMember('');
-      console.log("correct")
+    
+
+     const handleAddMems = async (e: { preventDefault: () => void }) => {
+      e.preventDefault();
+      const res = findUserInDB(member)
+      //check if entered member in db
+      if(await res === -1){
+        //user not in db
+        setMemberErr("This email does not belong to a user!");
+      }
+      else{
+        setMembers([...members, member]);
+        setMember('');
+      }
      };
 
      const timeout = (delay: number) => {
@@ -52,12 +64,19 @@ const RSOCreateView = (props: {user: any}) => {
         console.log(data);
       };
 
+      // const createMembers = async () => {
+
+      // }
+
      const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
-        console.log('AGGHHHH')
        // setAdmin(user);
-        //const userId = user.id;
-        const userId = '';
+        // const userId = '';
+        // console.log(user)
+
+        const userId = user.id;
+        setAdmin(props.user)
+
         const rso = { name, members, userId, admin };
         await submitEvent(rso);
         await timeout(1000);
@@ -84,11 +103,12 @@ const RSOCreateView = (props: {user: any}) => {
                         className="block p-2.5 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
                         rounded-tl-none border-neutral-700 "
                     ></textarea>{' '}
+                    </div>
+                  <div className="mb-4 text-lg">
                     <div className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
                     border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg" >
-                      Members:
+                      Member Email:
                     </div>
-                    <div>
                     <textarea
                       maxLength={30}
                       value={member}
@@ -98,7 +118,7 @@ const RSOCreateView = (props: {user: any}) => {
                       className="block p-2.5 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
                       rounded-tl-none border-neutral-700 "
                     ></textarea>{' '}
-                    </div>
+                    {memberErr && <div className="error"> {memberErr}</div>}
                     <div>
                       <button onClick={handleAddMems}
                       >
