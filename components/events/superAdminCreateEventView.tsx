@@ -219,7 +219,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
               </select>
             </div>
           </div>
-          <div className="mb-4 text-lg">
+          <div className={`${type === 'PRIVATE' ? 'mb-4' : 'hidden'}`}>
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
                 border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
@@ -230,12 +230,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
               className="flex flex-col p-2 w-32 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
                 rounded-tl-none border-neutral-700"
             >
-              <select
-                name="type"
-                required
-                defaultValue="None"
-                onChange={selectUni}
-              >
+              <select name="type" required onChange={selectUni}>
                 {props.unis?.map((university: any) => (
                   <option key={university.id} value={university.id}>
                     {university.name}
@@ -324,14 +319,42 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
         </div>
 
         <div className="py-[32px]">
-          <button>
+          <div
+            className={`${
+              (type === 'PRIVATE' && props.unis.length === 0) ||
+              (type === 'RSO' && props.rsos.length === 0)
+                ? ''
+                : 'hidden'
+            }`}
+          >
             <div
               className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition
              bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800"
             >
               Submit
             </div>
-          </button>
+          </div>
+
+          <div
+            className={`${
+              (type !== 'PRIVATE' &&
+                props.unis.length !== 0 &&
+                type !== 'RSO' &&
+                props.rsos.length !== 0) ||
+              type === 'PUBLIC'
+                ? ''
+                : 'hidden'
+            }`}
+          >
+            <button>
+              <div
+                className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition
+             bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800"
+              >
+                Submit
+              </div>
+            </button>
+          </div>
         </div>
       </form>
     </div>
