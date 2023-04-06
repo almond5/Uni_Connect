@@ -179,7 +179,7 @@ model Member {
   id     String @id @default(cuid())
   rsoId  String
   userId String
-  rso    RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
+  rso  RSO  @relation(fields: [rsoId], references: [id], onDelete: Cascade)
 
   @@index([id, rsoId])
 }

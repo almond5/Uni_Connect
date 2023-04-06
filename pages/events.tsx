@@ -18,14 +18,30 @@ const Roles = {
 export async function getServerSideProps() {
   try {
     // personalize props based on roles
-    
-    const events = await prisma.event.findMany({
-      where: {},
-      include: {
-        eventlocation: true,
-        feedback: { include: { comments: true } },
-      },
+    const { status: sesh, data: seshdata } = useSession();
+
+    const user = await prisma.user.findFirst({
+      where: { email: seshdata?.user?.email! },
     });
+
+    if (user?.role === 'SUPERADMIN') {
+      const events = await prisma.event.findMany({
+        where: {},
+        include: {
+          eventlocation: true,
+          feedback: { include: { comments: true } },
+        },
+      });
+    }
+
+    if (user?.role === 'STUDENT' || user?.role === 'ADMIN') {
+      const newUser = await prisma.user.findFirst({
+        where: { email: seshdata?.user?.email! },
+        include: {rso: true}
+      });
+
+      // fetch all rsos in user.rsos
+    }
 
     const unis = await prisma.university.findMany({
       where: {},
@@ -38,16 +54,6 @@ export async function getServerSideProps() {
     const rsos = await prisma.rSO.findMany({
       where: {},
     });
-
-    if (window?.location.search.includes(Roles.STUDENT)){
-      
-    }
-    else if (window?.location.search.includes(Roles.SUPERADMIN)){
-
-    }
-    else if (window?.location.search.includes(Roles.ADMIN)){
-
-    }
 
     return {
       props: {
@@ -192,7 +198,7 @@ const Events = ({
           </div>
         </div>
         <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} role={'ADMIN'}/>
+          <EventsListView events={events} role={'ADMIN'} />
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
           <AdminEventsCreateView unis={unis} rsos={rsos} />
@@ -242,7 +248,7 @@ const Events = ({
           </div>
         </div>
         <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} role={'STUDENT'}/>
+          <EventsListView events={events} role={'STUDENT'} />
         </div>
       </div>
     );
@@ -328,7 +334,7 @@ const Events = ({
           </div>
         </div>
         <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} role={'SUPERADMIN'}/>
+          <EventsListView events={events} role={'SUPERADMIN'} />
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
           <EventsCreateView unis={unis} rsos={rsos} />
