@@ -37,6 +37,16 @@ export async function getServerSideProps() {
       where: {},
     });
 
+    if (window?.location.search.includes(Roles.STUDENT)){
+      
+    }
+    else if (window?.location.search.includes(Roles.SUPERADMIN)){
+
+    }
+    else if (window?.location.search.includes(Roles.ADMIN)){
+
+    }
+
     return {
       props: {
         eventsFromDB: events,
