@@ -5,7 +5,7 @@ import Link from 'next/link';
 import prisma from '../lib/prismadb';
 import EventsListView from '@/components/events/eventsListView';
 import EventsCreateView from '@/components/events/superAdminCreateEventView';
-import { EventApproval, RSO, University } from '@prisma/client';
+import { EventApproval, RSO, University, User } from '@prisma/client';
 import AdminEventsCreateView from '@/components/events/adminCreateEventView';
 import ApprovalsEventsListView from '@/components/events/approvalsListView';
 
@@ -17,31 +17,15 @@ const Roles = {
 
 export async function getServerSideProps() {
   try {
-    // personalize props based on roles
     const { status: sesh, data: seshdata } = useSession();
 
-    const user = await prisma.user.findFirst({
-      where: { email: seshdata?.user?.email! },
+    const events = await prisma.event.findMany({
+      where: {},
     });
 
-    if (user?.role === 'SUPERADMIN') {
-      const events = await prisma.event.findMany({
-        where: {},
-        include: {
-          eventlocation: true,
-          feedback: { include: { comments: true } },
-        },
-      });
-    }
-
-    if (user?.role === 'STUDENT' || user?.role === 'ADMIN') {
-      const newUser = await prisma.user.findFirst({
-        where: { email: seshdata?.user?.email! },
-        include: {rso: true}
-      });
-
-      // fetch all rsos in user.rsos
-    }
+    const rsos = await prisma.rSO.findMany({
+      where: {},
+    });
 
     const unis = await prisma.university.findMany({
       where: {},
@@ -51,9 +35,12 @@ export async function getServerSideProps() {
       where: {},
     });
 
-    const rsos = await prisma.rSO.findMany({
-      where: {},
-    });
+    const user = await prisma.user.findFirst({
+      where: {
+        email: seshdata?.user?.email!
+      },
+      // include: {rso: true}
+    })
 
     return {
       props: {
@@ -61,6 +48,7 @@ export async function getServerSideProps() {
         unisFromDB: unis,
         approvalsFromDB: approvals,
         rsosFromDB: rsos,
+        user: user
       },
     };
   } catch (error) {
@@ -68,6 +56,8 @@ export async function getServerSideProps() {
     const unisFromDB = null;
     const approvals = null;
     const rsosFromDB = null;
+    const user = null
+
 
     return {
       props: {
@@ -75,6 +65,7 @@ export async function getServerSideProps() {
         unisFromDB: unisFromDB,
         approvalsFromDB: approvals,
         rsosFromDB: rsosFromDB,
+        user: user
       },
     };
   }
@@ -85,16 +76,19 @@ const Events = ({
   unisFromDB,
   approvalsFromDB,
   rsosFromDB,
+  userFromDb,
 }: {
   eventsFromDB: any;
   unisFromDB: any;
   approvalsFromDB: any;
   rsosFromDB: any;
+  userFromDb: any
 }) => {
   const [events] = useState<Event[]>(eventsFromDB);
   const [unis] = useState<University[]>(unisFromDB);
   const [eventApprovals] = useState<EventApproval[]>(approvalsFromDB);
   const [rsos] = useState<RSO[]>(rsosFromDB);
+  const [user] = useState<User>(userFromDb)
 
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
@@ -198,7 +192,7 @@ const Events = ({
           </div>
         </div>
         <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} role={'ADMIN'} />
+          <EventsListView events={events} role={'ADMIN'} user={user}/>
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
           <AdminEventsCreateView unis={unis} rsos={rsos} />
@@ -248,7 +242,7 @@ const Events = ({
           </div>
         </div>
         <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} role={'STUDENT'} />
+          <EventsListView events={events} role={'STUDENT'} user={user}/>
         </div>
       </div>
     );
@@ -334,7 +328,7 @@ const Events = ({
           </div>
         </div>
         <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} role={'SUPERADMIN'} />
+          <EventsListView events={events} role={'SUPERADMIN'} user={user}/>
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
           <EventsCreateView unis={unis} rsos={rsos} />

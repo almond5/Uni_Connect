@@ -23,41 +23,26 @@ export async function getServerSideProps(context: any) {
     const rsos = await prisma.rSO.findMany({
       where: {},
     });
-
-    const userList = await prisma.user.findMany({
-      where: {}
-    })
     
     return {
       props: {
         rsosFromDB: rsos,
-        userFromDB: user,
-        usersFromDB: userList
       },
     };
   } catch(error) {
     const rsos = null;
-    const userList = await prisma.user.findMany({
-      where: {}
-    })
-
-    console.log(userList)
 
     return {
       props: {
         rsosFromDB: rsos,
-        userFromDB: user,
-        usersFromDB: userList
       },
     };
   }
 }
 
-const RSOs = ({ rsosFromDB, userFromDB, usersFromDB } : { rsosFromDB: any, userFromDB: any, usersFromDB: any}) => {
+const RSOs = ({ rsosFromDB } : { rsosFromDB: any}) => {
   const [rsos] = useState<Event[]>(rsosFromDB);
   const { status: sesh } = useSession();
-  const user = useState(userFromDB);
-  const [users] = useState<User[]>(usersFromDB);
   
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
@@ -210,7 +195,7 @@ const RSOs = ({ rsosFromDB, userFromDB, usersFromDB } : { rsosFromDB: any, userF
           <RSOSListView rsos={rsos} />
       </div>
       <div className={`${createRSOView ? '' : 'hidden'}`}>
-          <RSOCreateView user = {user} users ={users}/>
+          <RSOCreateView/>
       </div>
     </div>
   );

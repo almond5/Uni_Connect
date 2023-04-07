@@ -19,10 +19,10 @@ model User {
   universityId  String?
   accounts      Account[]
   sessions      Session[]
-  rso           RSO[]
   uni           University? @relation(fields: [universityId], references: [id])
   Comment       Comment[]
   Rating        Rating[]
+  Member        Member[]
 }
 
 model Account {
@@ -72,10 +72,14 @@ model Event {
   phone_no        Int?
   email           String?        @db.Text
   type            EventType
+  university      University?    @relation(fields: [universityId], references: [id])
   feedbackId      String?        @unique
   feedback        Feedback?      @relation(fields: [feedbackId], references: [id])
   eventlocation   EventLocation? @relation(fields: [eventlocationId], references: [id])
   eventlocationId String?        @unique
+  universityId    String?
+  RSO             RSO?           @relation(fields: [rSOId], references: [id])
+  rSOId           String?
 
   @@index([id, feedbackId])
 }
@@ -159,6 +163,7 @@ model University {
   phone_no     Int?
   location     Location? @relation(fields: [locationId], references: [id])
   User         User[]
+  Event        Event[]
   locationId   String?   @unique
 
   @@index([uniId])
@@ -167,19 +172,19 @@ model University {
 model RSO {
   id      String   @id @default(cuid())
   name    String
-  userId  String
-  rsoId   String
+  adminID String
   members Member[]
-  admin   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events  Event[]
 
-  @@index([id, rsoId])
+  @@index([id])
 }
 
 model Member {
   id     String @id @default(cuid())
   rsoId  String
   userId String
-  rso  RSO  @relation(fields: [rsoId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
+  rso    RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
 
   @@index([id, rsoId])
 }
