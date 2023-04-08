@@ -22,7 +22,11 @@ export async function getServerSideProps(context:any) {
   try {
     const events = await prisma.event.findMany({
       where: {},
-      include: { eventlocation: true }
+      include: { eventlocation: true ,
+                 feedback: {
+                    include: {comments: true, ratings: true}
+                 }
+                }
     });
 
     const rsos = await prisma.rSO.findMany({

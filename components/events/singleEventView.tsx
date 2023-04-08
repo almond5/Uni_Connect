@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import CommentModal from './commentModalView';
 import DeleteModal from './deleteModal';
+import RatingModal from './ratingModalView';
 
 const SingleEventView = (props: { event: any; role: any; user: any }) => {
   const [deleteModalView, setDeleteModalView] = useState(false);
@@ -23,7 +24,7 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
       }
     }
   }
-
+  console.log(event)
   return (
     <div className="py-[0.8rem]">
       <div className={`${commentModalView ? '' : 'hidden'}`}>
@@ -33,7 +34,14 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
           role={role}
         />
       </div>
-      <div className={`${!commentModalView ? '' : 'hidden'}`}>
+      <div className={`${ratingModalView ? '' : 'hidden'}`}>
+        <RatingModal
+          setRatingModalView={setRatingModalView}
+          event={event}
+          role={role}
+        />
+      </div>
+      <div className={`${(!commentModalView && !ratingModalView) ? '' : 'hidden'}`}>
         <div
           className={`${
             deleteModalView && role === 'SUPERADMIN' ? '' : 'hidden'

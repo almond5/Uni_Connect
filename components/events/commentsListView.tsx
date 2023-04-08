@@ -11,7 +11,7 @@ const CommentsListView = (props: { feedback: any; role: any }) => {
   return (
     <div>
       {comments.map((comment: any) => (
-        <div>
+        <div key={comment.id}>
           <EditDeleteCommentComponent
             comment={comment} role={props.role}
           ></EditDeleteCommentComponent>
