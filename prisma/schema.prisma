@@ -69,7 +69,7 @@ model Event {
   description     String?        @db.Text
   time            String?        @db.Text
   date            String?        @db.Text
-  phone_no        Int?
+  phone_no        String?        @db.Text
   email           String?        @db.Text
   type            EventType
   university      University?    @relation(fields: [universityId], references: [id])
@@ -160,7 +160,7 @@ model University {
   name         String
   description  String?
   num_students Float
-  phone_no     Int?
+  phone_no     String?        @db.Text
   location     Location? @relation(fields: [locationId], references: [id])
   User         User[]
   Event        Event[]

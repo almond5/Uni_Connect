@@ -5,6 +5,7 @@ import DeleteModal from './deleteModal';
 const SingleEventView = (props: { event: any; role: any; user: any }) => {
   const [deleteModalView, setDeleteModalView] = useState(false);
   const [commentModalView, setCommentModalView] = useState(false);
+  const [ratingModalView, setRatingModalView] = useState(false);
   const event = props.event;
   const role = props.role;
   const user = props.user;
@@ -71,6 +72,13 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
               onClick={() => setCommentModalView(true)}
             >
               View Comments
+            </button>
+            <button
+              className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-0.5 font-bold transition
+             bg-neutral-50 text-md hover:bg-neutral-400 hover:text-gray-800"
+              onClick={() => setRatingModalView(true)}
+            >
+              View Ratings
             </button>
           </div>
         </div>

@@ -15,12 +15,14 @@ const Roles = {
   SUPERADMIN: 'SUPERADMIN',
 };
 
-export async function getServerSideProps() {
-  try {
-    const { status: sesh, data: seshdata } = useSession();
+export async function getServerSideProps(context:any) {
+  const session = await getSession(context);
+  const currUser = session?.user;
 
+  try {
     const events = await prisma.event.findMany({
       where: {},
+      include: { eventlocation: true }
     });
 
     const rsos = await prisma.rSO.findMany({
@@ -37,7 +39,7 @@ export async function getServerSideProps() {
 
     const user = await prisma.user.findFirst({
       where: {
-        email: seshdata?.user?.email!
+        email: currUser?.email!
       },
       // include: {rso: true}
     })
