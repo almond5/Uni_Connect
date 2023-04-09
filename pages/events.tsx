@@ -24,7 +24,7 @@ export async function getServerSideProps(context: any) {
       where: {
         email: currUser?.email!,
       },
-      include: { Member: true },
+      include: { Member: true, uni: true },
     });
 
     let events = null;
@@ -67,6 +67,7 @@ export async function getServerSideProps(context: any) {
       });
 
       privateEvents = privateEvents.concat(publicEvents);
+      events = privateEvents;
 
       if (
         !(
@@ -85,12 +86,15 @@ export async function getServerSideProps(context: any) {
 
           privateEvents = privateEvents.concat(rsoEvents);
         }
+
         events = privateEvents;
       }
 
+      console.log(events);
+
       rsos = await prisma.rSO.findMany({
         where: {
-          uniId: user!.universityId!,
+          uniId: user!.uni?.id,
         },
       });
     }

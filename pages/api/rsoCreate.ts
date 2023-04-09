@@ -18,8 +18,7 @@ export default async function handler(
         include: { uni: true }
       });
 
-      if (!(adminUser === null || adminUser === undefined) &&
-        adminUser?.role !== 'SUPERADMIN' && adminUser?.role !== 'ADMIN') {
+      if (!(adminUser === null || adminUser === undefined) && adminUser.role === 'STUDENT') {
         const updateAdminUserRole = await prisma.user.update({
           where: { id: adminUser?.id },
           data: {
@@ -44,6 +43,7 @@ export default async function handler(
             where: {
               email: email,
             },
+            include: { uni: true }
           });
 
           userArray.push(user);
@@ -56,7 +56,7 @@ export default async function handler(
         }
 
         for (var user of userArray) {
-          if (user?.universityId !== adminUser?.universityId) {
+          if (user!.uni!.id !== adminUser?.universityId) {
             const delRso = prisma.rSO.delete({
               where: { id: rso.id },
             });

@@ -19,18 +19,6 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
     else if (event.type === 'PRIVATE') setEventType('Private Event');
   });
 
-  if (role !== 'SUPERADMIN') {
-    if (event.type === 'PRIVATE' && event.university !== user.university) {
-      return <div></div>;
-    }
-
-    if (event.type === 'RSO_EVENT') {
-      if (!user.rso.contains(event.rso)) {
-        return <div></div>;
-      }
-    }
-  }
-
   return (
     <div className="py-[0.8rem]">
       <div className={`${commentModalView ? '' : 'hidden'}`}>
