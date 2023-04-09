@@ -67,23 +67,6 @@ const RSOCreateView = () => {
                         rounded-tl-none border-neutral-700 "
             ></textarea>{' '}
           </div>
-          {/* <div className="mb-4 text-lg">
-            <div
-              className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
-                    border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
-            >
-              Admin's Email:
-            </div>
-            <textarea
-              maxLength={30}
-              onChange={(e) => setAdmin(e.target.value)}
-              rows={1}
-              cols={1}
-              required
-              className="block p-2.5 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
-                      rounded-tl-none border-neutral-700 mb-4"
-            ></textarea>{' '}
-          </div> */}
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
@@ -154,7 +137,7 @@ const RSOCreateView = () => {
           </div>
         </div>
         <div className="py-[32px]">
-          <div className={`${members.length >= 5 ? '' : 'hidden'}`}>
+          <div className={`${members.length >= 1 ? '' : 'hidden'}`}>
             <button type="submit" onClick={handleSubmit}>
               <div
                 className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition
@@ -165,7 +148,7 @@ const RSOCreateView = () => {
             </button>
           </div>
           <div className={`${members.length < 5 ? '' : 'hidden'}`}>
-            <button type="submit" disabled onClick={handleSubmit}>
+            <button type="submit" disabled>
               <div
                 className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition
                       bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800"

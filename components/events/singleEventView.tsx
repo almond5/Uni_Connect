@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CommentModal from './commentModalView';
 import DeleteModal from './deleteModal';
 import RatingModal from './ratingModalView';
@@ -7,11 +7,17 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
   const [deleteModalView, setDeleteModalView] = useState(false);
   const [commentModalView, setCommentModalView] = useState(false);
   const [ratingModalView, setRatingModalView] = useState(false);
+  const [eventType, setEventType] = useState('');
   const event = props.event;
   const role = props.role;
   const user = props.user;
 
   // WIP
+  useEffect(() => {
+    if (event.type === 'RSO_EVENT') setEventType('RSO Event');
+    else if (event.type === 'PUBLIC') setEventType('Public Event');
+    else if (event.type === 'PRIVATE') setEventType('Private Event');
+  });
 
   if (role !== 'SUPERADMIN') {
     if (event.type === 'PRIVATE' && event.university !== user.university) {
@@ -24,7 +30,7 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
       }
     }
   }
-  console.log(event)
+
   return (
     <div className="py-[0.8rem]">
       <div className={`${commentModalView ? '' : 'hidden'}`}>
@@ -41,7 +47,9 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
           role={role}
         />
       </div>
-      <div className={`${(!commentModalView && !ratingModalView) ? '' : 'hidden'}`}>
+      <div
+        className={`${!commentModalView && !ratingModalView ? '' : 'hidden'}`}
+      >
         <div
           className={`${
             deleteModalView && role === 'SUPERADMIN' ? '' : 'hidden'
@@ -50,10 +58,10 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
           <DeleteModal setDeleteModalView={setDeleteModalView} event={event} />
         </div>
         <div
-          className="h-[22rem] outline bg-stone-50
+          className="h-[26.5rem] outline bg-stone-50
             p-7 rounded-lg"
         >
-          <div className="h-0 min-h-[78%]">
+          <div className="h-0 min-h-[72%]">
             <div className="mb-2 mt-2 text-lg font-bold">{event.name}</div>
             <div className="flex flex-col text-left">
               <div className="flex">
@@ -65,7 +73,11 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
               </div>
               <div className="flex">
                 <div className="font-bold">Location:&nbsp;</div>
-                <div> {event.eventlocation.name}</div>
+                <div> {event.eventlocation?.name}</div>
+              </div>
+              <div className="flex">
+                <div className="font-bold">Type:&nbsp;</div>
+                <div> {eventType} </div>
               </div>
             </div>
             <p className="mb-4 text-md text-left break-all">
@@ -73,20 +85,20 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
               {event.description}
             </p>
           </div>
-          <div className="mt-8">
+          <div className="flex flex-col mt-7">
             <button
               className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-0.5 font-bold transition
-             bg-neutral-50 text-md hover:bg-neutral-400 hover:text-gray-800"
+             bg-neutral-50 text-md hover:bg-neutral-400 hover:text-gray-800 mb-2"
               onClick={() => setCommentModalView(true)}
             >
-              View Comments
+              Comments
             </button>
             <button
               className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-0.5 font-bold transition
              bg-neutral-50 text-md hover:bg-neutral-400 hover:text-gray-800"
               onClick={() => setRatingModalView(true)}
             >
-              View Ratings
+              Ratings
             </button>
           </div>
         </div>

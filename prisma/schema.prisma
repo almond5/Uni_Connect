@@ -135,10 +135,9 @@ model Location {
   name       String       @db.Text
   latitude   Float
   longitude  Float
-  uniId      String       @unique
   University University[]
 
-  @@index([uniId])
+  @@index([id])
 }
 
 model EventLocation {
@@ -156,27 +155,29 @@ model EventLocation {
 
 model University {
   id           String    @id @default(cuid())
-  uniId        String
   name         String
   description  String?
   num_students Float
-  phone_no     String?        @db.Text
+  phone_no     String?   @db.Text
   location     Location? @relation(fields: [locationId], references: [id])
   User         User[]
   Event        Event[]
   locationId   String?   @unique
+  RSO          RSO[]
 
-  @@index([uniId])
+  @@index([id])
 }
 
 model RSO {
-  id      String   @id @default(cuid())
+  id      String      @id @default(cuid())
   name    String
   adminID String
+  uniId   String
+  uni     University @relation(fields: [uniId], references: [id])
   members Member[]
   events  Event[]
 
-  @@index([id])
+  @@index([id, uniId])
 }
 
 model Member {

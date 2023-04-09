@@ -19,7 +19,7 @@ const UniCreateView = () => {
     lat: number | undefined | null;
     lng: number | undefined | null;
     locationName: string | undefined | null;
-    phoneNumber: number | undefined | null;
+    num: string | undefined | null;
   }) => {
     const response = await fetch('/api/universityCreate', {
       method: 'POST',
@@ -37,6 +37,8 @@ const UniCreateView = () => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
+    const num = phoneNumber.toLocaleString();
+
     const university = {
       title,
       body,
@@ -44,7 +46,7 @@ const UniCreateView = () => {
       lat,
       lng,
       locationName,
-      phoneNumber
+      num
     };
     await submitUni(university);
     await timeout(1000);

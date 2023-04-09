@@ -15,11 +15,11 @@ export default async function handler(
         where: {
           email: admin,
         },
+        include: { uni: true }
       });
 
-      if (adminUser === null || adminUser === undefined) return;
-
-      if (adminUser?.role !== 'SUPERADMIN' && adminUser?.role !== 'ADMIN') {
+      if (!(adminUser === null || adminUser === undefined) &&
+        adminUser?.role !== 'SUPERADMIN' && adminUser?.role !== 'ADMIN') {
         const updateAdminUserRole = await prisma.user.update({
           where: { id: adminUser?.id },
           data: {
@@ -27,45 +27,50 @@ export default async function handler(
           },
         });
       }
-
-      const rso = await prisma.rSO.create({
-        data: {
-          name: name,
-          adminID: adminUser!.id,
-          members: {},
-        },
-      });
-
-      for (var email of members) {
-        let user = await prisma.user.findFirst({
-          where: {
-            email: email,
+      if (!(adminUser === null || adminUser === undefined)) {
+        const rso = await prisma.rSO.create({
+          data: {
+            name: name,
+            adminID: adminUser!.id,
+            members: {},
+            uni: {
+              connect: { id: adminUser!.uni!.id },
+            }
           },
         });
 
-        userArray.push(user);
-      }
-      if (userArray.length !== members.length) {
-        const delRso = prisma.rSO.delete({
-          where: { id: rso.id },
-        });
-        return;
-      }
+        for (var email of members) {
+          let user = await prisma.user.findFirst({
+            where: {
+              email: email,
+            },
+          });
 
-      for (var user of userArray) {
-        if (user?.universityId !== adminUser?.universityId) {
+          userArray.push(user);
+        }
+
+        if (userArray.length !== members.length) {
           const delRso = prisma.rSO.delete({
             where: { id: rso.id },
           });
-          return;
         }
-        let newMember = await prisma.member.create({
-          data: {
-            rsoId: rso.id,
-            userId: user?.id!,
-          },
-        });
+
+        for (var user of userArray) {
+          if (user?.universityId !== adminUser?.universityId) {
+            const delRso = prisma.rSO.delete({
+              where: { id: rso.id },
+            });
+          }
+
+          let newMember = await prisma.member.create({
+            data: {
+              rsoId: rso.id,
+              userId: user?.id!,
+            },
+          });
+        }
       }
+
     } catch (error) {
       console.log(error);
     }

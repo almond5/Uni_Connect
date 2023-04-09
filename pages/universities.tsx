@@ -104,7 +104,7 @@ const Universities = ({ universitiesFromDB }: { universitiesFromDB: any }) => {
             </div>
           </div>
         </div>
-        <div className="py-10">
+        <div>
           <UniListView universities={universities} />
         </div>
       </div>
@@ -169,7 +169,7 @@ const Universities = ({ universitiesFromDB }: { universitiesFromDB: any }) => {
             </div>
           </div>
         </div>
-        <div className={`${uniListView ? 'py-10' : 'hidden'}`}>
+        <div className={`${uniListView ? '' : 'hidden'}`}>
           <UniListView universities={universities} />
         </div>
         <div className={`${createUniView ? '' : 'hidden'}`}>

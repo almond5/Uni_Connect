@@ -4,20 +4,14 @@ const RSOView = (props: { rso: any }) => {
   const rso = props.rso;
 
   return (
-    <div>
-      <div className="h-[17rem] outline bg-stone-50p-7 rounded-lg">
-        <div className="flex justify-between">
-          <div>
-            <button
-              className="p-2 rounded-full py-0.5 font-bold transition 
-                    hover:bg-neutral-400 hover:text-gray-800 text-Lg"
-              onClick={() => console.log('yes')}
-            >
-              Request to Join
-            </button>
-          </div>
+    <div className="py-[0.8rem]">
+      <div
+        className="h-[26.5rem] outline bg-stone-50
+            p-7 rounded-lg"
+      >
+        <div className="h-0 min-h-[72%]">
+          <div className="mb-2 mt-2 text-lg font-bold">{rso.name}</div>
         </div>
-        <div className="mb-1 text-lg font-bold">{rso.title}</div>
       </div>
     </div>
   );

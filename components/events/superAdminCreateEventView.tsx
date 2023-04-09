@@ -188,11 +188,11 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
               >
                 <option value="PUBLIC">Public</option>
                 <option value="PRIVATE">Private</option>
-                <option value="RSO">RSO</option>
+                <option value="RSO_EVENT">RSO</option>
               </select>
             </div>
           </div>
-          <div className={`${type === 'RSO' ? 'mb-4' : 'hidden'}`}>
+          <div className={`${type === 'RSO_EVENT' ? 'mb-4' : 'hidden'}`}>
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] 
                 border-t-[0.175rem] border-r-[0.175rem] 
@@ -211,9 +211,9 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
                 defaultValue="N/A"
                 onChange={selectRSO}
               >
-                {props.rsos?.map((rso: any) => (
-                  <option key={rso.id} value={rso.id}>
-                    {rso.name}
+                {props.rsos?.map((RSO_EVENT: any) => (
+                  <option key={RSO_EVENT.id} value={RSO_EVENT.id}>
+                    {RSO_EVENT.name}
                   </option>
                 ))}
               </select>
@@ -321,8 +321,14 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
         <div className="py-[32px]">
           <div
             className={`${
-              (type === 'PRIVATE' && (props.unis === null || props.unis === undefined || props.unis.length === 0)) ||
-              (type === 'RSO' && (props.rsos === null || props.rsos === undefined || props.rsos.length === 0))
+              (type === 'PRIVATE' &&
+                (props.unis === null ||
+                  props.unis === undefined ||
+                  props.unis.length === 0)) ||
+              (type === 'RSO_EVENT' &&
+                (props.rsos === null ||
+                  props.rsos === undefined ||
+                  props.rsos.length === 0))
                 ? ''
                 : 'hidden'
             }`}
@@ -337,11 +343,14 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
 
           <div
             className={`${
-              (type !== 'PRIVATE' &&
-                props.unis?.length !== 0 &&
-                type !== 'RSO' &&
-                props.rsos?.length !== 0) ||
-              type === 'PUBLIC'
+              !(type === 'PRIVATE' &&
+                (props.unis === null ||
+                  props.unis === undefined ||
+                  props.unis.length === 0)) &&
+              !(type === 'RSO_EVENT' &&
+                (props.rsos === null ||
+                  props.rsos === undefined ||
+                  props.rsos.length === 0))
                 ? ''
                 : 'hidden'
             }`}

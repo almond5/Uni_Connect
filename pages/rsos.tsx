@@ -191,7 +191,7 @@ const RSOs = ({ rsosFromDB } : { rsosFromDB: any}) => {
           </div>
       </div>
       
-      <div className={`${rsoListView ? 'py-10' : 'hidden'}`}>
+      <div className={`${rsoListView ? '' : 'hidden'}`}>
           <RSOSListView rsos={rsos} />
       </div>
       <div className={`${createRSOView ? '' : 'hidden'}`}>

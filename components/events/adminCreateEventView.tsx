@@ -94,6 +94,8 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
     e.preventDefault();
     if (date === null) setDate(new Date());
 
+    if (type === 'RSO_EVENT') setType('RSO_EVENT');
+
     if (type === 'PUBLIC') {
       const event = {
         title,
@@ -236,12 +238,12 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
               >
                 <option value="PUBLIC">Public</option>
                 <option value="PRIVATE">Private</option>
-                <option value="RSO">RSO</option>
+                <option value="RSO_EVENT">RSO_EVENT</option>
               </select>
             </div>
           </div>
 
-          <div className={`${type === 'RSO' ? 'mb-4' : 'hidden'}`}>
+          <div className={`${type === 'RSO_EVENT' ? 'mb-4' : 'hidden'}`}>
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] 
                 border-t-[0.175rem] border-r-[0.175rem] 
@@ -260,9 +262,9 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
                 defaultValue="N/A"
                 onChange={selectRSO}
               >
-                {props.rsos.map((rso: any) => (
-                  <option key={rso.id} value={rso.id}>
-                    {rso.name}
+                {props.rsos.map((RSO_EVENT: any) => (
+                  <option key={RSO_EVENT.id} value={RSO_EVENT.id}>
+                    {RSO_EVENT.name}
                   </option>
                 ))}
               </select>
@@ -270,7 +272,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
           </div>
           <div
             className={`${
-              type === 'PRIVATE' || type === 'RSO' ? 'mb-4' : 'hidden'
+              type === 'PRIVATE' || type === 'RSO_EVENT' ? 'mb-4' : 'hidden'
             }`}
           >
             <div className="mb-4 text-lg">

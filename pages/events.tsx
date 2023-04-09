@@ -15,23 +15,85 @@ const Roles = {
   SUPERADMIN: 'SUPERADMIN',
 };
 
-export async function getServerSideProps(context:any) {
+export async function getServerSideProps(context: any) {
   const session = await getSession(context);
   const currUser = session?.user;
 
   try {
-    const events = await prisma.event.findMany({
-      where: {},
-      include: { eventlocation: true ,
-                 feedback: {
-                    include: {comments: true, ratings: true}
-                 }
-                }
+    const user = await prisma.user.findFirst({
+      where: {
+        email: currUser?.email!,
+      },
+      include: { Member: true },
     });
 
-    const rsos = await prisma.rSO.findMany({
-      where: {},
-    });
+    let events = null;
+    let rsos = null;
+
+    if (user?.role === Roles.SUPERADMIN) {
+      events = await prisma.event.findMany({
+        where: {},
+        include: {
+          eventlocation: true,
+          feedback: {
+            include: { comments: true, ratings: true },
+          },
+        },
+      });
+
+      rsos = await prisma.rSO.findMany({
+        where: {},
+      });
+    }
+
+    if (user?.role === Roles.ADMIN || user?.role === Roles.STUDENT) {
+      let publicEvents = await prisma.event.findMany({
+        where: {
+          type: 'PUBLIC',
+        },
+        include: {
+          eventlocation: true,
+          feedback: {
+            include: { comments: true, ratings: true },
+          },
+        },
+      });
+
+      let privateEvents = await prisma.event.findMany({
+        where: {
+          type: 'PRIVATE',
+          universityId: user.universityId,
+        },
+      });
+
+      privateEvents = privateEvents.concat(publicEvents);
+
+      if (
+        !(
+          user.Member === null ||
+          user.Member === undefined ||
+          user.Member.length === 0
+        )
+      ) {
+        for (var member of user?.Member!) {
+          let rsoEvents = await prisma.event.findMany({
+            where: {
+              type: 'RSO_EVENT',
+              rSOId: member.rsoId,
+            },
+          });
+
+          privateEvents = privateEvents.concat(rsoEvents);
+        }
+        events = privateEvents;
+      }
+
+      rsos = await prisma.rSO.findMany({
+        where: {
+          uniId: user!.universityId!,
+        },
+      });
+    }
 
     const unis = await prisma.university.findMany({
       where: {},
@@ -41,20 +103,13 @@ export async function getServerSideProps(context:any) {
       where: {},
     });
 
-    const user = await prisma.user.findFirst({
-      where: {
-        email: currUser?.email!
-      },
-      // include: {rso: true}
-    })
-
     return {
       props: {
         eventsFromDB: events,
         unisFromDB: unis,
         approvalsFromDB: approvals,
         rsosFromDB: rsos,
-        user: user
+        user: user,
       },
     };
   } catch (error) {
@@ -62,8 +117,9 @@ export async function getServerSideProps(context:any) {
     const unisFromDB = null;
     const approvals = null;
     const rsosFromDB = null;
-    const user = null
+    const user = null;
 
+    console.log(error);
 
     return {
       props: {
@@ -71,7 +127,7 @@ export async function getServerSideProps(context:any) {
         unisFromDB: unisFromDB,
         approvalsFromDB: approvals,
         rsosFromDB: rsosFromDB,
-        user: user
+        user: user,
       },
     };
   }
@@ -88,13 +144,13 @@ const Events = ({
   unisFromDB: any;
   approvalsFromDB: any;
   rsosFromDB: any;
-  userFromDb: any
+  userFromDb: any;
 }) => {
   const [events] = useState<Event[]>(eventsFromDB);
   const [unis] = useState<University[]>(unisFromDB);
   const [eventApprovals] = useState<EventApproval[]>(approvalsFromDB);
   const [rsos] = useState<RSO[]>(rsosFromDB);
-  const [user] = useState<User>(userFromDb)
+  const [user] = useState<User>(userFromDb);
 
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
@@ -197,8 +253,8 @@ const Events = ({
             </div>
           </div>
         </div>
-        <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} role={'ADMIN'} user={user}/>
+        <div className={`${eventListView ? '' : 'hidden'}`}>
+          <EventsListView events={events} role={'ADMIN'} user={user} />
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
           <AdminEventsCreateView unis={unis} rsos={rsos} />
@@ -247,8 +303,8 @@ const Events = ({
             </div>
           </div>
         </div>
-        <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} role={'STUDENT'} user={user}/>
+        <div className={`${eventListView ? '' : 'hidden'}`}>
+          <EventsListView events={events} role={'STUDENT'} user={user} />
         </div>
       </div>
     );
@@ -333,13 +389,13 @@ const Events = ({
             </div>
           </div>
         </div>
-        <div className={`${eventListView ? 'py-10' : 'hidden'}`}>
-          <EventsListView events={events} role={'SUPERADMIN'} user={user}/>
+        <div className={`${eventListView ? '' : 'hidden'}`}>
+          <EventsListView events={events} role={'SUPERADMIN'} user={user} />
         </div>
         <div className={`${createEventsView ? '' : 'hidden'}`}>
           <EventsCreateView unis={unis} rsos={rsos} />
         </div>
-        <div className={`${approvalEventView ? 'py-10' : 'hidden'}`}>
+        <div className={`${approvalEventView ? '' : 'hidden'}`}>
           <ApprovalsEventsListView approvals={eventApprovals} />
         </div>
       </div>

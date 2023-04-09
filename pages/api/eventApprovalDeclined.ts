@@ -30,7 +30,6 @@ export default async function handler(
               name: locationName,
               latitude: lat,
               longitude: lng,
-              eventId: eventID
             }
           }
         }
