@@ -97,13 +97,13 @@ export async function getServerSideProps(context: any) {
 
       console.log(events);
 
-      rsos = await prisma.rSO.findFirst({
+      rsos = await prisma.rSO.findMany({
         where: {
           uniId: user!.uni?.id,
         },
       });
 
-      unis = await prisma.university.findFirst({
+      unis = await prisma.university.findMany({
         where: {id: user!.uni?.id},
       });
     }

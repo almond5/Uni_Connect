@@ -81,7 +81,7 @@ model Event {
   RSO             RSO?           @relation(fields: [rSOId], references: [id])
   rSOId           String?
 
-  @@index([id, feedbackId])
+  @@index([id])
 }
 
 model EventApproval {
@@ -91,11 +91,15 @@ model EventApproval {
   description     String?        @db.Text
   time            String?        @db.Text
   date            String?        @db.Text
-  phone_no        Int?
+  phone_no        String?        @db.Text
   email           String?        @db.Text
   type            EventType
-  eventLocation   EventLocation? @relation(fields: [eventLocationId], references: [id])
-  eventLocationId String?        @unique
+  university      University?    @relation(fields: [universityId], references: [id])
+  eventlocation   EventLocation? @relation(fields: [eventlocationId], references: [id])
+  eventlocationId String?        @unique
+  universityId    String?
+  RSO             RSO?           @relation(fields: [rSOId], references: [id])
+  rSOId           String?
 
   @@index([id])
 }
@@ -154,28 +158,30 @@ model EventLocation {
 }
 
 model University {
-  id           String    @id @default(cuid())
-  name         String
-  description  String?
-  num_students Float
-  phone_no     String?   @db.Text
-  location     Location? @relation(fields: [locationId], references: [id])
-  User         User[]
-  Event        Event[]
-  locationId   String?   @unique
-  RSO          RSO[]
+  id            String          @id @default(cuid())
+  name          String
+  description   String?
+  num_students  Float
+  phone_no      String?         @db.Text
+  location      Location?       @relation(fields: [locationId], references: [id])
+  User          User[]
+  Event         Event[]
+  locationId    String?         @unique
+  RSO           RSO[]
+  EventApproval EventApproval[]
 
   @@index([id])
 }
 
 model RSO {
-  id      String      @id @default(cuid())
-  name    String
-  adminID String
-  uniId   String
-  uni     University @relation(fields: [uniId], references: [id])
-  members Member[]
-  events  Event[]
+  id            String          @id @default(cuid())
+  name          String
+  adminID       String
+  uniId         String
+  uni           University      @relation(fields: [uniId], references: [id])
+  members       Member[]
+  events        Event[]
+  EventApproval EventApproval[]
 
   @@index([id, uniId])
 }

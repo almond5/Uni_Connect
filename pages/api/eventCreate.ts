@@ -23,28 +23,51 @@ export default async function handler(
         lng,
         locationName,
         uniId,
-        email,
+        rsoId
       } = JSON.parse(req.body);
       const dateForDb = new Date(date);
 
-      const eventCreation = await prisma.event.create({
-        data: {
-          name: title,
-          type: type,
-          description: body,
-          date: dateForDb.toLocaleString(),
-          phone_no: phoneNumber,
-          email: email,
-          eventlocation: {
-            create: {
-              name: locationName,
-              latitude: lat,
-              longitude: lng,
-              uniId: uniId,
+      let eventCreation = undefined;
+      
+      if (type === 'RSO_EVENT'){
+        eventCreation = await prisma.event.create({
+          data: {
+            name: title,
+            type: type,
+            description: body,
+            date: dateForDb.toLocaleString(),
+            phone_no: phoneNumber,
+            rSOId: rsoId,
+            eventlocation: {
+              create: {
+                name: locationName,
+                latitude: lat,
+                longitude: lng,
+                uniId: uniId,
+              },
             },
           },
-        },
-      });
+        });
+      }
+      else {
+        eventCreation = await prisma.event.create({
+          data: {
+            name: title,
+            type: type,
+            description: body,
+            date: dateForDb.toLocaleString(),
+            phone_no: phoneNumber,
+            eventlocation: {
+              create: {
+                name: locationName,
+                latitude: lat,
+                longitude: lng,
+                uniId: uniId,
+              },
+            },
+          },
+        });
+      }
 
       const feedback = await prisma.feedback.create({
         data: {

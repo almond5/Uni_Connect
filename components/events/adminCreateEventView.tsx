@@ -9,7 +9,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
   const [date, setDate] = useState<Date | null>(null);
   const [type, setType] = useState('PUBLIC');
   const [body, setBody] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState(0);
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [lat, setLat] = useState(28.6024);
   const [lng, setLng] = useState(-81.2001);
   const [locationName, setLocatioName] = useState('');
@@ -34,7 +34,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
     body: string | undefined | null;
     type: string | undefined | null;
     date: Date | undefined | null;
-    phoneNumber: number | undefined | null;
+    phoneNumber: string | undefined | null;
     lat: number | undefined | null;
     lng: number | undefined | null;
     locationName: string | undefined | null;
@@ -55,7 +55,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
     body: string | undefined | null;
     type: string | undefined | null;
     date: Date | undefined | null;
-    phoneNumber: number | undefined | null;
+    phoneNumber: string | undefined | null;
     lat: number | undefined | null;
     lng: number | undefined | null;
     locationName: string | undefined | null;
@@ -124,16 +124,15 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
         rsoSelected,
       };
       await submitEvent(event);
-
     }
-    
+
     await timeout(1000);
     window.location.reload();
     setBody('');
     setTitle('');
     setType('PUBLIC');
     setDate(null);
-    setPhoneNumber(0);
+    setPhoneNumber('');
     setLat(28.6024);
     setLng(-81.2001);
     setLocatioName('');
@@ -238,7 +237,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
               >
                 <option value="PUBLIC">Public</option>
                 <option value="PRIVATE">Private</option>
-                <option value="RSO_EVENT">RSO_EVENT</option>
+                <option value="RSO_EVENT">RSO Event</option>
               </select>
             </div>
           </div>
@@ -262,9 +261,9 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
                 defaultValue="N/A"
                 onChange={selectRSO}
               >
-                {props.rsos.map((RSO_EVENT: any) => (
-                  <option key={RSO_EVENT.id} value={RSO_EVENT.id}>
-                    {RSO_EVENT.name}
+                {props.rsos?.map((rso: any) => (
+                  <option key={rso.id} value={rso.id}>
+                    {rso.name}
                   </option>
                 ))}
               </select>
@@ -314,7 +313,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
             </div>
             <input
               required
-              onChange={(e) => setPhoneNumber(Number(e.target.value))}
+              onChange={(e) => setPhoneNumber(e.target.value)}
               type="number"
               className="block p-2 w-36 text-md text-gray-900 
               bg-neutral-50 rounded-lg border-[0.175rem] 

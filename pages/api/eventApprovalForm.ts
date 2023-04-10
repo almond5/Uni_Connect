@@ -13,26 +13,60 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { title, body, type, date, phoneNumber, lat, lng, locationName, email } = JSON.parse(req.body);
-      const dateForDb = new Date(date);
+      const {
+        title,
+        body,
+        type,
+        date,
+        phoneNumber,
+        lat,
+        lng,
+        locationName,
+        uniId,
+        rsoId
+      } = JSON.parse(req.body);      const dateForDb = new Date(date);
 
-      const eventApproval = await prisma.eventApproval.create({
-        data: {
-          name: title,
-          type: type,
-          description: body,
-          date: dateForDb.toLocaleString(),
-          phone_no: phoneNumber,
-          email: email,
-          eventLocation: {
-            create: {
-              name: locationName,
-              latitude: lat,
-              longitude: lng,
-            }
-          }
-        }
-      });
+      let eventCreation = null;
+
+      if (type === 'RSO_EVENT'){
+        eventCreation = await prisma.eventApproval.create({
+          data: {
+            name: title,
+            type: type,
+            description: body,
+            date: dateForDb.toLocaleString(),
+            phone_no: phoneNumber,
+            rSOId: rsoId,
+            eventlocation: {
+              create: {
+                name: locationName,
+                latitude: lat,
+                longitude: lng,
+                uniId: uniId,
+              },
+            },
+          },
+        });
+      }
+      else {
+        eventCreation = await prisma.eventApproval.create({
+          data: {
+            name: title,
+            type: type,
+            description: body,
+            date: dateForDb.toLocaleString(),
+            phone_no: phoneNumber,
+            eventlocation: {
+              create: {
+                name: locationName,
+                latitude: lat,
+                longitude: lng,
+                uniId: uniId,
+              },
+            },
+          },
+        });
+      }
 
 
     } catch (error) {
