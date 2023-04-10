@@ -125,8 +125,8 @@ const RSOCreateView = () => {
               <select
                 name="memberDropDown"
                 defaultValue={members[0]}
-                onChange={selectAdmin}
-              >
+                onChange={(e) => {setAdmin(e.target.value)}}
+                >
                 {members.map((member: any) => (
                   <option key={member} value={member}>
                     {member}

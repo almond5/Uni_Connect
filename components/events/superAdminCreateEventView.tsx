@@ -234,7 +234,13 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
               bg-neutral-50 rounded-lg border-[0.175rem] 
                 rounded-tl-none border-neutral-700"
             >
-              <select name="University" defaultValue="N/A" onChange={selectUni}>
+              <select
+                name="University"
+                defaultValue="N/A"
+                onChange={(e) => {
+                  setUni(e.target.value);
+                }}
+              >
                 <option></option>
                 {props.unis.map((university: any) => (
                   <option key={university.id} value={university.id}>

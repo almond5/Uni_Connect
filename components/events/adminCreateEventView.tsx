@@ -289,8 +289,8 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
                 <select
                   name="University"
                   defaultValue="N/A"
-                  onChange={selectUni}
-                >
+                  onChange={(e) => {setUni(e.target.value)}}
+                  >
                 <option></option>
                   {props.unis.map((university: any) => (
                     <option key={university.id} value={university.id}>
