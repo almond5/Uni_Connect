@@ -22,14 +22,28 @@ export default async function handler(
         lat,
         lng,
         locationName,
-        uniId,
-        rsoId
+        uniSelected,
+        rsoSelected,
       } = JSON.parse(req.body);
       const dateForDb = new Date(date);
 
       let eventCreation = undefined;
-      
-      if (type === 'RSO_EVENT'){
+      console.log(rsoSelected);
+      console.log(uniSelected);
+
+      if (type === 'RSO_EVENT') {
+        const findRSO = await prisma.rSO.findFirst({
+          where: {
+            id: rsoSelected,
+          },
+        });
+
+        const findUni = await prisma.university.findFirst({
+          where: {
+            id: uniSelected,
+          },
+        });
+
         eventCreation = await prisma.event.create({
           data: {
             name: title,
@@ -37,19 +51,18 @@ export default async function handler(
             description: body,
             date: dateForDb.toLocaleString(),
             phone_no: phoneNumber,
-            rSOId: rsoId,
+            RSO: { connect: { id: findRSO!.id } },
             eventlocation: {
               create: {
                 name: locationName,
                 latitude: lat,
                 longitude: lng,
-                uniId: uniId,
+                uniId: uniSelected,
               },
             },
           },
         });
-      }
-      else {
+      } else {
         eventCreation = await prisma.event.create({
           data: {
             name: title,
@@ -62,7 +75,7 @@ export default async function handler(
                 name: locationName,
                 latitude: lat,
                 longitude: lng,
-                uniId: uniId,
+                uniId: uniSelected,
               },
             },
           },
@@ -78,7 +91,7 @@ export default async function handler(
       const event = await prisma.event.update({
         where: { id: eventCreation.id },
         data: { feedbackId: feedback.id },
-      })
+      });
     } catch (error) {
       console.log(error);
     }

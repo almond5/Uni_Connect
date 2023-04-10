@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -80,11 +80,6 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
     setType(value);
   };
 
-  const selectRSO = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    let value = event.target.value;
-    setRso(value);
-  };
-
   const selectUni = (event: React.ChangeEvent<HTMLSelectElement>) => {
     let value = event.target.value;
     setUni(value);
@@ -93,7 +88,6 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (date === null) setDate(new Date());
-
     if (type === 'RSO_EVENT') setType('RSO_EVENT');
 
     if (type === 'PUBLIC') {
@@ -111,6 +105,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
       };
       await submitApproval(event);
     } else {
+
       const event = {
         title,
         body,
@@ -136,6 +131,8 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
     setLat(28.6024);
     setLng(-81.2001);
     setLocatioName('');
+    setRso('')
+    setUni('')
   };
 
   return (
@@ -259,9 +256,10 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
               <select
                 name="rsoDropDown"
                 defaultValue="N/A"
-                onChange={selectRSO}
+                onChange={(e) => {setRso(e.target.value)}}
               >
-                {props.rsos?.map((rso: any) => (
+                <option></option>
+                {props.rsos.map((rso: any) => (
                   <option key={rso.id} value={rso.id}>
                     {rso.name}
                   </option>
@@ -293,6 +291,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
                   defaultValue="N/A"
                   onChange={selectUni}
                 >
+                <option></option>
                   {props.unis.map((university: any) => (
                     <option key={university.id} value={university.id}>
                       {university.name}

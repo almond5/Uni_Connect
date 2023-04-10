@@ -209,11 +209,14 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
               <select
                 name="rsoDropDown"
                 defaultValue="N/A"
-                onChange={selectRSO}
+                onChange={(e) => {
+                  setRso(e.target.value);
+                }}
               >
-                {props.rsos?.map((RSO_EVENT: any) => (
-                  <option key={RSO_EVENT.id} value={RSO_EVENT.id}>
-                    {RSO_EVENT.name}
+                <option></option>
+                {props.rsos.map((rso: any) => (
+                  <option key={rso.id} value={rso.id}>
+                    {rso.name}
                   </option>
                 ))}
               </select>
@@ -227,11 +230,13 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
               University:
             </div>
             <div
-              className="flex flex-col p-2 w-32 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+              className="flex flex-col p-2 w-32 text-md text-gray-900 
+              bg-neutral-50 rounded-lg border-[0.175rem] 
                 rounded-tl-none border-neutral-700"
             >
-              <select name="type" onChange={selectUni}>
-                {props.unis?.map((university: any) => (
+              <select name="University" defaultValue="N/A" onChange={selectUni}>
+                <option></option>
+                {props.unis.map((university: any) => (
                   <option key={university.id} value={university.id}>
                     {university.name}
                   </option>
@@ -343,14 +348,18 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
 
           <div
             className={`${
-              !(type === 'PRIVATE' &&
+              !(
+                type === 'PRIVATE' &&
                 (props.unis === null ||
                   props.unis === undefined ||
-                  props.unis.length === 0)) &&
-              !(type === 'RSO_EVENT' &&
+                  props.unis.length === 0)
+              ) &&
+              !(
+                type === 'RSO_EVENT' &&
                 (props.rsos === null ||
                   props.rsos === undefined ||
-                  props.rsos.length === 0))
+                  props.rsos.length === 0)
+              )
                 ? ''
                 : 'hidden'
             }`}

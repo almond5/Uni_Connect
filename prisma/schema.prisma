@@ -82,6 +82,8 @@ model Event {
   rSOId           String?
 
   @@index([id])
+  @@index([universityId])
+  @@index([rSOId])
 }
 
 model EventApproval {

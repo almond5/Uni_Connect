@@ -12,7 +12,6 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
   const role = props.role;
   const user = props.user;
 
-  // WIP
   useEffect(() => {
     if (event.type === 'RSO_EVENT') setEventType('RSO Event');
     else if (event.type === 'PUBLIC') setEventType('Public Event');
