@@ -29,6 +29,7 @@ export async function getServerSideProps(context: any) {
 
     let events = null;
     let rsos = null;
+    let unis = null;
 
     if (user?.role === Roles.SUPERADMIN) {
       events = await prisma.event.findMany({
@@ -42,6 +43,10 @@ export async function getServerSideProps(context: any) {
       });
 
       rsos = await prisma.rSO.findMany({
+        where: {},
+      });
+
+      unis = await prisma.university.findMany({
         where: {},
       });
     }
@@ -62,7 +67,7 @@ export async function getServerSideProps(context: any) {
       let privateEvents = await prisma.event.findMany({
         where: {
           type: 'PRIVATE',
-          universityId: user.universityId,
+          universityId: user!.universityId!,
         },
       });
 
@@ -92,16 +97,16 @@ export async function getServerSideProps(context: any) {
 
       console.log(events);
 
-      rsos = await prisma.rSO.findMany({
+      rsos = await prisma.rSO.findFirst({
         where: {
           uniId: user!.uni?.id,
         },
       });
-    }
 
-    const unis = await prisma.university.findMany({
-      where: {},
-    });
+      unis = await prisma.university.findFirst({
+        where: {id: user!.uni?.id},
+      });
+    }
 
     const approvals = await prisma.eventApproval.findMany({
       where: {},
