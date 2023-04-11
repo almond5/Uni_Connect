@@ -11,9 +11,7 @@ export default async function handler(
 
       const editComment = await prisma.comment.update({
         where: { id: commentId },
-        data: {
-          comment: body,
-        },
+        data: { comment: body },
       });
     } catch (error) {
       console.log(error);

@@ -12,18 +12,17 @@ export default async function handler(
       let userArray = [];
 
       const adminUser = await prisma.user.findFirst({
-        where: {
-          email: admin,
-        },
-        include: { uni: true }
+        where: { email: admin },
+        include: { uni: true },
       });
 
-      if ((!(adminUser === null || adminUser === undefined)) && adminUser.role === 'STUDENT') {
+      if (
+        !(adminUser === null || adminUser === undefined) &&
+        adminUser.role === 'STUDENT'
+      ) {
         const updateAdminUserRole = await prisma.user.update({
           where: { id: adminUser?.id },
-          data: {
-            role: 'ADMIN',
-          },
+          data: { role: 'ADMIN', },
         });
       }
 
@@ -33,18 +32,14 @@ export default async function handler(
             name: name,
             adminID: adminUser!.id,
             members: {},
-            uni: {
-              connect: { id: adminUser!.uni!.id },
-            }
+            uni: { connect: { id: adminUser!.uni!.id }, },
           },
         });
 
         for (var email of members) {
           let user = await prisma.user.findFirst({
-            where: {
-              email: email,
-            },
-            include: { uni: true }
+            where: { email: email, },
+            include: { uni: true },
           });
 
           userArray.push(user);
@@ -71,7 +66,6 @@ export default async function handler(
           });
         }
       }
-
     } catch (error) {
       console.log(error);
     }

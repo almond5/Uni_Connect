@@ -27,8 +27,8 @@ export default async function handler(
         approved,
       } = JSON.parse(req.body);
       const dateForDb = new Date(date);
-
       let eventCreation = undefined;
+
       if (type === 'RSO_EVENT') {
         const findRSO = await prisma.rSO.findFirst({
           where: {
@@ -82,15 +82,13 @@ export default async function handler(
         });
       }
 
-      const feedback = await prisma.feedback.create({
-        data: {
-          eventId: eventCreation.id,
-        },
+      const feedbackCreate = await prisma.feedback.create({
+        data: { eventId: eventCreation.id },
       });
 
-      const event = await prisma.event.update({
+      const eventUpdate = await prisma.event.update({
         where: { id: eventCreation.id },
-        data: { feedbackId: feedback.id },
+        data: { feedbackId: feedbackCreate.id },
       });
     } catch (error) {
       console.log(error);
