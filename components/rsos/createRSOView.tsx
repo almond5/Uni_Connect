@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
+import React, { useEffect, useState } from 'react';
 
 const RSOCreateView = () => {
+  const { data: sesh } = useSession();
   const [name, setName] = useState('');
-  const [members, setMembers] = useState<string[]>([]);
+  const [members, setMembers] = useState<string[]>([sesh?.user?.email!]);
   const [member, setMember] = useState('');
-  const [admin, setAdmin] = useState('');
+  const [admin, setAdmin] = useState(sesh?.user?.email!);
 
   const handleAddMems = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setMembers([...members, member]);
     setMember('');
-  };
-
-  const selectAdmin = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    let value = event.target.value;
-    setAdmin(value);
   };
 
   const timeout = (delay: number) => {
@@ -37,14 +34,13 @@ const RSOCreateView = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
     const rso = { name, members, admin };
     await submitRSO(rso);
     await timeout(1000);
     window.location.reload();
     setName('');
-    setAdmin('');
-    setMembers(['']);
+    setAdmin(sesh?.user?.email!);
+    setMembers([sesh?.user?.email!]);
     setMember('');
   };
 
@@ -124,9 +120,11 @@ const RSOCreateView = () => {
             >
               <select
                 name="memberDropDown"
-                defaultValue={members[0]}
-                onChange={(e) => {setAdmin(e.target.value)}}
-                >
+                onChange={(e) => {
+                  setAdmin(e.target.value);
+                }}
+              >
+                <option></option>
                 {members.map((member: any) => (
                   <option key={member} value={member}>
                     {member}

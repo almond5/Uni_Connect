@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import ApprovalEventView from './approvalEventView';
 
-const ApprovalsListView = (props: { approvals: any }) => {
-  const approvals = props.approvals;
+const ApprovalsListView = (props: { events: any }) => {
+  const events = props.events;
 
-  if (approvals === null || approvals === undefined || approvals.length === 0)
+  if (events === null || events === undefined || events.length === 0)
     return (
       <div className="py-10">
         <div className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800">
@@ -20,9 +20,9 @@ const ApprovalsListView = (props: { approvals: any }) => {
       lg:grid-cols-1"
       >
         {' '}
-        {approvals.map((approval: any) => (
-          <div key={approval.id}>
-            <ApprovalEventView approval={approval}></ApprovalEventView>
+        {events.map((event: any) => (
+          <div key={event.id}>
+            <ApprovalEventView event={event}></ApprovalEventView>
           </div>
         ))}
       </div>

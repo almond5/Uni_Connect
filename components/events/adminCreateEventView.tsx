@@ -61,8 +61,9 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
     locationName: string | undefined | null;
     uniSelected: string | undefined | null;
     rsoSelected: string | undefined | null;
+    approved: string | undefined | null;
   }) => {
-    const response = await fetch('/api/eventApprovalForm', {
+    const response = await fetch('/api/eventCreate', {
       method: 'POST',
       body: JSON.stringify(event),
     });
@@ -80,17 +81,14 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
     setType(value);
   };
 
-  const selectUni = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    let value = event.target.value;
-    setUni(value);
-  };
-
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (date === null) setDate(new Date());
     if (type === 'RSO_EVENT') setType('RSO_EVENT');
+    let approved = 'TRUE';
 
     if (type === 'PUBLIC') {
+      approved = 'FALSE';
       const event = {
         title,
         body,
@@ -102,10 +100,10 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
         locationName,
         uniSelected,
         rsoSelected,
+        approved,
       };
       await submitApproval(event);
     } else {
-
       const event = {
         title,
         body,
@@ -117,6 +115,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
         locationName,
         uniSelected,
         rsoSelected,
+        approved,
       };
       await submitEvent(event);
     }
@@ -131,8 +130,8 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
     setLat(28.6024);
     setLng(-81.2001);
     setLocatioName('');
-    setRso('')
-    setUni('')
+    setRso('');
+    setUni('');
   };
 
   return (
@@ -256,14 +255,22 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
               <select
                 name="rsoDropDown"
                 defaultValue="N/A"
-                onChange={(e) => {setRso(e.target.value)}}
+                onChange={(e) => {
+                  setRso(e.target.value);
+                }}
               >
                 <option></option>
-                {props.rsos.map((rso: any) => (
-                  <option key={rso.id} value={rso.id}>
-                    {rso.name}
-                  </option>
-                ))}
+                {props.rsos === undefined ||
+                props.rsos === null ||
+                props.rsos.length === 0 ? (
+                  <div></div>
+                ) : (
+                  props.rsos.map((rso: any) => (
+                    <option key={rso.id} value={rso.id}>
+                      {rso.name}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
           </div>
@@ -289,14 +296,22 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
                 <select
                   name="University"
                   defaultValue="N/A"
-                  onChange={(e) => {setUni(e.target.value)}}
-                  >
-                <option></option>
-                  {props.unis.map((university: any) => (
-                    <option key={university.id} value={university.id}>
-                      {university.name}
-                    </option>
-                  ))}
+                  onChange={(e) => {
+                    setUni(e.target.value);
+                  }}
+                >
+                  <option></option>
+                  {props.unis === undefined ||
+                  props.unis === null ||
+                  props.unis.length === 0 ? (
+                    <div></div>
+                  ) : (
+                    props.unis.map((university: any) => (
+                      <option key={university.id} value={university.id}>
+                        {university.name}
+                      </option>
+                    ))
+                  )}
                 </select>
               </div>
             </div>

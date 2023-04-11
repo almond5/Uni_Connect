@@ -5,7 +5,7 @@ import Link from 'next/link';
 import prisma from '../lib/prismadb';
 import EventsListView from '@/components/events/eventsListView';
 import EventsCreateView from '@/components/events/superAdminCreateEventView';
-import { EventApproval, RSO, University, User } from '@prisma/client';
+import { Event, RSO, University, User } from '@prisma/client';
 import AdminEventsCreateView from '@/components/events/adminCreateEventView';
 import ApprovalsEventsListView from '@/components/events/approvalsListView';
 
@@ -33,7 +33,9 @@ export async function getServerSideProps(context: any) {
 
     if (user?.role === Roles.SUPERADMIN) {
       events = await prisma.event.findMany({
-        where: {},
+        where: {
+          approved: 'TRUE',
+        },
         include: {
           eventlocation: true,
           feedback: {
@@ -55,6 +57,7 @@ export async function getServerSideProps(context: any) {
       let publicEvents = await prisma.event.findMany({
         where: {
           type: 'PUBLIC',
+          approved: 'TRUE',
         },
         include: {
           eventlocation: true,
@@ -68,6 +71,12 @@ export async function getServerSideProps(context: any) {
         where: {
           type: 'PRIVATE',
           universityId: user!.universityId!,
+        },
+        include: {
+          eventlocation: true,
+          feedback: {
+            include: { comments: true, ratings: true },
+          },
         },
       });
 
@@ -87,29 +96,38 @@ export async function getServerSideProps(context: any) {
               type: 'RSO_EVENT',
               rSOId: member.rsoId,
             },
+            include: {
+              eventlocation: true,
+              feedback: {
+                include: { comments: true, ratings: true },
+              },
+            },
+          });
+
+          let tempRsos = await prisma.rSO.findMany({
+            where: {
+              id: member.rsoId,
+            },
           });
 
           privateEvents = privateEvents.concat(rsoEvents);
+
+          if (rsos === null) rsos = tempRsos;
+          else rsos = rsos!.concat(tempRsos);
         }
 
         events = privateEvents;
       }
 
-      console.log(events);
-
-      rsos = await prisma.rSO.findMany({
-        where: {
-          uniId: user!.uni?.id,
-        },
-      });
-
       unis = await prisma.university.findMany({
-        where: {id: user!.uni?.id},
+        where: { id: user!.uni?.id },
       });
     }
 
-    const approvals = await prisma.eventApproval.findMany({
-      where: {},
+    const approvals = await prisma.event.findMany({
+      where: {
+        approved: 'FALSE',
+      },
     });
 
     return {
@@ -157,7 +175,7 @@ const Events = ({
 }) => {
   const [events] = useState<Event[]>(eventsFromDB);
   const [unis] = useState<University[]>(unisFromDB);
-  const [eventApprovals] = useState<EventApproval[]>(approvalsFromDB);
+  const [eventApprovals] = useState<Event[]>(approvalsFromDB);
   const [rsos] = useState<RSO[]>(rsosFromDB);
   const [user] = useState<User>(userFromDb);
 
@@ -405,7 +423,7 @@ const Events = ({
           <EventsCreateView unis={unis} rsos={rsos} />
         </div>
         <div className={`${approvalEventView ? '' : 'hidden'}`}>
-          <ApprovalsEventsListView approvals={eventApprovals} />
+          <ApprovalsEventsListView events={eventApprovals} />
         </div>
       </div>
     );

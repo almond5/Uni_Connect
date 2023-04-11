@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 
-const ApprovalEventView = (props: { approval: any }) => {
-  const approval = props.approval;
+const ApprovalEventView = (props: { event: any }) => {
+  const event = props.event;
 
   const handleDecline = async () => {
-    await declined(approval);
+    await declined(event.id);
     await timeout(1000);
     window.location.reload();
   };
 
   const handleAccept = async () => {
-    await accepted(approval);
+    await accepted(event.id);
     await timeout(1000);
     window.location.reload();
   };
@@ -19,18 +19,8 @@ const ApprovalEventView = (props: { approval: any }) => {
     return new Promise((res) => setTimeout(res, delay));
   };
 
-  const accepted = async (approval: {
-    title: string | undefined | null;
-    body: string | undefined | null;
-    type: string | undefined | null;
-    date: Date | undefined | null;
-    phoneNumber: number | undefined | null;
-    lat: number | undefined | null;
-    lng: number | undefined | null;
-    locationName: string | undefined | null;
-    id: string | undefined | null;
-  }) => {
-    const response = await fetch('/api/eventApprovalAccepted', {
+  const accepted = async (approval: { id: string | undefined | null }) => {
+    const response = await fetch('/api/acceptApproval', {
       method: 'POST',
       body: JSON.stringify(approval),
     });
@@ -39,10 +29,10 @@ const ApprovalEventView = (props: { approval: any }) => {
     console.log(data);
   };
 
-  const declined = async (approval: { id: string | undefined | null }) => {
-    const response = await fetch('/api/eventApprovalDeclined', {
+  const declined = async (event: { id: string | undefined | null }) => {
+    const response = await fetch('/api/eventDelete', {
       method: 'POST',
-      body: JSON.stringify(approval),
+      body: JSON.stringify(event),
     });
 
     const data = await response.json();
@@ -74,13 +64,11 @@ const ApprovalEventView = (props: { approval: any }) => {
           </div>
 
           <div className="text-right break-all"></div>
-          {approval.date}
-          {approval.time}
+          {event.date}
+          {event.time}
         </div>
-        <div className="mb-1 text-lg font-bold">{approval.name}</div>
-        <p className="mb-4 text-md text-left break-all">
-          {approval.description}
-        </p>
+        <div className="mb-1 text-lg font-bold">{event.name}</div>
+        <p className="mb-4 text-md text-left break-all">{event.description}</p>
       </div>
     </div>
   );

@@ -40,6 +40,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
     locationName: string | undefined | null;
     uniSelected: string | undefined | null;
     rsoSelected: string | undefined | null;
+    approved: string | undefined | null;
   }) => {
     const response = await fetch('/api/eventCreate', {
       method: 'POST',
@@ -59,19 +60,10 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
     setType(value);
   };
 
-  const selectRSO = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    let value = event.target.value;
-    setRso(value);
-  };
-
-  const selectUni = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    let value = event.target.value;
-    setUni(value);
-  };
-
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (date === null) setDate(new Date());
+    const approved = 'TRUE';
 
     const event = {
       title,
@@ -84,6 +76,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
       locationName,
       uniSelected,
       rsoSelected,
+      approved,
     };
     await submitEvent(event);
     await timeout(1000);
@@ -214,7 +207,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
                 }}
               >
                 <option></option>
-                {props.rsos.map((rso: any) => (
+                {props.rsos === undefined || props.rsos === null || props.rsos.length === 0 ? <div></div> : props.rsos.map((rso: any) => (
                   <option key={rso.id} value={rso.id}>
                     {rso.name}
                   </option>
@@ -242,7 +235,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
                 }}
               >
                 <option></option>
-                {props.unis.map((university: any) => (
+                {props.unis === undefined || props.unis === null || props.unis.length === 0 ? <div></div> : props.unis.map((university: any) => (
                   <option key={university.id} value={university.id}>
                     {university.name}
                   </option>
