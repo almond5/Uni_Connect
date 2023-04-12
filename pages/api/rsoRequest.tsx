@@ -1,3 +1,4 @@
+import prisma from '@/lib/prismadb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(
@@ -6,8 +7,20 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { RSO, email } = JSON.parse(req.body);
+      const { rsoId, userEmail } = JSON.parse(req.body);
 
+      const user = await prisma.user.findFirst({
+        where: { email: userEmail },
+      });
+
+      const approval = await prisma.member.create({
+        data: {
+          approved: 'FALSE',
+          isAdmin: 'FALSE',
+          userId: user?.id!,
+          rsoId: rsoId,
+        },
+      });
     } catch (error) {
       console.log(error);
     }

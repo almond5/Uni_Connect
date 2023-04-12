@@ -67,10 +67,8 @@ model Event {
   name            String         @db.Text
   category        String?        @db.Text
   description     String?        @db.Text
-  time            String?        @db.Text
   date            String?        @db.Text
   phone_no        String?        @db.Text
-  email           String?        @db.Text
   type            EventType
   university      University?    @relation(fields: [universityId], references: [id])
   feedbackId      String?        @unique
@@ -171,6 +169,8 @@ model Member {
   userId String
   user   User   @relation(fields: [userId], references: [id])
   rso    RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
+    approved String
+  isAdmin  String
 
   @@index([id, rsoId])
 }

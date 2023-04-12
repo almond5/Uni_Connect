@@ -9,11 +9,8 @@ export default async function handler(
     try {
       const { rsoId, userEmail } = JSON.parse(req.body);
 
-      console.log(userEmail);
-
       const user = await prisma.user.findFirst({
         where: { email: userEmail },
-        include: { Member: true },
       });
 
       let newMember = await prisma.member.deleteMany({

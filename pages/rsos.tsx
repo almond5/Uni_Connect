@@ -5,8 +5,8 @@ import Link from 'next/link';
 import prisma from '../lib/prismadb';
 import RSOSListView from '@/components/rsos/rsosListView';
 import RSOCreateView from '@/components/rsos/createRSOView';
-import { useDateRangeValidation } from '@mui/x-date-pickers-pro/internal/hooks/validation/useDateTimeRangeValidation';
-import { User, Member, RSO } from '@prisma/client';
+import { Member, RSO } from '@prisma/client';
+import RSORequestView from '@/components/rsos/rsosRequestView';
 
 const Roles = {
   STUDENT: 'STUDENT',
@@ -19,7 +19,8 @@ export async function getServerSideProps(context: any) {
   const currUser = session?.user;
 
   try {
-    let rsos = []
+    let rsos = [];
+    let mems = [];
 
     const user = await prisma.user.findFirst({
       where: {
@@ -29,40 +30,60 @@ export async function getServerSideProps(context: any) {
     });
 
     if (user?.role === Roles.SUPERADMIN) {
-      rsos = await prisma.rSO.findMany({
-        where: {},
-      });
-    } else {
+      rsos = await prisma.rSO.findMany({ where: {} });
+    } else if (user?.role === Roles.ADMIN) {
       for (let i = 0; i < user?.Member!.length!; i++) {
-        const rso = await prisma.rSO.findFirst({
-          where: { id: user?.Member![i].rsoId },
-        });
+        if (user?.Member![i].approved === 'TRUE') {
+          const rso = await prisma.rSO.findFirst({
+            where: { id: user?.Member![i].rsoId },
+            include: { members: true },
+          });
 
-        rsos.push(rso);
+          rsos.push(rso);
+
+          if (user?.Member![i].isAdmin === 'TRUE')
+            for (let i = 0; i < rso?.members!.length!; i++)
+              if (rso?.members![i].approved === 'FALSE')
+                mems.push(rso?.members[i]);
+        }
       }
+    } else {
+      rsos = await prisma.rSO.findMany({
+        where: {
+          uniId: user?.uni?.id!,
+        },
+      });
     }
 
     return {
       props: {
         rsosFromDB: rsos,
+        membersFromDB: mems,
       },
     };
   } catch (error) {
     const rsos = null;
+    const mems = null;
 
     return {
       props: {
         rsosFromDB: rsos,
+        membersFromDB: mems,
       },
     };
   }
 }
 
-const RSOs = ({ rsosFromDB }: { rsosFromDB: any }) => {
+const RSOs = ({
+  rsosFromDB,
+  membersFromDB,
+}: {
+  rsosFromDB: any;
+  membersFromDB: any;
+}) => {
   const [rsos] = useState<RSO[]>(rsosFromDB);
+  const [members] = useState<Member[]>(membersFromDB);
   const { status: sesh } = useSession();
-
-  const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
   const [superAdminView, setSuperAdminView] = useState(false);
 
@@ -89,8 +110,7 @@ const RSOs = ({ rsosFromDB }: { rsosFromDB: any }) => {
   };
 
   useEffect(() => {
-    if (window?.location.search.includes(Roles.STUDENT)) setStudentView(true);
-    else if (window?.location.search.includes(Roles.ADMIN)) setAdminView(true);
+    if (window?.location.search.includes(Roles.ADMIN)) setAdminView(true);
     else if (window?.location.search.includes(Roles.SUPERADMIN))
       setSuperAdminView(true);
   }, []);
@@ -102,155 +122,110 @@ const RSOs = ({ rsosFromDB }: { rsosFromDB: any }) => {
   if (sesh === 'unauthenticated') {
     return <LoginView />;
   }
-  if (studentView) {
-    return (
-      <div className="py-10">
-        <div className="absolute top-0 left-10 py-10">
-          <Link href={'/'}>
-            <button className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50">
-              Back
-            </button>
-          </Link>
-        </div>
-        <div className="absolute top-0 right-10 py-10">
-          <button
-            className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50"
-            onClick={() =>
-              signOut({ callbackUrl: 'http://localhost:3000/logoutView' })
-            }
-          >
-            Sign-Out
+  return (
+    <div className="py-10">
+      <div className="absolute top-0 left-10 py-10">
+        <Link href={'/'}>
+          <button className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50">
+            Back
           </button>
-        </div>
-        <div className="flex justify-center">
-          <div className="px-4 font-bold text-2xl">
-            <div
-              className={`${
-                !rsoListView
-                  ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
-                  : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
-              }`}
+        </Link>
+      </div>
+      <div className="absolute top-0 right-10 py-10">
+        <button
+          className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50"
+          onClick={() =>
+            signOut({ callbackUrl: 'http://localhost:3000/logoutView' })
+          }
+        >
+          Sign-Out
+        </button>
+      </div>
+      <div className="flex justify-center">
+        <div className="px-4 font-bold text-2xl">
+          <div
+            className={`${
+              !rsoListView
+                ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+                : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+            }`}
+          >
+            {' '}
+            <button
+              onClick={() => {
+                toggleRSOsListView();
+              }}
             >
-              {' '}
-              <button
-                onClick={() => {
-                  toggleRSOsListView();
-                }}
-              >
-                View RSOs
-              </button>
-            </div>
-          </div>
-          <div className="px-4 font-bold text-2xl">
-            <div
-              className={`${
-                !createRSOView
-                  ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
-                  : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
-              }`}
-            >
-              {' '}
-              <button
-                onClick={() => {
-                  toggleCreateRSOView();
-                }}
-              >
-                Create RSO
-              </button>
-            </div>
+              View My RSOs
+            </button>
           </div>
         </div>
-
-        <div className={`${rsoListView ? 'py-10' : 'hidden'}`}>
-          <RSOSListView rsos={rsos} />
+        <div className="px-4 font-bold text-2xl">
+          <div
+            className={`${
+              !rsoListView
+                ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+                : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+            }`}
+          >
+            {' '}
+            <button
+              onClick={() => {
+                toggleJoinRSOsListView();
+              }}
+            >
+              Join an RSO
+            </button>
+          </div>
+        </div>
+        <div className="px-4 font-bold text-2xl">
+          <div
+            className={`${
+              !createRSOView
+                ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+                : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+            }`}
+          >
+            {' '}
+            <button
+              onClick={() => {
+                toggleCreateRSOView();
+              }}
+            >
+              Create RSO
+            </button>
+          </div>
+        </div>
+        <div className="px-4 font-bold text-2xl">
+          <div
+            className={`${
+              !approvalRSOView
+                ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+                : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+            }`}
+          >
+            <button
+              onClick={() => {
+                toggleApprovalsView();
+              }}
+            >
+              Requests
+            </button>
+          </div>
         </div>
       </div>
-    );
-  } else {
-    return (
-      <div className="py-10">
-        <div className="absolute top-0 left-10 py-10">
-          <Link href={'/'}>
-            <button className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50">
-              Back
-            </button>
-          </Link>
-        </div>
-        <div className="absolute top-0 right-10 py-10">
-          <button
-            className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-50"
-            onClick={() =>
-              signOut({ callbackUrl: 'http://localhost:3000/logoutView' })
-            }
-          >
-            Sign-Out
-          </button>
-        </div>
-        <div className="flex justify-center">
-          <div className="px-4 font-bold text-2xl">
-            <div
-              className={`${
-                !rsoListView
-                  ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
-                  : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
-              }`}
-            >
-              {' '}
-              <button
-                onClick={() => {
-                  toggleRSOsListView();
-                }}
-              >
-                View RSOs
-              </button>
-            </div>
-          </div>
-          <div className="px-4 font-bold text-2xl">
-            <div
-              className={`${
-                !createRSOView
-                  ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
-                  : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
-              }`}
-            >
-              {' '}
-              <button
-                onClick={() => {
-                  toggleCreateRSOView();
-                }}
-              >
-                Create RSO
-              </button>
-            </div>
-          </div>
-          <div className="px-4 font-bold text-2xl">
-            <div
-              className={`${
-                !approvalRSOView
-                  ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
-                  : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
-              }`}
-            >
-              <button
-                onClick={() => {
-                  toggleApprovalsView();
-                }}
-              >
-                Requests
-              </button>
-            </div>
-          </div>
-        </div>
 
-        <div className={`${rsoListView ? '' : 'hidden'}`}>
-          <RSOSListView rsos={rsos} />
-        </div>
-        <div className={`${createRSOView ? '' : 'hidden'}`}>
-          <RSOCreateView />
-        </div>
+      <div className={`${rsoListView ? '' : 'hidden'}`}>
+        <RSOSListView rsos={rsos} />
       </div>
-    );
-  }
+      <div className={`${createRSOView ? '' : 'hidden'}`}>
+        <RSOCreateView />
+      </div>
+      <div className={`${adminView || superAdminView ? '' : 'hidden'}`}>
+        <RSORequestView members={rsos} />
+      </div>
+    </div>
+  );
 };
 
 export default RSOs;

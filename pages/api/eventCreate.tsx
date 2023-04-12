@@ -51,14 +51,16 @@ export default async function handler(
             phone_no: phoneNumber,
             RSO: { connect: { id: findRSO!.id } },
             approved: approved,
-            eventlocation: {
-              create: {
-                name: locationName,
-                latitude: lat,
-                longitude: lng,
-                uniId: uniSelected,
-              },
-            },
+          },
+        });
+
+        let eventLocation = await prisma.eventLocation.create({
+          data: {
+            name: locationName,
+            latitude: lat,
+            longitude: lng,
+            uniId: uniSelected,
+            eventId: eventCreation.id,
           },
         });
       } else {
@@ -70,14 +72,16 @@ export default async function handler(
             date: dateForDb.toLocaleString(),
             phone_no: phoneNumber,
             approved: approved,
-            eventlocation: {
-              create: {
-                name: locationName,
-                latitude: lat,
-                longitude: lng,
-                uniId: uniSelected,
-              },
-            },
+          },
+        });
+
+        let eventLocation = await prisma.eventLocation.create({
+          data: {
+            name: locationName,
+            latitude: lat,
+            longitude: lng,
+            uniId: uniSelected,
+            eventId: eventCreation.id,
           },
         });
       }
@@ -90,6 +94,7 @@ export default async function handler(
         where: { id: eventCreation.id },
         data: { feedbackId: feedbackCreate.id },
       });
+      
     } catch (error) {
       console.log(error);
     }

@@ -59,12 +59,29 @@ export default async function handler(
             });
           }
 
-          let newMember = await prisma.member.create({
-            data: {
-              rsoId: rso.id,
-              userId: user?.id!,
-            },
-          });
+          if (user!.id! === adminUser?.id)
+          {
+            let newMember = await prisma.member.create({
+              data: {
+                isAdmin: 'TRUE',
+                rsoId: rso.id,
+                userId: user?.id!,
+                approved: 'TRUE'
+              },
+            });
+          }
+          else {
+            let newMember = await prisma.member.create({
+              data: {
+                isAdmin: 'FALSE',
+                rsoId: rso.id,
+                userId: user?.id!,
+                approved: 'TRUE'
+              },
+            });
+          }
+
+          
         }
       }
     } catch (error) {
