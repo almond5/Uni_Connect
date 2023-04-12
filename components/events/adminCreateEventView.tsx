@@ -16,6 +16,23 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
   const [uniSelected, setUni] = useState('');
   const [rsoSelected, setRso] = useState('');
 
+  useEffect(() => {
+    if (!(props.unis === undefined || props.unis === null || props.unis.length === 0))
+      setUni(props.unis[0].id)
+
+    if (!(props.rsos === undefined || props.rsos === null || props.rsos.length === 0))
+      setRso(props.rsos[0].id)
+  });
+
+  const timeout = (delay: number) => {
+    return new Promise((res) => setTimeout(res, delay));
+  };
+
+  const selectType = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    let value = event.target.value;
+    setType(value);
+  };
+
   const fontFamily = 'system-ui';
   const theme = createTheme({
     components: {
@@ -70,15 +87,6 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
 
     const data = await response.json();
     console.log(data);
-  };
-
-  const timeout = (delay: number) => {
-    return new Promise((res) => setTimeout(res, delay));
-  };
-
-  const selectType = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    let value = event.target.value;
-    setType(value);
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -254,12 +262,11 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
             >
               <select
                 name="rsoDropDown"
-                defaultValue="N/A"
+                defaultValue={rsoSelected}
                 onChange={(e) => {
                   setRso(e.target.value);
                 }}
               >
-                <option></option>
                 {props.rsos === undefined ||
                 props.rsos === null ||
                 props.rsos.length === 0 ? (
@@ -295,12 +302,11 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
               >
                 <select
                   name="University"
-                  defaultValue="N/A"
+                  defaultValue={uniSelected}
                   onChange={(e) => {
                     setUni(e.target.value);
                   }}
                 >
-                  <option></option>
                   {props.unis === undefined ||
                   props.unis === null ||
                   props.unis.length === 0 ? (

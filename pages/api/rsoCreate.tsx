@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { name, members, admin } = JSON.parse(req.body);
+      const { name, members, admin, body } = JSON.parse(req.body);
       let userArray = [];
 
       const adminUser = await prisma.user.findFirst({
@@ -22,7 +22,7 @@ export default async function handler(
       ) {
         const updateAdminUserRole = await prisma.user.update({
           where: { id: adminUser?.id },
-          data: { role: 'ADMIN', },
+          data: { role: 'ADMIN' },
         });
       }
 
@@ -31,14 +31,15 @@ export default async function handler(
           data: {
             name: name,
             adminID: adminUser!.id,
+            description: body,
             members: {},
-            uni: { connect: { id: adminUser!.uni!.id }, },
+            uni: { connect: { id: adminUser!.uni!.id } },
           },
         });
 
         for (var email of members) {
           let user = await prisma.user.findFirst({
-            where: { email: email, },
+            where: { email: email },
             include: { uni: true },
           });
 

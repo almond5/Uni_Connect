@@ -153,13 +153,14 @@ model University {
 }
 
 model RSO {
-  id      String     @id @default(cuid())
-  name    String
-  adminID String
-  uniId   String
-  uni     University @relation(fields: [uniId], references: [id])
-  members Member[]
-  events  Event[]
+  id          String     @id @default(cuid())
+  name        String
+  adminID     String
+  uniId       String
+  uni         University @relation(fields: [uniId], references: [id])
+  description String?    @db.Text
+  members     Member[]
+  events      Event[]
 
   @@index([id, uniId])
 }

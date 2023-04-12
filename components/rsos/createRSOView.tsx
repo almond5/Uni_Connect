@@ -7,11 +7,18 @@ const RSOCreateView = () => {
   const [members, setMembers] = useState<string[]>([sesh?.user?.email!]);
   const [member, setMember] = useState('');
   const [admin, setAdmin] = useState(sesh?.user?.email!);
+  const [body, setBody] = useState('');
 
   const handleAddMems = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    setMembers([...members, member]);
-    setMember('');
+
+    if (
+      !members.includes(member.trim()) ||
+      !members.includes(sesh?.user?.email!)
+    ) {
+      setMember('');
+      setMembers([...members, member.trim()]);
+    }
   };
 
   const timeout = (delay: number) => {
@@ -22,6 +29,7 @@ const RSOCreateView = () => {
     name: string | undefined | null;
     members: string[] | undefined | null;
     admin: string | undefined | null;
+    body: string | undefined | null;
   }) => {
     const response = await fetch('/api/rsoCreate', {
       method: 'POST',
@@ -34,7 +42,7 @@ const RSOCreateView = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    const rso = { name, members, admin };
+    const rso = { name, members, admin, body };
     await submitRSO(rso);
     await timeout(1000);
     window.location.reload();
@@ -42,6 +50,7 @@ const RSOCreateView = () => {
     setAdmin(sesh?.user?.email!);
     setMembers([sesh?.user?.email!]);
     setMember('');
+    setBody('');
   };
 
   return (
@@ -63,6 +72,31 @@ const RSOCreateView = () => {
                         rounded-tl-none border-neutral-700 "
             ></textarea>{' '}
           </div>
+
+          <div className="mb-4 text-lg">
+            <div
+              className="rounded-[0.175rem] w-max border-l-[0.175rem] 
+              border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition 
+                bg-neutral-300 text-lg"
+            >
+              Description:
+            </div>
+            <div>
+              <textarea
+                maxLength={322}
+                value={body}
+                onChange={(e) => [setBody(e.target.value)]}
+                required
+                rows={7}
+                cols={1}
+                className="block p-2 w-full text-md text-gray-900 
+                bg-neutral-50 rounded-lg border-[0.175rem] 
+                  rounded-tl-none border-neutral-700"
+              ></textarea>{' '}
+            </div>
+          </div>
+
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
@@ -120,11 +154,12 @@ const RSOCreateView = () => {
             >
               <select
                 name="memberDropDown"
+                defaultValue={admin}
                 onChange={(e) => {
                   setAdmin(e.target.value);
                 }}
+                required
               >
-                <option></option>
                 {members.map((member: any) => (
                   <option key={member} value={member}>
                     {member}
