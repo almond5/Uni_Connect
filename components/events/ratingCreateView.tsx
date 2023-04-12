@@ -1,8 +1,10 @@
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
+import { FaStar, FaRegStar } from 'react-icons/fa';
 
 const RatingCreateView = (props: { event: any }) => {
   const [ratingVal, setRatingVal] = useState('');
+  const [hover, setHover] = useState(0);
   const { data: sesh } = useSession();
   const event = props.event;
 
@@ -47,16 +49,17 @@ const RatingCreateView = (props: { event: any }) => {
         >
           <div className="mb-3.5 text-md">
             <div
-              className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
+              className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-b-[0.175rem] border-r-[0.175rem] 
                 border-neutral-700 px-2 font-bold transition bg-neutral-300 text-md"
             >
-              Rating:
+              How many stars would you rate this event?
             </div>
             <div>
               <input
                 onChange={(e) => setRatingVal(e.target.value)}
                 type = "number"
                 value = {ratingVal}
+                max="5"
                 required
                 className="block p-2 w-36 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
                 rounded-tl-none border-neutral-700"
