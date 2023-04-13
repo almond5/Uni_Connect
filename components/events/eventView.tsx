@@ -49,7 +49,7 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
               </div>
               <div className="flex">
                 <div className="font-bold">Location:&nbsp;</div>
-                <div> {event.eventlocation.name}</div>
+                <div> {event.eventlocation.addr}</div>
               </div>
               <div className="flex">
                 <div className="font-bold">Type:&nbsp;</div>

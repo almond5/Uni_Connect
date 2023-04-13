@@ -3,6 +3,7 @@ import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import GoogleMapView from '../googleMapView';
+import { useSession } from 'next-auth/react';
 
 const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
   const [title, setTitle] = useState('');
@@ -12,9 +13,13 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [lat, setLat] = useState(28.6024);
   const [lng, setLng] = useState(-81.2001);
-  const [locationName, setLocatioName] = useState('');
   const [uniSelected, setUni] = useState('');
   const [rsoSelected, setRso] = useState('');
+  const [addr, setAddress] = useState(
+    '4000 Central Florida Blvd, Orlando, FL 32816, USA'
+  );
+  const { data: sesh } = useSession();
+  const [userEmail, setUserEmail] = useState(sesh?.user!.email!);
 
   useEffect(() => {
     if (
@@ -66,17 +71,61 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
     phoneNumber: string | undefined | null;
     lat: number | undefined | null;
     lng: number | undefined | null;
-    locationName: string | undefined | null;
+    addr: string | undefined | null;
     uniSelected: string | undefined | null;
     rsoSelected: string | undefined | null;
+    approved: string | undefined | null;
+    userEmail: string | undefined | null;
   }) => {
     const response = await fetch('/api/eventCreate', {
       method: 'POST',
       body: JSON.stringify(event),
     });
 
-    const data = await response.json();
-    console.log(data);
+    const { message, eventLoc, eventCheck, timeConflict } =
+      await response.json();
+
+    if (message === 'Conflicting Locations!') {
+      alert(
+        message +
+          '\n' +
+          eventCheck +
+          "'s location conflicts with " +
+          title +
+          " 's location." +
+          '\n' +
+          eventLoc
+      );
+      return;
+    } else if (message === 'Conflicting Times!') {
+      alert(
+        message +
+          '\n' +
+          eventCheck +
+          "'s start time conflicts with " +
+          title +
+          " 's start time." +
+          '\n' +
+          timeConflict
+      );
+      return;
+    } else if (message === 'You are not the admin of this RSO!') {
+      alert(message + '\n');
+      return;
+    }
+
+    window.location.reload();
+    setBody('');
+    setTitle('');
+    setType('PUBLIC');
+    setDate(null);
+    setPhoneNumber('');
+    setLat(28.6024);
+    setLng(-81.2001);
+    setAddress('');
+    setUni('');
+    setRso('');
+    setUserEmail('');
   };
 
   const submitApproval = async (event: {
@@ -87,7 +136,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
     phoneNumber: string | undefined | null;
     lat: number | undefined | null;
     lng: number | undefined | null;
-    locationName: string | undefined | null;
+    addr: string | undefined | null;
     uniSelected: string | undefined | null;
     rsoSelected: string | undefined | null;
     approved: string | undefined | null;
@@ -97,8 +146,50 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
       body: JSON.stringify(event),
     });
 
-    const data = await response.json();
-    console.log(data);
+    const { message, eventLoc, eventCheck, timeConflict } =
+      await response.json();
+
+    if (message === 'Conflicting Locations!') {
+      alert(
+        message +
+          '\n' +
+          eventCheck +
+          "'s location conflicts with " +
+          title +
+          " 's location." +
+          '\n' +
+          eventLoc
+      );
+      return;
+    } else if (message === 'Conflicting Times!') {
+      alert(
+        message +
+          '\n' +
+          eventCheck +
+          "'s start time conflicts with " +
+          title +
+          " 's start time." +
+          '\n' +
+          timeConflict
+      );
+      return;
+    } else if (message === 'You are not the admin of this RSO!') {
+      alert(message + '\n');
+      return;
+    }
+
+    window.location.reload();
+    setBody('');
+    setTitle('');
+    setType('PUBLIC');
+    setDate(null);
+    setPhoneNumber('');
+    setLat(28.6024);
+    setLng(-81.2001);
+    setAddress('');
+    setUni('');
+    setRso('');
+    setUserEmail('');
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -117,10 +208,11 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
         phoneNumber,
         lat,
         lng,
-        locationName,
+        addr,
         uniSelected,
         rsoSelected,
         approved,
+        userEmail,
       };
       await submitApproval(event);
     } else {
@@ -132,26 +224,15 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
         phoneNumber,
         lat,
         lng,
-        locationName,
+        addr,
         uniSelected,
         rsoSelected,
         approved,
+        userEmail,
       };
       await submitEvent(event);
     }
-
     await timeout(1000);
-    window.location.reload();
-    setBody('');
-    setTitle('');
-    setType('PUBLIC');
-    setDate(null);
-    setPhoneNumber('');
-    setLat(28.6024);
-    setLng(-81.2001);
-    setLocatioName('');
-    setRso('');
-    setUni('');
   };
 
   return (
@@ -356,23 +437,22 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
           </div>
           <div className="mb-4 text-lg">
             <div
-              className="rounded-[0.175rem] w-max border-l-[0.175rem]
-               border-t-[0.175rem] border-r-[0.175rem] 
-                border-neutral-700 px-2 font-bold transition 
-                bg-neutral-300 text-lg"
+              className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
             >
-              Location Name:
+              Address:
             </div>
-            <input
-              required
-              onChange={(e) => setLocatioName(e.target.value)}
-              type="text"
-              className="block p-2 w-full text-md text-gray-900 
-              bg-neutral-50 rounded-lg border-[0.175rem] 
-              rounded-tl-none border-neutral-700"
-              name="location"
-              maxLength={50}
-            />
+            <div>
+              <textarea
+                maxLength={322}
+                value={addr}
+                disabled
+                rows={1}
+                cols={1}
+                className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+                rounded-tl-none border-neutral-700"
+              ></textarea>{' '}
+            </div>
           </div>
           <div className="flex justify-between">
             <div>
@@ -420,7 +500,11 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
             </div>
           </div>
 
-          <GoogleMapView setLat={setLat} setLng={setLng}></GoogleMapView>
+          <GoogleMapView
+            setLat={setLat}
+            setLng={setLng}
+            setAddress={setAddress}
+          ></GoogleMapView>
         </div>
 
         <div className="py-[32px]">

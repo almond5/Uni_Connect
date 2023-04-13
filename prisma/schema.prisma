@@ -125,7 +125,7 @@ model Location {
 
 model EventLocation {
   id        String  @id @default(cuid())
-  name      String  @db.Text
+  addr      String  @db.Text
   latitude  Float
   longitude Float
   uniId     String?

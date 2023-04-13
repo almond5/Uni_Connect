@@ -17,6 +17,7 @@ const Roles = {
 
 export async function getServerSideProps(context: any) {
   const session = await getSession(context);
+
   const currUser = session?.user;
 
   try {
@@ -132,8 +133,6 @@ export async function getServerSideProps(context: any) {
       });
     }
 
-    // console.log(
-
     const role = user?.role;
 
     return {
@@ -151,8 +150,6 @@ export async function getServerSideProps(context: any) {
     const approvals = null;
     const rsosFromDB = null;
     const roleFromDB = null;
-
-    console.log(error);
 
     return {
       props: {
@@ -211,8 +208,7 @@ const Events = ({
 
   useEffect(() => {
     if (user.includes(Roles.STUDENT)) setStudentView(true);
-    else if (user.includes(Roles.SUPERADMIN))
-      setSuperAdminView(true);
+    else if (user.includes(Roles.SUPERADMIN)) setSuperAdminView(true);
     else if (user.includes(Roles.ADMIN)) setAdminView(true);
   }, []);
 

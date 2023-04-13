@@ -8,9 +8,9 @@ const UniCreateView = () => {
   const [phoneNumber, setPhoneNumber] = useState(0);
   const [lat, setLat] = useState(28.6024);
   const [lng, setLng] = useState(-81.2001);
-  const [locationName, setLocationName] = useState('');
-  const [uniSelected, setUni] = useState('');
-  const [rsoSelected, setRso] = useState('');
+  const [addr, setAddress] = useState(
+    '4000 Central Florida Blvd, Orlando, FL 32816, USA'
+  );
 
   const submitUni = async (university: {
     title: string | undefined | null;
@@ -18,7 +18,7 @@ const UniCreateView = () => {
     num_students: number | undefined | null;
     lat: number | undefined | null;
     lng: number | undefined | null;
-    locationName: string | undefined | null;
+    addr: string | undefined | null;
     num: string | undefined | null;
   }) => {
     const response = await fetch('/api/universityCreate', {
@@ -45,7 +45,7 @@ const UniCreateView = () => {
       num_students,
       lat,
       lng,
-      locationName,
+      addr,
       num
     };
     await submitUni(university);
@@ -56,9 +56,7 @@ const UniCreateView = () => {
     setPhoneNumber(0);
     setLat(28.6024);
     setLng(-81.2001);
-    setLocationName('');
-    setUni('');
-    setRso('');
+    setAddress('');
   };
 
   return (
@@ -131,17 +129,19 @@ const UniCreateView = () => {
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
                 border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
             >
-              Location Name:
+              Address:
             </div>
-            <input
-              required
-              onChange={(e) => setLocationName(e.target.value)}
-              type="text"
-              className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
-              rounded-tl-none border-neutral-700"
-              name="location"
-              maxLength={50}
-            />
+            <div>
+              <textarea
+                maxLength={322}
+                value={addr}
+                disabled
+                rows={1}
+                cols={1}
+                className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+                rounded-tl-none border-neutral-700"
+              ></textarea>{' '}
+            </div>
           </div>
           <div className="flex justify-between">
             <div>
@@ -183,7 +183,7 @@ const UniCreateView = () => {
             </div>
           </div>
 
-          <GoogleMapView setLat={setLat} setLng={setLng}></GoogleMapView>
+          <GoogleMapView setLat={setLat} setLng={setLng} setAddress={setAddress}></GoogleMapView>
         </div>
 
         <div className="py-[32px]">

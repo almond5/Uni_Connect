@@ -4,9 +4,6 @@ import UniView from './uniView';
 import Login from '../loginView';
 
 const UniListView = (props: { universities: any }) => {
-  const [deleteModalView, setDeleteModalView] = useState(false);
-  const [editModalView, setEditModalView] = useState(false);
-  const [del, setDeleted] = useState(false);
   const { status: sesh } = useSession();
   const universities = props.universities;
 
@@ -24,8 +21,10 @@ const UniListView = (props: { universities: any }) => {
     universities.length === 0
   )
     return (
-      <div className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800">
-        There are no universities!
+      <div className="py-10">
+        <div className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800">
+          There are no universities!
+        </div>
       </div>
     );
   else {

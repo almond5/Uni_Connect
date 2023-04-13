@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
 
-const GoogleMapView = (props: { setLat: any; setLng: any }) => {
+const GoogleMapView = (props: { setLat: any; setLng: any; setAddress: any }) => {
   const libraries = useMemo(() => ['places'], []);
   const mapCenter = useMemo(() => ({ lat: 28.6024, lng: -81.2001 }), []);
   const [guessCoords, setGuessCoords] = useState({
@@ -27,6 +27,24 @@ const GoogleMapView = (props: { setLat: any; setLng: any }) => {
     setGuessCoords({ lat: e.latLng!.lat(), lng: e.latLng!.lng() });
     props.setLat(e.latLng!.lat());
     props.setLng(e.latLng!.lng());
+    handleReverseGeocode(guessCoords.lat, guessCoords.lng);
+  };
+
+  const handleReverseGeocode = (lat: number, lng: number) => {
+    const geocoder = new google.maps.Geocoder();
+    const latlng = { lat, lng };
+    geocoder.geocode({ location: latlng }, (results, status) => {
+      if (status === 'OK') {
+        if (results![0]) {
+          console.log(results![0].formatted_address);
+          props.setAddress(results![0].formatted_address)
+        } else {
+          window.alert('No results found');
+        }
+      } else {
+        window.alert('Geocoder failed due to: ' + status);
+      }
+    });
   };
 
   if (!isLoaded) return <div>Loading...</div>;
