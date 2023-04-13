@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 const RSOLeaveView = (props: { rso: any }) => {
-  const [userEmail, setUserEmail] = useState('');
   const rso = props.rso;
-  const [rsoId, setRsoId] = useState(rso.id);
   const { data: sesh } = useSession();
+  const [rsoId, setRsoId] = useState(rso.id);
+  const [userEmail, setUserEmail] = useState(sesh?.user?.email!);
+
 
   const timeout = (delay: number) => {
     return new Promise((res) => setTimeout(res, delay));
@@ -13,7 +14,6 @@ const RSOLeaveView = (props: { rso: any }) => {
 
   const handleLeave = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    setUserEmail(sesh?.user?.email!);
     const rsoLeave = {
       rsoId,
       userEmail,

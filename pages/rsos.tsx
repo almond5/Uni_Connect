@@ -26,6 +26,7 @@ export async function getServerSideProps(context: any) {
     let rsosToLeave: ((RSO & { members: Member[] }) | null)[] = [];
     let rsosToJoin: any = [];
     let rsosPending: any = [];
+    let allRSOS: any = [];
 
     const user = await prisma.user.findFirst({
       where: {
@@ -58,14 +59,12 @@ export async function getServerSideProps(context: any) {
         }
       }
 
-      const allRSOs = await prisma.rSO.findMany({
-        where: {
-          uniId: user?.uni?.id!,
-        },
-        include: { members: true },
-      });
-      rsosToJoin = allRSOs.filter(
-        (objectOne) =>
+      allRSOS = await prisma.rSO.findMany({ where: {
+        uniId: user?.uni!.id,
+      } });
+
+      rsosToJoin = allRSOS.filter(
+        (objectOne: { id: string }) =>
           !rsosToLeave.some((objectTwo) => objectOne.id === objectTwo!.id)
       );
 
@@ -194,7 +193,11 @@ const RSOs = ({
           Sign-Out
         </button>
       </div>
-      <div className="flex justify-center">
+      <div
+        className={`${
+          adminView || studentView ? 'flex justify-center' : 'hidden'
+        }`}
+      >
         <div className="px-4 font-bold text-2xl">
           <div
             className={`${
@@ -249,21 +252,41 @@ const RSOs = ({
             </button>
           </div>
         </div>
-        <div className={`${adminView || superAdminView ? '' : 'hidden'}`}>
+        <div className="px-4 font-bold text-2xl">
+          <div
+            className={`${
+              !approvalRSOView
+                ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+                : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+            }`}
+          >
+            <button
+              onClick={() => {
+                toggleApprovalsView();
+              }}
+            >
+              Requests
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className={`${superAdminView ? '' : 'hidden'}`}>
+        <div className="flex justify-center">
           <div className="px-4 font-bold text-2xl">
             <div
               className={`${
-                !approvalRSOView
+                !rsoListView
                   ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
                   : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
               }`}
             >
+              {' '}
               <button
                 onClick={() => {
-                  toggleApprovalsView();
+                  toggleRSOsListView();
                 }}
               >
-                Requests
+                View All RSOs
               </button>
             </div>
           </div>
