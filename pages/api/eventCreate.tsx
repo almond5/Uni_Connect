@@ -51,16 +51,25 @@ export default async function handler(
             phone_no: phoneNumber,
             RSO: { connect: { id: findRSO!.id } },
             approved: approved,
+            university: { connect: { id: findUni!.id! } },
+          },
+        });
+      } else if (type === 'PRIVATE') {
+        const findUni = await prisma.university.findFirst({
+          where: {
+            id: uniSelected,
           },
         });
 
-        let eventLocation = await prisma.eventLocation.create({
+        eventCreation = await prisma.event.create({
           data: {
-            name: locationName,
-            latitude: lat,
-            longitude: lng,
-            uniId: uniSelected,
-            eventId: eventCreation.id,
+            name: title,
+            type: type,
+            description: body,
+            date: dateForDb.toLocaleString(),
+            phone_no: phoneNumber,
+            approved: approved,
+            university: { connect: { id: findUni!.id! } },
           },
         });
       } else {
@@ -74,17 +83,28 @@ export default async function handler(
             approved: approved,
           },
         });
-
-        let eventLocation = await prisma.eventLocation.create({
-          data: {
-            name: locationName,
-            latitude: lat,
-            longitude: lng,
-            uniId: uniSelected,
-            eventId: eventCreation.id,
-          },
-        });
       }
+
+      let eventLocation = await prisma.eventLocation.create({
+        data: {
+          name: locationName,
+          latitude: lat,
+          longitude: lng,
+          uniId: uniSelected ? uniSelected : null,
+          eventId: eventCreation.id,
+        },
+      });
+
+      eventCreation = await prisma.event.update({
+        where: { id: eventCreation.id },
+        data: {
+          eventlocation: {
+            connect: {
+              id: eventLocation.id,
+            },
+          },
+        },
+      });
 
       const feedbackCreate = await prisma.feedback.create({
         data: { eventId: eventCreation.id },
@@ -94,7 +114,6 @@ export default async function handler(
         where: { id: eventCreation.id },
         data: { feedbackId: feedbackCreate.id },
       });
-      
     } catch (error) {
       console.log(error);
     }

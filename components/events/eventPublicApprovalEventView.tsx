@@ -2,17 +2,24 @@ import React, { useState } from 'react';
 
 const ApprovalEventView = (props: { event: any }) => {
   const event = props.event;
+  const [id, setId] = useState(event.id);
 
-  const handleDecline = async () => {
-    await declined(event.id);
-    await timeout(1000);
+  const handleAccept = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    const approval = { id };
+    await accepted(approval);
+    await await timeout(1000);
     window.location.reload();
+    setId('');
   };
 
-  const handleAccept = async () => {
-    await accepted(event.id);
+  const handleDecline = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    const approval = { id };
+    await declined(approval);
     await timeout(1000);
     window.location.reload();
+    setId('');
   };
 
   const timeout = (delay: number) => {
@@ -29,10 +36,10 @@ const ApprovalEventView = (props: { event: any }) => {
     console.log(data);
   };
 
-  const declined = async (event: { id: string | undefined | null }) => {
+  const declined = async (approval: { id: string | undefined | null }) => {
     const response = await fetch('/api/eventDelete', {
       method: 'POST',
-      body: JSON.stringify(event),
+      body: JSON.stringify(approval),
     });
 
     const data = await response.json();
@@ -47,17 +54,17 @@ const ApprovalEventView = (props: { event: any }) => {
       >
         <div className="flex justify-between">
           <div>
-          <button
+            <button
               className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-0.5 font-bold transition
              bg-neutral-50 text-md hover:bg-neutral-400 hover:text-gray-800 mr-2"
-              onClick={() => handleAccept()}
+              onClick={handleAccept}
             >
               Accept
             </button>
             <button
               className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-0.5 font-bold transition
              bg-neutral-50 text-md hover:bg-neutral-400 hover:text-gray-800"
-              onClick={() => handleDecline()}
+              onClick={handleDecline}
             >
               Decline
             </button>

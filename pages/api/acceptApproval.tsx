@@ -8,16 +8,13 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       const { id } = JSON.parse(req.body);
-      const approved = 'TRUE';
 
-      const eventApproved = await prisma.event.findFirst({
-        where: { id: id },
-      });
 
       const updateEvent = await prisma.event.update({
-        where: { id: eventApproved?.id! },
-        data: { approved: approved },
-      });
+        where: { id: id },
+        data: { approved: 'TRUE' },
+      });     
+      
     } catch (error) {
       console.log(error);
     }

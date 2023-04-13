@@ -27,6 +27,7 @@ export async function getServerSideProps(context: any) {
       include: { Member: true, uni: true },
     });
 
+    let approvals = null
     let events = null;
     let rsos = null;
     let unis = null;
@@ -41,6 +42,13 @@ export async function getServerSideProps(context: any) {
           feedback: {
             include: { comments: true, ratings: true },
           },
+        },
+      });
+      
+      approvals = await prisma.event.findMany({
+        where: {
+          type: 'PUBLIC',
+          approved: 'FALSE',
         },
       });
 
@@ -124,11 +132,7 @@ export async function getServerSideProps(context: any) {
       });
     }
 
-    const approvals = await prisma.event.findMany({
-      where: {
-        approved: 'FALSE',
-      },
-    });
+    // console.log(
 
     const role = user?.role;
 

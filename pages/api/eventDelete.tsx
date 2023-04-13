@@ -9,13 +9,10 @@ export default async function handler(
     try {
       const { id } = JSON.parse(req.body);
 
-      const eventToDelete = await prisma.event.findFirst({
+      const eventDeletion = await prisma.event.delete({
         where: { id: id },
       });
-
-      const eventDeletion = await prisma.event.delete({
-        where: { id: eventToDelete?.id },
-      });
+      
     } catch (error) {
       console.log(error);
     }

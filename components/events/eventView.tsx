@@ -45,12 +45,11 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
                 <div className="font-bold">Time: &nbsp;</div>
                 <div>
                   {event.date}
-                  {event.time}
                 </div>
               </div>
               <div className="flex">
                 <div className="font-bold">Location:&nbsp;</div>
-                <div> {event.eventlocation?.name}</div>
+                <div> {event.eventlocation.name}</div>
               </div>
               <div className="flex">
                 <div className="font-bold">Type:&nbsp;</div>
