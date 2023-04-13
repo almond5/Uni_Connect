@@ -54,7 +54,9 @@ export async function getServerSideProps(context: any) {
       });
 
       rsos = await prisma.rSO.findMany({
-        where: {},
+        where: {
+          active: 'TRUE',
+        },
       });
 
       unis = await prisma.university.findMany({
@@ -116,6 +118,7 @@ export async function getServerSideProps(context: any) {
           let tempRsos = await prisma.rSO.findMany({
             where: {
               id: member.rsoId,
+              active: 'TRUE',
             },
           });
 

@@ -159,6 +159,7 @@ model RSO {
   description String?    @db.Text
   members     Member[]
   events      Event[]
+  active      String
 
   @@index([id, uniId])
 }

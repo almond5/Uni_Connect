@@ -104,7 +104,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
           eventCheck +
           "'s start time conflicts with " +
           title +
-          " 's start time." +
+          "'s start time." +
           '\n' +
           timeConflict
       );

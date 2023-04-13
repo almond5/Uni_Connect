@@ -3,9 +3,8 @@ import GoogleMapView from '../googleMapView';
 
 const UniCreateView = () => {
   const [title, setTitle] = useState('');
-  const [num_students, setNumStudents] = useState(0);
   const [body, setBody] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState(0);
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [lat, setLat] = useState(28.6024);
   const [lng, setLng] = useState(-81.2001);
   const [addr, setAddress] = useState(
@@ -15,11 +14,10 @@ const UniCreateView = () => {
   const submitUni = async (university: {
     title: string | undefined | null;
     body: string | undefined | null;
-    num_students: number | undefined | null;
     lat: number | undefined | null;
     lng: number | undefined | null;
     addr: string | undefined | null;
-    num: string | undefined | null;
+    phoneNumber: string | undefined | null;
   }) => {
     const response = await fetch('/api/universityCreate', {
       method: 'POST',
@@ -42,18 +40,17 @@ const UniCreateView = () => {
     const university = {
       title,
       body,
-      num_students,
       lat,
       lng,
       addr,
-      num
+      phoneNumber,
     };
     await submitUni(university);
     await timeout(1000);
     window.location.reload();
     setBody('');
     setTitle('');
-    setPhoneNumber(0);
+    setPhoneNumber('');
     setLat(28.6024);
     setLng(-81.2001);
     setAddress('');
@@ -115,7 +112,7 @@ const UniCreateView = () => {
             </div>
             <input
               required
-              onChange={(e) => setPhoneNumber(Number(e.target.value))}
+              onChange={(e) => setPhoneNumber(e.target.value.toString())}
               type="number"
               className="block p-2 w-36 text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
               rounded-tl-none border-neutral-700"
@@ -183,9 +180,12 @@ const UniCreateView = () => {
             </div>
           </div>
 
-          <GoogleMapView setLat={setLat} setLng={setLng} setAddress={setAddress}></GoogleMapView>
+          <GoogleMapView
+            setLat={setLat}
+            setLng={setLng}
+            setAddress={setAddress}
+          ></GoogleMapView>
         </div>
-
         <div className="py-[32px]">
           <button>
             <div

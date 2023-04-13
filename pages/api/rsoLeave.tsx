@@ -46,6 +46,23 @@ export default async function handler(
         where: { id: member[0].id },
       });
 
+      const rso = await prisma.rSO.findFirst({ where: { id: rsoId }, include: { members: true }});
+
+      let nummems = 0;
+      for (let i = 0; i < rso?.members!.length!; i++)
+        if (rso?.members![i].approved === 'APPROVED') 
+          nummems++;
+
+      if (nummems < 5) {
+        let rsoUpdate = await prisma.rSO.update({
+          where: { id: rso?.id },
+          data: { active: 'FALSE' },
+        });
+
+        res.status(201).json('This RSO has been deactivated.');
+        return;
+      }
+
     } catch (error) {
       console.log(error);
     }

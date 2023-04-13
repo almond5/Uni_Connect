@@ -75,6 +75,7 @@ export async function getServerSideProps(context: any) {
           !rsosPending.some((objectTwo: any) => objectOne.id === objectTwo!.id)
       );
     }
+    
     const role = user?.role;
 
     return {

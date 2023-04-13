@@ -15,6 +15,28 @@ export default async function handler(
           approved: 'APPROVED',
         },
       });
+
+      const memberInfo = await prisma.member.findFirst({
+        where: { id: memId },
+      });
+
+      const rso = await prisma.rSO.findFirst({
+        where: { id: memberInfo?.rsoId },
+        include: { members: true },
+      });
+
+      let nummems = 0;
+      for (let i = 0; i < rso?.members!.length!; i++)
+        if (rso?.members![i].approved === 'APPROVED') nummems++;
+
+      if (nummems >= 5) {
+        let rsoUpdate = await prisma.rSO.update({
+          where: { id: rso?.id },
+          data: { active: 'TRUE' },
+        });
+
+        res.status(201).json('This RSO has been activated.');
+      }
     } catch (error) {
       console.log(error);
     }

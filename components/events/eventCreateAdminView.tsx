@@ -168,7 +168,7 @@ const AdminEventsCreateView = (props: { unis: any; rsos: any }) => {
           eventCheck +
           "'s start time conflicts with " +
           title +
-          " 's start time." +
+          "'s start time." +
           '\n' +
           timeConflict
       );

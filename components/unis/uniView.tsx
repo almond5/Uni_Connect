@@ -15,23 +15,21 @@ const UniView = (props: { university: any }) => {
         <div className="h-0 min-h-[78%]">
           <div className="mb-2 mt-2 text-lg font-bold">{university.name}</div>
           <div className="flex flex-col text-left">
-            <div className="mb-4 text-md text-left break-all">
+            <div className="mb-1 text-md text-left break-all">
               <div className="flex">
                 <div className="font-bold">Location:&nbsp;</div>
                 <p>{university.location.name}</p>
               </div>
-              <p> Latitude: {university.location.latitude}</p>
-              <p> Longitude: {university.location.longitude}</p>
             </div>
           </div>
-          <p className="mb-4 text-md text-left break-all">
+          <div className="flex">
+            <div className="font-bold">Phone Number:&nbsp;</div>
+            <p>{university.phone_no}</p>
+          </div>
+          <p className="mb-1 text-md text-left break-all">
             <div className="font-bold">Description:&nbsp;</div>
             {university.description}
           </p>
-          <div className="flex">
-            <div className="font-bold">Phone Number:&nbsp;</div> 
-            <p>{university.phone_no}</p>
-          </div>
         </div>
       </div>
     </div>

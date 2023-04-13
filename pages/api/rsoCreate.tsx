@@ -33,6 +33,7 @@ export default async function handler(
             adminID: adminUser!.id,
             description: body,
             members: {},
+            active: 'TRUE',
             uni: { connect: { id: adminUser!.uni!.id } },
           },
         });
