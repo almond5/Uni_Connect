@@ -164,12 +164,16 @@ model RSO {
 }
 
 model Member {
-  id     String @id @default(cuid())
-  rsoId  String
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-  rso    RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
-    approved String
+  id       String @id @default(cuid())
+  rsoId    String
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  rso      RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
+  rsoName  String
+  name     String    
+  email    String    
+  uniId    String
+  approved String
   isAdmin  String
 
   @@index([id, rsoId])

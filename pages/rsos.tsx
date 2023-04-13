@@ -3,10 +3,12 @@ import LoginView from '../components/loginView';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import prisma from '../lib/prismadb';
+import RSOCreateView from '@/components/rsos/rsoCreateView';
+import { Member, RSO, Role } from '@prisma/client';
+import RSOJoinListView from '@/components/rsos/rsosJoinListView';
+import RSOSLeaveListView from '@/components/rsos/rsosLeaveListView';
 import RSOSListView from '@/components/rsos/rsosListView';
-import RSOCreateView from '@/components/rsos/createRSOView';
-import { Member, RSO } from '@prisma/client';
-import RSORequestView from '@/components/rsos/rsosRequestView';
+import RSORequestsView from '@/components/rsos/rsoRequestsView';
 
 const Roles = {
   STUDENT: 'STUDENT',
@@ -19,8 +21,11 @@ export async function getServerSideProps(context: any) {
   const currUser = session?.user;
 
   try {
-    let rsos = [];
-    let mems = [];
+    let rsos = null;
+    let mems: any = [];
+    let rsosToLeave: ((RSO & { members: Member[] }) | null)[] = [];
+    let rsosToJoin: any = [];
+    let rsosPending: any = [];
 
     const user = await prisma.user.findFirst({
       where: {
@@ -31,44 +36,70 @@ export async function getServerSideProps(context: any) {
 
     if (user?.role === Roles.SUPERADMIN) {
       rsos = await prisma.rSO.findMany({ where: {} });
-    } else if (user?.role === Roles.ADMIN) {
+    } else {
       for (let i = 0; i < user?.Member!.length!; i++) {
-        if (user?.Member![i].approved === 'TRUE') {
+        if (user?.Member![i].approved === 'APPROVED') {
           const rso = await prisma.rSO.findFirst({
             where: { id: user?.Member![i].rsoId },
             include: { members: true },
           });
 
-          rsos.push(rso);
-
           if (user?.Member![i].isAdmin === 'TRUE')
             for (let i = 0; i < rso?.members!.length!; i++)
-              if (rso?.members![i].approved === 'FALSE')
+              if (rso?.members![i].approved === 'PENDING')
                 mems.push(rso?.members[i]);
+
+          rsosToLeave.push(rso);
+        } else if (user?.Member![i].approved === 'PENDING') {
+          const rso = await prisma.rSO.findFirst({
+            where: { id: user?.Member![i].rsoId },
+          });
+          rsosPending.push(rso);
         }
       }
-    } else {
-      rsos = await prisma.rSO.findMany({
+
+      const allRSOs = await prisma.rSO.findMany({
         where: {
           uniId: user?.uni?.id!,
         },
+        include: { members: true },
       });
+      rsosToJoin = allRSOs.filter(
+        (objectOne) =>
+          !rsosToLeave.some((objectTwo) => objectOne.id === objectTwo!.id)
+      );
+
+      rsosToJoin = rsosToJoin.filter(
+        (objectOne: { id: any }) =>
+          !rsosPending.some((objectTwo: any) => objectOne.id === objectTwo!.id)
+      );
     }
+
+    const role = user?.role;
 
     return {
       props: {
         rsosFromDB: rsos,
+        rsosToJoinFromDB: rsosToJoin,
+        rsosToLeaveFromDB: rsosToLeave,
         membersFromDB: mems,
+        roleFromDB: role,
       },
     };
   } catch (error) {
     const rsos = null;
     const mems = null;
+    const rsosToLeave = null;
+    const rsosToJoin = null;
+    const role = null;
 
     return {
       props: {
         rsosFromDB: rsos,
+        rsosToJoinFromDB: rsosToJoin,
+        rsosToLeaveFromDB: rsosToLeave,
         membersFromDB: mems,
+        roleFromDB: role,
       },
     };
   }
@@ -77,12 +108,22 @@ export async function getServerSideProps(context: any) {
 const RSOs = ({
   rsosFromDB,
   membersFromDB,
+  rsosToJoinFromDB,
+  rsosToLeaveFromDB,
+  roleFromDB,
 }: {
   rsosFromDB: any;
   membersFromDB: any;
+  rsosToJoinFromDB: any;
+  rsosToLeaveFromDB: any;
+  roleFromDB: any;
 }) => {
   const [rsos] = useState<RSO[]>(rsosFromDB);
+  const [rsosToJoin] = useState<RSO[]>(rsosToJoinFromDB);
+  const [rsosToLeave] = useState<RSO[]>(rsosToLeaveFromDB);
   const [members] = useState<Member[]>(membersFromDB);
+  const [userRole] = useState<Role>(roleFromDB);
+
   const { status: sesh } = useSession();
   const [adminView, setAdminView] = useState(false);
   const [superAdminView, setSuperAdminView] = useState(false);
@@ -90,29 +131,41 @@ const RSOs = ({
   const [rsoListView, setRSOListView] = useState(false);
   const [createRSOView, setCreateRSOView] = useState(false);
   const [approvalRSOView, setApprovalRSOView] = useState(false);
+  const [rsoJoinListView, setRSOJoinListView] = useState(false);
+  const [studentView, setStudentView] = useState(false);
 
   const toggleRSOsListView = () => {
     rsoListView ? setRSOListView(false) : setRSOListView(true);
     setCreateRSOView(false);
     setApprovalRSOView(false);
+    setRSOJoinListView(false);
   };
 
   const toggleCreateRSOView = () => {
     createRSOView ? setCreateRSOView(false) : setCreateRSOView(true);
     setRSOListView(false);
     setApprovalRSOView(false);
+    setRSOJoinListView(false);
   };
 
   const toggleApprovalsView = () => {
     approvalRSOView ? setApprovalRSOView(false) : setApprovalRSOView(true);
     setRSOListView(false);
     setCreateRSOView(false);
+    setRSOJoinListView(false);
+  };
+
+  const toggleJoinRSOsListView = () => {
+    rsoJoinListView ? setRSOJoinListView(false) : setRSOJoinListView(true);
+    setRSOListView(false);
+    setCreateRSOView(false);
+    setApprovalRSOView(false);
   };
 
   useEffect(() => {
-    if (window?.location.search.includes(Roles.ADMIN)) setAdminView(true);
-    else if (window?.location.search.includes(Roles.SUPERADMIN))
-      setSuperAdminView(true);
+    if (userRole.includes(Roles.STUDENT)) setStudentView(true);
+    else if (userRole.includes(Roles.SUPERADMIN)) setSuperAdminView(true);
+    else if (userRole.includes(Roles.ADMIN)) setAdminView(true);
   }, []);
 
   if (sesh === 'loading') {
@@ -163,7 +216,7 @@ const RSOs = ({
         <div className="px-4 font-bold text-2xl">
           <div
             className={`${
-              !rsoListView
+              !rsoJoinListView
                 ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
                 : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
             }`}
@@ -196,33 +249,40 @@ const RSOs = ({
             </button>
           </div>
         </div>
-        <div className="px-4 font-bold text-2xl">
-          <div
-            className={`${
-              !approvalRSOView
-                ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
-                : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
-            }`}
-          >
-            <button
-              onClick={() => {
-                toggleApprovalsView();
-              }}
+        <div className={`${adminView || superAdminView ? '' : 'hidden'}`}>
+          <div className="px-4 font-bold text-2xl">
+            <div
+              className={`${
+                !approvalRSOView
+                  ? 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800'
+                  : 'mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition text-lg bg-neutral-400 text-gray-800'
+              }`}
             >
-              Requests
-            </button>
+              <button
+                onClick={() => {
+                  toggleApprovalsView();
+                }}
+              >
+                Requests
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
-      <div className={`${rsoListView ? '' : 'hidden'}`}>
+      <div className={`${rsoListView && superAdminView ? '' : 'hidden'}`}>
         <RSOSListView rsos={rsos} />
       </div>
-      <div className={`${createRSOView ? '' : 'hidden'}`}>
+      <div className={`${rsoListView && !superAdminView ? '' : 'hidden'}`}>
+        <RSOSLeaveListView rsosToLeave={rsosToLeave} />
+      </div>
+      <div className={`${createRSOView && !superAdminView ? '' : 'hidden'}`}>
         <RSOCreateView />
       </div>
-      <div className={`${adminView || superAdminView ? '' : 'hidden'}`}>
-        <RSORequestView members={rsos} />
+      <div className={`${approvalRSOView ? '' : 'hidden'}`}>
+        <RSORequestsView members={members} />
+      </div>
+      <div className={`${rsoJoinListView && !superAdminView ? '' : 'hidden'}`}>
+        <RSOJoinListView rsosToJoin={rsosToJoin} />
       </div>
     </div>
   );

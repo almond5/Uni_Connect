@@ -11,14 +11,20 @@ export default async function handler(
 
       const user = await prisma.user.findFirst({
         where: { email: userEmail },
+        include: { uni: true },
       });
 
+      const rso = await prisma.rSO.findFirst({ where: { id: rsoId } });
       const approval = await prisma.member.create({
         data: {
-          approved: 'FALSE',
+          approved: 'PENDING',
           isAdmin: 'FALSE',
           userId: user?.id!,
-          rsoId: rsoId,
+          uniId: user?.uni!.id!,
+          rsoId: rso?.id!,
+          name: user?.name!,
+          email: user?.email!,
+          rsoName: rso?.name!,
         },
       });
     } catch (error) {

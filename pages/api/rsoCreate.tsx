@@ -59,29 +59,33 @@ export default async function handler(
             });
           }
 
-          if (user!.id! === adminUser?.id)
-          {
+          if (user!.id! === adminUser?.id) {
             let newMember = await prisma.member.create({
               data: {
                 isAdmin: 'TRUE',
                 rsoId: rso.id,
                 userId: user?.id!,
-                approved: 'TRUE'
+                approved: 'APPROVED',
+                name: user?.name!,
+                email: user?.email!,
+                uniId: user?.uni!.id!,
+                rsoName: rso?.name,
               },
             });
-          }
-          else {
+          } else {
             let newMember = await prisma.member.create({
               data: {
-                isAdmin: 'FALSE',
+                isAdmin: 'NOT_APPROVED',
                 rsoId: rso.id,
                 userId: user?.id!,
-                approved: 'TRUE'
+                approved: 'APPROVED',
+                name: user?.name!,
+                email: user?.email!,
+                uniId: user?.uni!.id!,
+                rsoName: rso?.name,
               },
             });
           }
-
-          
         }
       }
     } catch (error) {

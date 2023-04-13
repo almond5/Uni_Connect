@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import prisma from '../lib/prismadb';
 import EventsListView from '@/components/events/eventsListView';
-import EventsCreateView from '@/components/events/superAdminCreateEventView';
-import { Event, RSO, University, User } from '@prisma/client';
-import AdminEventsCreateView from '@/components/events/adminCreateEventView';
-import ApprovalsEventsListView from '@/components/events/approvalsListView';
+import EventsCreateView from '@/components/events/eventCreateSuperAdminView';
+import { Event, RSO, Role, University, User } from '@prisma/client';
+import AdminEventsCreateView from '@/components/events/eventCreateAdminView';
+import ApprovalsEventsListView from '@/components/events/eventPublicApprovalsListView';
 
 const Roles = {
   STUDENT: 'STUDENT',
@@ -20,119 +20,68 @@ export async function getServerSideProps(context: any) {
   const currUser = session?.user;
 
   try {
-    let events: any = [];
-    let approvals: any = null;
-    let rsos: any = [];
+    const user = await prisma.user.findFirst({
+      where: {
+        email: currUser?.email!,
+      },
+      include: { Member: true, uni: true },
+    });
+
+    let events = null;
+    let rsos = null;
     let unis = null;
 
-    let user: any =
-      await prisma.$queryRaw`SELECT term_project.User.id, term_project.User.name, 
-      term_project.User.email, term_project.User.emailVerified, term_project.User.image, 
-      term_project.User.role, term_project.User.universityId FROM term_project.User WHERE 
-      term_project.User.email = ${currUser?.email!}`;
-
-    user = user[0];
-
     if (user?.role === Roles.SUPERADMIN) {
+      events = await prisma.event.findMany({
+        where: {
+          approved: 'TRUE',
+        },
+        include: {
+          eventlocation: true,
+          feedback: {
+            include: { comments: true, ratings: true },
+          },
+        },
+      });
 
-      let eventFind: any =
-        await prisma.$queryRaw`SELECT term_project.Event.id, term_project.Event.name, term_project.Event.category, 
-        term_project.Event.description, term_project.Event.time, term_project.Event.date, term_project.Event.phone_no, 
-        term_project.Event.email, term_project.Event.type, term_project.Event.feedbackId, term_project.Event.eventlocationId, 
-        term_project.Event.universityId, term_project.Event.rSOId, term_project.Event.approved FROM term_project.Event 
-        WHERE term_project.Event.approved = 'TRUE'`;
+      rsos = await prisma.rSO.findMany({
+        where: {},
+      });
 
-      for (let i = 0; i < eventFind.length; i++) {
-        let eventLocation: any =
-          await prisma.$queryRaw`SELECT term_project.EventLocation.id, term_project.EventLocation.name, 
-          term_project.EventLocation.latitude, term_project.EventLocation.longitude, term_project.EventLocation.eventId FROM 
-          term_project.EventLocation WHERE term_project.EventLocation.eventId = ${eventFind[i].id}`;
-
-        let comments: any =
-          await prisma.$queryRaw`SELECT term_project.Comment.id, 
-        term_project.Comment.comment, term_project.Comment.feedbackId, term_project.Comment.author, 
-        term_project.Comment.email, term_project.Comment.userId FROM term_project.Comment WHERE 
-        term_project.Comment.feedbackId = ${eventFind[i].feedbackId}`;
-
-        let ratings: any =
-          await prisma.$queryRaw`SELECT term_project.Rating.id, 
-        term_project.Rating.rating, term_project.Rating.feedbackId, term_project.Rating.userId 
-        FROM term_project.Rating WHERE term_project.Rating.feedbackId = ${eventFind[i].feedbackId}`;
-
-        const eventObj = eventFind[i];
-        const eventLocObj = eventLocation[0];
-        const commentsObj = comments;
-        const ratingsObj = ratings;
-
-        let eventObjToPush: any = null;
-
-        if (
-          (commentsObj === undefined && ratingsObj === undefined) ||
-          (commentsObj === null && ratingsObj === null) ||
-          (commentsObj.length === 0 && ratingsObj.length === 0)
-        ) {
-          eventObjToPush = { eventObj, eventLocObj };
-        } else if (
-          commentsObj === undefined ||
-          commentsObj === null ||
-          commentsObj.length === 0
-        ) {
-          eventObjToPush = { eventObj, eventLocObj, ratingsObj };
-        } else if (
-          ratingsObj === undefined ||
-          ratingsObj === null ||
-          ratingsObj.length === 0
-        ) {
-          eventObjToPush = { eventObj, eventLocObj, commentsObj };
-        } else {
-          eventObjToPush = {
-            eventObj,
-            eventLocObj,
-            commentsObj,
-            ratingsObj,
-          };
-        }
-        events.push(eventObjToPush);
-        console.log(eventObjToPush);
-      }
-
-      // rsos = await prisma.rSO.findMany({
-      //   where: {},
-      // });
-
-      rsos = await prisma.$queryRaw`SELECT term_project.RSO.id, term_project.RSO.name, term_project.RSO.adminID, term_project.RSO.uniId, term_project.RSO.description FROM term_project.RSO WHERE 1=1`
-      console.log(rsos)
+      unis = await prisma.university.findMany({
+        where: {},
+      });
     }
 
     if (user?.role === Roles.ADMIN || user?.role === Roles.STUDENT) {
-      // let publicEvents = await prisma.event.findMany({
-      //   where: {
-      //     type: 'PUBLIC',
-      //     approved: 'TRUE',
-      //   },
-      //   include: {
-      //     eventlocation: true,
-      //     feedback: {
-      //       include: { comments: true, ratings: true },
-      //     },
-      //   },
-      // });
+      let publicEvents = await prisma.event.findMany({
+        where: {
+          type: 'PUBLIC',
+          approved: 'TRUE',
+        },
+        include: {
+          eventlocation: true,
+          feedback: {
+            include: { comments: true, ratings: true },
+          },
+        },
+      });
 
-      // let privateEvents = await prisma.event.findMany({
-      //   where: {
-      //     type: 'PRIVATE',
-      //     universityId: user!.universityId!,
-      //   },
-      //   include: {
-      //     eventlocation: true,
-      //     feedback: {
-      //       include: { comments: true, ratings: true },
-      //     },
-      //   },
-      // });
+      let privateEvents = await prisma.event.findMany({
+        where: {
+          type: 'PRIVATE',
+          universityId: user!.universityId!,
+        },
+        include: {
+          eventlocation: true,
+          feedback: {
+            include: { comments: true, ratings: true },
+          },
+        },
+      });
 
-      // privateEvents = privateEvents.concat(publicEvents);
-      // events = privateEvents;
+      privateEvents = privateEvents.concat(publicEvents);
+      events = privateEvents;
 
       if (
         !(
@@ -141,43 +90,47 @@ export async function getServerSideProps(context: any) {
           user.Member.length === 0
         )
       ) {
-        // for (var member of user?.Member!) {
-        //   if (member.approved === 'TRUE') {
-        //     let rsoEvents = await prisma.event.findMany({
-        //       where: {
-        //         type: 'RSO_EVENT',
-        //         rSOId: member.rsoId,
-        //       },
-        //       include: {
-        //         eventlocation: true,
-        //         feedback: {
-        //           include: { comments: true, ratings: true },
-        //         },
-        //       },
-        //     });
-        //     let tempRsos = await prisma.rSO.findMany({
-        //       where: {
-        //         id: member.rsoId,
-        //       },
-        //     });
-        //     privateEvents = privateEvents.concat(rsoEvents);
-        //     if (rsos === null) rsos = tempRsos;
-        //     else rsos = rsos!.concat(tempRsos);
-        //   }
-        // }
-        // events = privateEvents;
+        for (var member of user?.Member!) {
+          let rsoEvents = await prisma.event.findMany({
+            where: {
+              type: 'RSO_EVENT',
+              rSOId: member.rsoId,
+            },
+            include: {
+              eventlocation: true,
+              feedback: {
+                include: { comments: true, ratings: true },
+              },
+            },
+          });
+
+          let tempRsos = await prisma.rSO.findMany({
+            where: {
+              id: member.rsoId,
+            },
+          });
+
+          privateEvents = privateEvents.concat(rsoEvents);
+
+          if (rsos === null) rsos = tempRsos;
+          else rsos = rsos!.concat(tempRsos);
+        }
+
+        events = privateEvents;
       }
 
-      // unis = await prisma.university.findMany({
-      //   where: { id: user!.uni?.id },
-      // });
+      unis = await prisma.university.findMany({
+        where: { id: user!.uni?.id },
+      });
     }
 
-    // const approvals = await prisma.event.findMany({
-    //   where: {
-    //     approved: 'FALSE',
-    //   },
-    // });
+    const approvals = await prisma.event.findMany({
+      where: {
+        approved: 'FALSE',
+      },
+    });
+
+    const role = user?.role;
 
     return {
       props: {
@@ -185,7 +138,7 @@ export async function getServerSideProps(context: any) {
         unisFromDB: unis,
         approvalsFromDB: approvals,
         rsosFromDB: rsos,
-        user: user,
+        roleFromDB: role,
       },
     };
   } catch (error) {
@@ -193,7 +146,7 @@ export async function getServerSideProps(context: any) {
     const unisFromDB = null;
     const approvals = null;
     const rsosFromDB = null;
-    const user = null;
+    const roleFromDB = null;
 
     console.log(error);
 
@@ -203,7 +156,7 @@ export async function getServerSideProps(context: any) {
         unisFromDB: unisFromDB,
         approvalsFromDB: approvals,
         rsosFromDB: rsosFromDB,
-        user: user,
+        roleFromDB: roleFromDB,
       },
     };
   }
@@ -214,19 +167,19 @@ const Events = ({
   unisFromDB,
   approvalsFromDB,
   rsosFromDB,
-  userFromDb,
+  roleFromDB,
 }: {
   eventsFromDB: any;
   unisFromDB: any;
   approvalsFromDB: any;
   rsosFromDB: any;
-  userFromDb: any;
+  roleFromDB: any;
 }) => {
-  const [events] = useState<any[]>(eventsFromDB);
+  const [events] = useState<Event[]>(eventsFromDB);
   const [unis] = useState<University[]>(unisFromDB);
   const [eventApprovals] = useState<Event[]>(approvalsFromDB);
   const [rsos] = useState<RSO[]>(rsosFromDB);
-  const [user] = useState<User>(userFromDb);
+  const [user] = useState<Role>(roleFromDB);
 
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
@@ -253,10 +206,10 @@ const Events = ({
   };
 
   useEffect(() => {
-    if (window?.location.search.includes(Roles.STUDENT)) setStudentView(true);
-    else if (window?.location.search.includes(Roles.SUPERADMIN))
+    if (user.includes(Roles.STUDENT)) setStudentView(true);
+    else if (user.includes(Roles.SUPERADMIN))
       setSuperAdminView(true);
-    else if (window?.location.search.includes(Roles.ADMIN)) setAdminView(true);
+    else if (user.includes(Roles.ADMIN)) setAdminView(true);
   }, []);
 
   if (sesh === 'loading') {

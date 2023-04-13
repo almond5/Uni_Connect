@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
-import EventView from './singleEventView';
+import EventView from './eventView';
 
 const EventsListView = (props: { events: any; role: any; user: any }) => {
   const events = props.events;
