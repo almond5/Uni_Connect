@@ -1,6 +1,12 @@
 import prisma from '@/lib/prismadb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
+prisma.$use(async (params, next) => {
+  const result = await next(params);
+  console.log(params);
+  return result;
+});
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -39,6 +45,7 @@ export default async function handler(
       const delMember = await prisma.member.delete({
         where: { id: member[0].id },
       });
+
     } catch (error) {
       console.log(error);
     }

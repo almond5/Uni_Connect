@@ -26,8 +26,15 @@ const RSORequestView = (props: { member: any }) => {
       body: JSON.stringify(request),
     });
 
-    const data = await response.json();
-    console.log(data);
+    const { message } = await response.json();
+
+    if (message === 'Conflicting Locations!') {
+      alert(message);
+      return;
+    } else if (message === 'Conflicting Times!') {
+      alert(message);
+      return;
+    }
   };
 
   const declined = async (request: { memId: string | undefined | null }) => {
