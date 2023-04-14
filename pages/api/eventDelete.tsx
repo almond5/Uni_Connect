@@ -12,7 +12,6 @@ export default async function handler(
       const eventDeletion = await prisma.event.delete({
         where: { id: id },
       });
-      
     } catch (error) {
       console.log(error);
     }

@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 const RSOJoinView = (props: { rso: any }) => {
   const rso = props.rso;
   const { data: sesh } = useSession();
-  const [userEmail, setUserEmail] = useState(sesh?.user?.email! );
+  const [userEmail, setUserEmail] = useState(sesh?.user?.email!);
   const [rsoId, setRsoId] = useState(rso.id);
 
   const timeout = (delay: number) => {

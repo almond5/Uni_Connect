@@ -41,14 +41,7 @@ const RSORequestView = (props: { member: any }) => {
     });
 
     const message = await response.json();
-    
-    if (message === null)
-      return
-
-    if (message === 'This RSO has been deactivated.') {
-      alert(message);
-      return;
-    }   
+    return
   };
 
   return (
