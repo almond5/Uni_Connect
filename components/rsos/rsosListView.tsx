@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react';
 import React from 'react';
-import Login from '../loginView';
+import Login from '../../pages/loginView';
 import RSOView from './rsoView';
 
 const RSOSListView = (props: { rsos: any }) => {

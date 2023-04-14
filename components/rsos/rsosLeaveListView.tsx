@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
-import Login from '../loginView';
+import Login from '../../pages/loginView';
 import RSOLeaveView from './rsoLeaveView';
 
 const RSOSLeaveListView = (props: { rsosToLeave: any }) => {

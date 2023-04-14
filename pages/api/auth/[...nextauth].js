@@ -3,45 +3,55 @@ import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import prisma from '../../../lib/prismadb';
+import { error } from 'console';
+import { redirect } from 'next/dist/server/api-utils';
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
-    GoogleProvider({
-      id: "google-login",
-      name: "Google",
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      scope: 'read:user',
-    }),
     CredentialsProvider({
-      id: "email-login",
-      name: "Email",
-      async authorize(credentials, req){
+      // The name to display on the sign in form (e.g. "Sign in with...")
+      name: 'Credentials',
+      credentials: {
+        username: { label: 'Email', type: 'text', placeholder: 'jsmith' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials, req) {
+        const { email, password } = credentials;
+
+        const findUserEmail = await prisma.user.findFirst({
+          where: {
+            email: email,
+          }
+        })
+
+        if (findUserEmail === null || findUserEmail === undefined) {
+          return null;
+        }
+
         const user = await prisma.user.findFirst({
           where: {
-            email: credentials.username,
-            password: credentials.password,
+            email: email,
+            password: password,
           },
         });
-        return user
-      },
-      credentials: {
-        username: { label: "Email", type: "text ", placeholder: "john@email.com"},
-        password: { label: "Password", type: "password", placeholder: "********"},
-      },
-      pages:{
-        signIn: '/auth/signIn.tsx',
-      }
-    }),
 
+        if (user !== undefined) {
+          return user;
+        } else {
+          return null;
+        }
+      },
+    }),
   ],
   database: process.env.DATABASE_URL,
   session: {
     strategy: 'jwt',
   },
   jwt: {},
-  pages: {},
+  pages: {
+    newUser: '/auth/register'
+  },
   callbacks: {
     session: async ({ session, token }) => {
       if (session?.user) {
@@ -49,7 +59,7 @@ export default NextAuth({
       }
       return session;
     },
-    jwt: async ({ user, token }) => {
+    jwt: async ({ user, token }) => {      
       if (user) {
         token.uid = user.id;
       }
@@ -59,7 +69,7 @@ export default NextAuth({
   session: {
     strategy: 'jwt',
   },
-  
+
   events: {},
   debug: false,
 });

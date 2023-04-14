@@ -1,5 +1,5 @@
 import { signOut, useSession, getProviders } from 'next-auth/react';
-import LoginView from '../components/loginView';
+import LoginView from './loginView';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import prisma from '../lib/prismadb';
@@ -64,7 +64,7 @@ const Universities = ({ universitiesFromDB, provsFromAuth }: { universitiesFromD
   }
 
   if (sesh === 'unauthenticated') {
-    return <LoginView providers={providers} />;
+    return <LoginView />;
   }
 
   return (
