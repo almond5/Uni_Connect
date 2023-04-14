@@ -137,7 +137,6 @@ const RSOCreateView = () => {
               ))}
             </div>
           </div>
-
           <div className={`${members.length === 0 ? 'hidden' : ''}`}>
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] 

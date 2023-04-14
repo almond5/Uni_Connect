@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 import UniView from './uniView';
-import Login from '../../pages/loginView';
+import Login from '../../pages/login';
 
 const UniListView = (props: { universities: any }) => {
   const { status: sesh } = useSession();

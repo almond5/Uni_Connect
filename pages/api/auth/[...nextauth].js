@@ -1,16 +1,12 @@
 import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import prisma from '../../../lib/prismadb';
-import { error } from 'console';
-import { redirect } from 'next/dist/server/api-utils';
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. "Sign in with...")
       name: 'Credentials',
       credentials: {
         username: { label: 'Email', type: 'text', placeholder: 'example@email.com' },
@@ -18,7 +14,6 @@ export default NextAuth({
       },
       async authorize(credentials, req) {
         const { email, password } = credentials;
-        console.log(email)
 
         const findUserEmail = await prisma.user.findFirst({
           where: {
@@ -37,7 +32,7 @@ export default NextAuth({
           },
         });
 
-        if (user !== undefined) {
+        if (user !== undefined && user !== null) {
           return user;
         } else {
           return null;
@@ -50,8 +45,6 @@ export default NextAuth({
     strategy: 'jwt',
   },
   jwt: {},
-  pages: {
-  },
   callbacks: {
     session: async ({ session, token }) => {
       if (session?.user) {
