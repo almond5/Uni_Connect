@@ -8,8 +8,7 @@ import { useSession } from 'next-auth/react';
 const SignUpView = (props: { unis: any }) => {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState<Date | null>(null);
-  const [type, setType] = useState('PUBLIC');
-  const [body, setBody] = useState('');
+  const [password, setPassword] = useState('');
   const [uniSelected, setUni] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const { data: sesh } = useSession();
@@ -78,9 +77,7 @@ const SignUpView = (props: { unis: any }) => {
     const data = await response.json();
 
     window.location.reload();
-    setBody('');
     setTitle('');
-    setType('PUBLIC');
     setUni('');
   };
 
@@ -114,12 +111,12 @@ const SignUpView = (props: { unis: any }) => {
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
                 border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
             >
-              Event Name:
+              Email:
             </div>
             <textarea
               maxLength={30}
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
               required
               rows={1}
               cols={1}
@@ -133,20 +130,18 @@ const SignUpView = (props: { unis: any }) => {
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
                 border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg"
             >
-              Description:
+              Password:
             </div>
-            <div>
-              <textarea
-                maxLength={322}
-                value={body}
-                onChange={(e) => [setBody(e.target.value)]}
-                required
-                rows={7}
-                cols={1}
-                className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
-                rounded-tl-none border-neutral-700"
-              ></textarea>{' '}
-            </div>
+            <textarea
+              maxLength={30}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              rows={1}
+              cols={1}
+              className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 
+              rounded-tl-none border-neutral-700 "
+            ></textarea>{' '}
           </div>
 
           <div className="mb-4 text-lg">
