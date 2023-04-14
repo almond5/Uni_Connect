@@ -1,4 +1,4 @@
-import { signOut, useSession } from 'next-auth/react';
+import { signOut, useSession, getProviders } from 'next-auth/react';
 import LoginView from '../components/loginView';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -14,6 +14,7 @@ const Roles = {
 };
 
 export async function getServerSideProps() {
+  const providers = await getProviders();
   try {
     const universities = await prisma.university.findMany({
       where: {},
@@ -23,6 +24,7 @@ export async function getServerSideProps() {
     return {
       props: {
         universitiesFromDB: universities,
+        provsFromAuth: providers,
       },
     };
   } catch (error) {
@@ -31,16 +33,18 @@ export async function getServerSideProps() {
     return {
       props: {
         universitiesFromDB: universities,
+        provsfromAuth: providers,
       },
     };
   }
 }
 
-const Universities = ({ universitiesFromDB }: { universitiesFromDB: any }) => {
+const Universities = ({ universitiesFromDB, provsFromAuth }: { universitiesFromDB: any; provsFromAuth: any; }) => {
   const [universities] = useState<University[]>(universitiesFromDB);
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
   const [superAdminView, setSuperAdminView] = useState(false);
+  const providers = provsFromAuth;
 
   const [uniListView, setUniListView] = useState(false);
   const [createUniView, setCreateUniView] = useState(false);
@@ -60,7 +64,7 @@ const Universities = ({ universitiesFromDB }: { universitiesFromDB: any }) => {
   }
 
   if (sesh === 'unauthenticated') {
-    return <LoginView />;
+    return <LoginView providers={providers} />;
   }
 
   return (

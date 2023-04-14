@@ -1,4 +1,4 @@
-import { getSession, useSession } from 'next-auth/react';
+import { getSession, useSession, getProviders } from 'next-auth/react';
 import LoginView from '../components/loginView';
 import prisma from '../lib/prismadb';
 import { useState } from 'react';
@@ -12,7 +12,8 @@ const Roles = {
 
 export async function getServerSideProps(context: any) {
   const session = await getSession(context);
-  
+  const providers = await getProviders();
+
   try {
     const user = await prisma.user.findFirst({
       where: {
@@ -24,6 +25,7 @@ export async function getServerSideProps(context: any) {
       return {
         props: {
           rolesFromDB: null,
+          providersFromAuth: providers
         },
       };
     }
@@ -31,30 +33,32 @@ export async function getServerSideProps(context: any) {
     return {
       props: {
         rolesFromDB: user?.role,
+        providersFromAuth: providers
       },
     };
   } catch (error) {
     return {
       props: {
         rolesFromDB: Roles.STUDENT,
+        providersFromAuth: providers
       },
     };
   }
 }
 
-const Index = ({ rolesFromDB }: { rolesFromDB: any }) => {
+const Index = ({ rolesFromDB, providersFromAuth }: { rolesFromDB: any, providersFromAuth: any}) => {
   const { status: session } = useSession();
   const role = useState(rolesFromDB);
-
+  const provs = useState(providersFromAuth)
   if (session === 'loading') {
     return null;
   }
 
   if (session === 'unauthenticated') {
-    return <LoginView />;
+    return <LoginView providers={providersFromAuth} />;
   }
 
-  return <WelcomePage role={role} />;
+  return <WelcomePage role={role} providers ={provs} />;
 };
 
 export default Index;

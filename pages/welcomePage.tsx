@@ -1,4 +1,4 @@
-import { signOut, useSession } from 'next-auth/react';
+import { signOut, useSession, getProviders } from 'next-auth/react';
 import LoginView from '../components/loginView';
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -9,25 +9,26 @@ const Roles = {
   SUPERADMIN: 'SUPERADMIN',
 };
 
-const WelcomePage = (props: { role: any }) => {
+const WelcomePage = (props : {providers: any, role: any}) => {
   const { status: sesh } = useSession();
   const [viewEvents, setViewEvents] = useState(false);
   const [viewRSOs, setViewRSOs] = useState(false);
+  const providers = props.providers;
 
   if (sesh === 'loading') {
     return null;
   }
 
   if (sesh === 'unauthenticated') {
-    return <LoginView />;
+    return <LoginView providers = {providers}/>;
   }
 
   if (props.role === null) {
-    return <LoginView />;
+    return <LoginView providers = {providers}/>;
   }
 
   if (props.role[0] === null) {
-    return <LoginView />;
+    return <LoginView providers = {providers}/>;
   }
 
   return (

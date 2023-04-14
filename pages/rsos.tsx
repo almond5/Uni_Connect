@@ -1,4 +1,4 @@
-import { signOut, useSession, getSession } from 'next-auth/react';
+import { signOut, useSession, getSession, getProviders } from 'next-auth/react';
 import LoginView from '../components/loginView';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -18,6 +18,7 @@ const Roles = {
 
 export async function getServerSideProps(context: any) {
   const session = await getSession(context);
+  const providers = await getProviders();
   const currUser = session?.user;
 
   try {
@@ -85,6 +86,7 @@ export async function getServerSideProps(context: any) {
         rsosToLeaveFromDB: rsosToLeave,
         membersFromDB: mems,
         roleFromDB: role,
+        provsFromAuth: providers,
       },
     };
   } catch (error) {
@@ -101,6 +103,7 @@ export async function getServerSideProps(context: any) {
         rsosToLeaveFromDB: rsosToLeave,
         membersFromDB: mems,
         roleFromDB: role,
+        provsFromAuth: providers,
       },
     };
   }
@@ -112,18 +115,21 @@ const RSOs = ({
   rsosToJoinFromDB,
   rsosToLeaveFromDB,
   roleFromDB,
+  provsFromAuth,
 }: {
   rsosFromDB: any;
   membersFromDB: any;
   rsosToJoinFromDB: any;
   rsosToLeaveFromDB: any;
   roleFromDB: any;
+  provsFromAuth: any;
 }) => {
   const [rsos] = useState<RSO[]>(rsosFromDB);
   const [rsosToJoin] = useState<RSO[]>(rsosToJoinFromDB);
   const [rsosToLeave] = useState<RSO[]>(rsosToLeaveFromDB);
   const [members] = useState<Member[]>(membersFromDB);
   const [user] = useState<Role>(roleFromDB);
+  const providers = useState(provsFromAuth);
 
   const { status: sesh } = useSession();
   const [adminView, setAdminView] = useState(false);
@@ -174,7 +180,7 @@ const RSOs = ({
   }
 
   if (sesh === 'unauthenticated') {
-    return <LoginView />;
+    return <LoginView providers={providers}/>;
   }
   return (
     <div className="py-10">

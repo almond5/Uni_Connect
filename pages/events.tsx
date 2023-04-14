@@ -1,4 +1,4 @@
-import { getSession, signOut, useSession } from 'next-auth/react';
+import { getSession, signOut, useSession, getProviders } from 'next-auth/react';
 import LoginView from '../components/loginView';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -17,7 +17,7 @@ const Roles = {
 
 export async function getServerSideProps(context: any) {
   const session = await getSession(context);
-
+  const providers = await getProviders();
   const currUser = session?.user;
 
   try {
@@ -145,6 +145,7 @@ export async function getServerSideProps(context: any) {
         approvalsFromDB: approvals,
         rsosFromDB: rsos,
         roleFromDB: role,
+        provsFromAuth: providers,
       },
     };
   } catch (error) {
@@ -161,6 +162,7 @@ export async function getServerSideProps(context: any) {
         approvalsFromDB: approvals,
         rsosFromDB: rsosFromDB,
         roleFromDB: roleFromDB,
+        provsFromAuth: providers,
       },
     };
   }
@@ -172,18 +174,21 @@ const Events = ({
   approvalsFromDB,
   rsosFromDB,
   roleFromDB,
+  provsFromAuth,
 }: {
   eventsFromDB: any;
   unisFromDB: any;
   approvalsFromDB: any;
   rsosFromDB: any;
   roleFromDB: any;
+  provsFromAuth: any;
 }) => {
   const [events] = useState<Event[]>(eventsFromDB);
   const [unis] = useState<University[]>(unisFromDB);
   const [eventApprovals] = useState<Event[]>(approvalsFromDB);
   const [rsos] = useState<RSO[]>(rsosFromDB);
   const [user] = useState<Role>(roleFromDB);
+  const providers = useState(provsFromAuth);
 
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
@@ -220,7 +225,7 @@ const Events = ({
   }
 
   if (sesh === 'unauthenticated') {
-    return <LoginView />;
+    return <LoginView providers={providers}/>;
   }
 
   if (adminView) {
