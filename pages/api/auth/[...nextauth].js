@@ -13,11 +13,12 @@ export default NextAuth({
       // The name to display on the sign in form (e.g. "Sign in with...")
       name: 'Credentials',
       credentials: {
-        username: { label: 'Email', type: 'text', placeholder: 'jsmith' },
+        username: { label: 'Email', type: 'text', placeholder: 'example@email.com' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, req) {
         const { email, password } = credentials;
+        console.log(email)
 
         const findUserEmail = await prisma.user.findFirst({
           where: {
@@ -50,7 +51,6 @@ export default NextAuth({
   },
   jwt: {},
   pages: {
-    newUser: '/auth/register'
   },
   callbacks: {
     session: async ({ session, token }) => {

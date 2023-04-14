@@ -5,7 +5,7 @@ import Link from 'next/link';
 import prisma from '../lib/prismadb';
 import EventsListView from '@/components/events/eventsListView';
 import EventsCreateView from '@/components/events/eventCreateSuperAdminView';
-import { Event, RSO, Role, University, User } from '@prisma/client';
+import { Event, RSO, Role, University } from '@prisma/client';
 import AdminEventsCreateView from '@/components/events/eventCreateAdminView';
 import ApprovalsEventsListView from '@/components/events/eventPublicApprovalsListView';
 
