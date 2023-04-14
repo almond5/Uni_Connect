@@ -26,12 +26,9 @@ const RSORequestView = (props: { member: any }) => {
       body: JSON.stringify(request),
     });
 
-    const { message } = await response.json();
+    const message  = await response.json();
 
-    if (message === 'Conflicting Locations!') {
-      alert(message);
-      return;
-    } else if (message === 'Conflicting Times!') {
+    if (message === 'This RSO has been activated.') {
       alert(message);
       return;
     }
@@ -43,8 +40,15 @@ const RSORequestView = (props: { member: any }) => {
       body: JSON.stringify(request),
     });
 
-    const data = await response.json();
-    console.log(data);
+    const message = await response.json();
+    
+    if (message === null)
+      return
+
+    if (message === 'This RSO has been deactivated.') {
+      alert(message);
+      return;
+    }   
   };
 
   return (

@@ -7,7 +7,6 @@ const RSOLeaveView = (props: { rso: any }) => {
   const [rsoId, setRsoId] = useState(rso.id);
   const [userEmail, setUserEmail] = useState(sesh?.user?.email!);
 
-
   const timeout = (delay: number) => {
     return new Promise((res) => setTimeout(res, delay));
   };
@@ -35,7 +34,8 @@ const RSOLeaveView = (props: { rso: any }) => {
     });
 
     const data = await response.json();
-    console.log(data);
+    if (data !== null && data === 'This RSO has been deactivated.')
+      alert(data);
   };
 
   return (

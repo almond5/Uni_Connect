@@ -38,6 +38,17 @@ export default async function handler(
               where: { id: member[i].id },
               data: { isAdmin: 'TRUE' },
             });
+
+            let newRSOAdmin = await prisma.rSO.update({
+              where: { id: rsoId },
+              data: { adminID: member[i]!.userId! },
+            });
+
+            let updateUser = await prisma.user.update({
+              where: { id: member[i]!.userId! },
+              data: { role: 'ADMIN' },
+            });
+            break;
           }
         }
       }
@@ -46,12 +57,14 @@ export default async function handler(
         where: { id: member[0].id },
       });
 
-      const rso = await prisma.rSO.findFirst({ where: { id: rsoId }, include: { members: true }});
+      const rso = await prisma.rSO.findFirst({
+        where: { id: rsoId },
+        include: { members: true },
+      });
 
       let nummems = 0;
       for (let i = 0; i < rso?.members!.length!; i++)
-        if (rso?.members![i].approved === 'APPROVED') 
-          nummems++;
+        if (rso?.members![i].approved === 'APPROVED') nummems++;
 
       if (nummems < 5) {
         let rsoUpdate = await prisma.rSO.update({
@@ -62,7 +75,6 @@ export default async function handler(
         res.status(201).json('This RSO has been deactivated.');
         return;
       }
-
     } catch (error) {
       console.log(error);
     }

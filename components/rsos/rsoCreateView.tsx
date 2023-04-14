@@ -170,7 +170,7 @@ const RSOCreateView = () => {
           </div>
         </div>
         <div className="py-[32px]">
-          <div className={`${members.length >= 1 ? '' : 'hidden'}`}>
+          <div className={`${members.length >= 5 ? '' : 'hidden'}`}>
             <button type="submit" onClick={handleSubmit}>
               <div
                 className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition
