@@ -58,7 +58,7 @@ const RSOCreateView = () => {
 
   return (
     <div className="flex-col text-center py-24">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="mx-auto max-w-md text-xl text-left xs:max-w-md sm:max-w-md md:max-w-md lg:max-w-md xl:max-w-md 2xl:max-w-md">
           <div className="mb-4 text-lg">
             <div className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] border-neutral-700 px-2 font-bold transition bg-neutral-300 text-lg">
@@ -99,7 +99,6 @@ const RSOCreateView = () => {
               ></textarea>{' '}
             </div>
           </div>
-
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 
@@ -173,7 +172,7 @@ const RSOCreateView = () => {
         </div>
         <div className="py-[32px]">
           <div className={`${members.length >= 5 ? '' : 'hidden'}`}>
-            <button type="submit" onClick={handleSubmit}>
+            <button type="submit">
               <div
                 className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-1 font-bold transition
                       bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800"

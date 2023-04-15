@@ -101,7 +101,7 @@ model Comment {
   author     String
   email      String
   user       User?     @relation(fields: [userId], references: [id])
-  Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
+  Feedback   Feedback? @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
   userId     String?
 }
 
@@ -111,7 +111,7 @@ model Rating {
   userId     String?
   user       User?     @relation(fields: [userId], references: [id])
   feedbackId String?
-  Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
+  Feedback   Feedback? @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
 }
 
 model Location {

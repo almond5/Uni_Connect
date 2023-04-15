@@ -29,7 +29,7 @@ export default async function handler(
       for (let i = 0; i < rso?.members!.length!; i++)
         if (rso?.members![i].approved === 'APPROVED') nummems++;
 
-      if (nummems >= 1) {
+      if (nummems >= 5) {
         let rsoUpdate = await prisma.rSO.update({
           where: { id: rso?.id },
           data: { active: 'TRUE' },

@@ -28,6 +28,25 @@ export default async function handler(
       });
 
       if (member[0].isAdmin === 'TRUE') {
+        let keepAdmin = false;
+
+        for (let i = 0; i < user?.Member.length!; i++) {
+          if (
+            user?.Member[i].isAdmin === 'TRUE' &&
+            user?.Member[i].rsoId !== member[0].rsoId
+          ) {
+            keepAdmin = true;
+            break;
+          }
+        }
+
+        if (keepAdmin === false) {
+          let updateUser = await prisma.user.update({
+            where: { id: user?.id },
+            data: { role: 'STUDENT' },
+          });
+        }
+
         member = await prisma.member.findMany({
           where: { rsoId: rsoId },
         });
