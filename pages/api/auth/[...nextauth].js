@@ -32,10 +32,10 @@ export default NextAuth({
           },
         });
 
-        if (user !== undefined && user !== null) {
-          return user;
-        } else {
+        if (user === null || user === undefined) {
           return null;
+        } else {
+          return user;
         }
       },
     }),

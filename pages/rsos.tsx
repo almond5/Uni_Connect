@@ -135,6 +135,14 @@ const RSOs = ({
   const [rsoJoinListView, setRSOJoinListView] = useState(false);
   const [studentView, setStudentView] = useState(false);
 
+  useEffect(() => {
+    if (user !== null && user !== undefined){
+      if (user.includes(Roles.STUDENT)) setStudentView(true);
+      else if (user.includes(Roles.SUPERADMIN)) setSuperAdminView(true);
+      else if (user.includes(Roles.ADMIN)) setAdminView(true);
+    } ;
+  }, []);
+
   if (sesh === 'loading') {
     return null;
   }
@@ -170,14 +178,7 @@ const RSOs = ({
     setCreateRSOView(false);
     setApprovalRSOView(false);
   };
-
-  if (sesh === 'authenticated') {
-    useEffect(() => {
-      if (user.includes(Roles.STUDENT)) setStudentView(true);
-      else if (user.includes(Roles.SUPERADMIN)) setSuperAdminView(true);
-      else if (user.includes(Roles.ADMIN)) setAdminView(true);
-    }, []);
-  }
+  
   if (sesh === 'authenticated') {
     return (
       <div className="py-10">

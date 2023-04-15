@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../lib/prismadb';
-import error from 'next/error';
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,14 +15,9 @@ export default async function handler(
         include: { uni: true },
       });
 
-      if (
-        !(adminUser === null || adminUser === undefined) &&
-        adminUser.role === 'STUDENT'
-      ) {
-        const updateAdminUserRole = await prisma.user.update({
-          where: { id: adminUser?.id },
-          data: { role: 'ADMIN' },
-        });
+      if (adminUser === null || adminUser === undefined) {
+        res.status(201).json('Admin is not registered!');
+        return;
       }
 
       if (!(adminUser === null || adminUser === undefined)) {
@@ -44,20 +38,42 @@ export default async function handler(
             include: { uni: true },
           });
 
+          if (user === null || user === undefined) {
+
+            const deletedRSO = await prisma.rSO.findFirst({
+              where: { id: rso.id },
+            });
+
+            const delRso = await prisma.rSO.delete({
+              where: { id: deletedRSO!.id! },
+            });
+
+            res.status(201).json('One of your members is not registered!');
+            return;
+          }
+
           userArray.push(user);
         }
 
         if (userArray.length !== members.length) {
-          const delRso = prisma.rSO.delete({
+          const delRso = await prisma.rSO.delete({
             where: { id: rso.id },
           });
+
+          res.status(201).json('One of your members is not registered!');
+          return;
         }
 
         for (var user of userArray) {
           if (user!.uni!.id !== adminUser?.universityId) {
-            const delRso = prisma.rSO.delete({
+            const delRso = await prisma.rSO.delete({
               where: { id: rso.id },
             });
+
+            res
+              .status(201)
+              .json('One of your members is not from the same university!');
+            return;
           }
 
           if (user!.id! === adminUser?.id) {
@@ -87,6 +103,15 @@ export default async function handler(
               },
             });
           }
+        }
+        if (
+          !(adminUser === null || adminUser === undefined) &&
+          adminUser.role === 'STUDENT'
+        ) {
+          const updateAdminUserRole = await prisma.user.update({
+            where: { id: adminUser?.id },
+            data: { role: 'ADMIN' },
+          });
         }
       }
     } catch (error) {

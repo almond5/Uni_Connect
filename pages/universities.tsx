@@ -50,6 +50,7 @@ const Universities = ({ universitiesFromDB }: { universitiesFromDB: any }) => {
   if (sesh === 'unauthenticated') {
     router.push('/login');
   }
+  
   if (sesh === 'authenticated') {
     return (
       <div className="py-10">

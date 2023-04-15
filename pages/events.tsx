@@ -183,16 +183,22 @@ const Events = ({
   const [eventApprovals] = useState<Event[]>(approvalsFromDB);
   const [rsos] = useState<RSO[]>(rsosFromDB);
   const [user] = useState<Role>(roleFromDB);
-
   const [studentView, setStudentView] = useState(false);
   const [adminView, setAdminView] = useState(false);
   const [superAdminView, setSuperAdminView] = useState(false);
-
   const [eventListView, setEventListView] = useState(false);
   const [createEventsView, setCreateEventsView] = useState(false);
   const [approvalEventView, setApprovalEventView] = useState(false);
 
   const { status: sesh } = useSession();
+
+  useEffect(() => {
+    if (user !== null || user !== undefined) {
+      if (user.includes(Roles.STUDENT)) setStudentView(true);
+      else if (user.includes(Roles.SUPERADMIN)) setSuperAdminView(true);
+      else if (user.includes(Roles.ADMIN)) setAdminView(true);
+    }
+  }, []);
 
   if (sesh === 'loading') {
     return null;
@@ -215,14 +221,6 @@ const Events = ({
       ? setApprovalEventView(false)
       : setApprovalEventView(true);
   };
-
-  if (sesh === 'authenticated') {
-    useEffect(() => {
-      if (user.includes(Roles.STUDENT)) setStudentView(true);
-      else if (user.includes(Roles.SUPERADMIN)) setSuperAdminView(true);
-      else if (user.includes(Roles.ADMIN)) setAdminView(true);
-    }, []);
-  }
 
   if (sesh === 'authenticated') {
     if (adminView) {
