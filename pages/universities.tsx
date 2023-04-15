@@ -11,7 +11,7 @@ export async function getServerSideProps() {
   try {
     const universities = await prisma.university.findMany({
       where: {},
-      include: { location: true },
+      include: { location: true, User: true },
     });
 
     return {

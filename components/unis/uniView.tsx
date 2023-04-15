@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const UniView = (props: { university: any }) => {
-  const [deleteModalView, setDeleteModalView] = useState(false);
-  const [editModalView, setEditModalView] = useState(false);
-  const [del, setDeleted] = useState(false);
   const university = props.university;
+  const [numStudents, setNumStudents] = useState(0);
+
+  useEffect(() => {
+    if (university.User === undefined || university.User === null)
+      setNumStudents(0);
+    else setNumStudents(university.User?.length);
+  });
 
   return (
     <div className="py-[0.8rem]">
@@ -15,7 +19,7 @@ const UniView = (props: { university: any }) => {
         <div className="h-0 min-h-[78%]">
           <div className="mb-2 mt-2 text-lg font-bold">{university.name}</div>
           <div className="flex flex-col text-left">
-            <div className="mb-1 text-md text-left break-all">
+            <div className="text-md text-left break-all">
               <div className="flex">
                 <div className="font-bold">Location:&nbsp;</div>
                 <p>{university.location.name}</p>
@@ -25,6 +29,10 @@ const UniView = (props: { university: any }) => {
           <div className="flex">
             <div className="font-bold">Phone Number:&nbsp;</div>
             <p>{university.phone_no}</p>
+          </div>
+          <div className="flex">
+            <div className="font-bold">Number of Students:&nbsp;</div>
+            <p>{numStudents}</p>
           </div>
           <p className="mb-1 text-md text-left break-all">
             <div className="font-bold">Description:&nbsp;</div>

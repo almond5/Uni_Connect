@@ -189,7 +189,6 @@ const Events = ({
   const [eventListView, setEventListView] = useState(false);
   const [createEventsView, setCreateEventsView] = useState(false);
   const [approvalEventView, setApprovalEventView] = useState(false);
-
   const { status: sesh } = useSession();
 
   useEffect(() => {
