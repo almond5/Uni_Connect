@@ -12,8 +12,7 @@ export default async function handler(
       const updateEvent = await prisma.event.update({
         where: { id: id },
         data: { approved: 'TRUE' },
-      });     
-      
+      });
     } catch (error) {
       console.log(error);
     }

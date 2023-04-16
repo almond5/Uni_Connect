@@ -74,11 +74,11 @@ model Rating {
 }
 
 model Location {
-  id         String       @id @default(cuid())
-  name       String       @db.Text
+  id         String      @id @default(cuid())
+  name       String      @db.Text
   latitude   Float
   longitude  Float
-  University University[]
+  University University?
 
   @@index([id])
 }
@@ -92,7 +92,7 @@ model EventLocation {
   eventId   String?
   Event     Event?
 
-  @@index([uniId, eventId])
+  @@index([uniId])
 }
 
 model University {
@@ -102,7 +102,7 @@ model University {
   num_students Float
   phone_no     String?   @db.Text
   locationId   String?   @unique
-  location     Location? @relation(fields: [locationId], references: [id])
+  location     Location? @relation(fields: [locationId], references: [id], onDelete: Cascade)
   User         User[]
   Event        Event[]
   RSO          RSO[]

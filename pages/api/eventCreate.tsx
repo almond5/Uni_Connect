@@ -151,17 +151,6 @@ export default async function handler(
         },
       });
 
-      // eventCreation = await prisma.event.update({
-      //   where: { id: eventCreation.id },
-      //   data: {
-      //     eventlocation: {
-      //       connect: {
-      //         id: eventLocation.id,
-      //       },
-      //     },
-      //   },
-      // });
-
       const feedbackCreate = await prisma.feedback.create({
         data: { eventId: eventCreation.id },
       });
