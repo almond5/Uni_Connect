@@ -15,16 +15,6 @@ export default NextAuth({
       async authorize(credentials, req) {
         const { email, password } = credentials;
 
-        const findUserEmail = await prisma.user.findFirst({
-          where: {
-            email: email,
-          }
-        })
-
-        if (findUserEmail === null || findUserEmail === undefined) {
-          return null;
-        }
-
         const user = await prisma.user.findFirst({
           where: {
             email: email,

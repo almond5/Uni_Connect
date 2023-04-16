@@ -125,7 +125,7 @@ model RSO {
 }
 
 model Member {
-  id       String @id @default(cuid())
+  id       String  @id @default(cuid())
   rsoId    String
   userId   String
   rsoName  String
@@ -134,8 +134,8 @@ model Member {
   uniId    String
   approved String
   isAdmin  String
-  user     User   @relation(fields: [userId], references: [id])
-  rso      RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
+  user     User    @relation(fields: [userId], references: [id])
+  rso      RSO     @relation(fields: [rsoId], references: [id], onDelete: Cascade)
 
   @@index([id, rsoId])
 }

@@ -18,6 +18,7 @@ async function main() {
       locationId: ucfLoc.id,
     },
   });
+  
   const usf = await prisma.university.create({
     data: {
       name: 'University of South Florida',
@@ -25,32 +26,6 @@ async function main() {
       num_students: 49591,
       phone_no: '8139741222',
       locationId: usfLoc.id,
-    },
-  });
-
-  const arboretum = await prisma.eventLocation.create({
-    data: {
-      addr: '4312 Scorpius St, Orlando, FL 32816',
-      latitude: 28.6018286,
-      longitude: -81.1991501,
-      uniId: ucf.id,
-    },
-  });
-  const eng2 = await prisma.eventLocation.create({
-    data: {
-      addr: '12760 Pegasus Dr, Orlando, FL 32816',
-      latitude: 28.6017838,
-      longitude: -81.201102,
-      uniId: ucf.id,
-    },
-  });
-
-  const usfRec = await prisma.eventLocation.create({
-    data: {
-      addr: '12301 USF Genshaft Dr, Tampa, FL 33620',
-      latitude: 28.060257,
-      longitude: -82.4096803,
-      uniId: usf.id,
     },
   });
 
@@ -63,6 +38,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const admin2 = await prisma.user.create({
     data: {
       name: 'Ron Weasley',
@@ -72,6 +48,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const admin3 = await prisma.user.create({
     data: {
       name: 'Hermione Granger',
@@ -90,6 +67,7 @@ async function main() {
       active: 'TRUE',
     },
   });
+
   const ronrso = await prisma.rSO.create({
     data: {
       name: 'Team Ron',
@@ -98,6 +76,7 @@ async function main() {
       active: 'TRUE',
     },
   });
+
   const hermionerso = await prisma.rSO.create({
     data: {
       name: 'Team Hermione',
@@ -115,6 +94,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo2 = await prisma.user.create({
     data: {
       name: 'Adrian',
@@ -123,6 +103,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo3 = await prisma.user.create({
     data: {
       name: 'Sebastian',
@@ -131,6 +112,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo4 = await prisma.user.create({
     data: {
       name: 'David',
@@ -139,6 +121,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo5 = await prisma.user.create({
     data: {
       name: 'Bob',
@@ -147,6 +130,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo6 = await prisma.user.create({
     data: {
       name: 'John',
@@ -155,6 +139,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo7 = await prisma.user.create({
     data: {
       name: 'Jane',
@@ -163,6 +148,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo8 = await prisma.user.create({
     data: {
       name: 'Joe',
@@ -171,6 +157,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo9 = await prisma.user.create({
     data: {
       name: 'SpongeBob',
@@ -179,6 +166,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo10 = await prisma.user.create({
     data: {
       name: 'Patrick',
@@ -187,6 +175,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo11 = await prisma.user.create({
     data: {
       name: 'Squidward',
@@ -195,6 +184,7 @@ async function main() {
       universityId: usf.id,
     },
   });
+
   const demo12 = await prisma.user.create({
     data: {
       name: 'Sandy',
@@ -203,6 +193,7 @@ async function main() {
       universityId: usf.id,
     },
   });
+
   const demo13 = await prisma.user.create({
     data: {
       name: 'Mr. Krabs',
@@ -211,6 +202,7 @@ async function main() {
       universityId: usf.id,
     },
   });
+
   const demo14 = await prisma.user.create({
     data: {
       name: 'Pearl',
@@ -219,6 +211,7 @@ async function main() {
       universityId: usf.id,
     },
   });
+
   const demo15 = await prisma.user.create({
     data: {
       name: 'Plankton',
@@ -227,6 +220,7 @@ async function main() {
       universityId: usf.id,
     },
   });
+
   const demo16 = await prisma.user.create({
     data: {
       name: 'Karen',
@@ -235,6 +229,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo17 = await prisma.user.create({
     data: {
       name: 'Gary',
@@ -243,6 +238,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+  
   const demo18 = await prisma.user.create({
     data: {
       name: 'Mrs. Puff',
@@ -251,6 +247,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo19 = await prisma.user.create({
     data: {
       name: 'Larry',
@@ -259,6 +256,7 @@ async function main() {
       universityId: ucf.id,
     },
   });
+
   const demo20 = await prisma.user.create({
     data: {
       name: 'Flats',
@@ -460,19 +458,19 @@ async function main() {
       date: '4/22/2023, 8:00:00 AM',
       phone_no: '1234567890',
       email: 'harryrsoemail@knights.ucf.edu',
-      eventlocationId: eng2.id,
+      // eventlocationId: eng2.id,
       type: 'RSO_EVENT',
       rSOId: harryrso.id,
       universityId: ucf.id,
       approved: 'TRUE',
     },
   });
+  
   const plantsale = await prisma.event.create({
     data: {
       name: 'Plant Sale',
       description: 'Arboretum plant sale, open to everyone!',
       date: '4/22/2023, 4:00:00 PM',
-      eventlocationId: arboretum.id,
       phone_no: '1234567890',
       email: 'plantsale@knights.ucf.edu',
       type: 'PUBLIC',
@@ -480,12 +478,12 @@ async function main() {
       approved: 'TRUE',
     },
   });
+
   const fitnessclass = await prisma.event.create({
     data: {
       name: 'Fitness Class',
       description: 'Group Workout event at the USF Rec center. Students only.',
       date: '4/23/2023, 4:00:00 PM',
-      eventlocationId: usfRec.id,
       phone_no: '1234567890',
       email: 'usfreccenter@usf.edu',
       type: 'PRIVATE',
@@ -494,12 +492,47 @@ async function main() {
     },
   });
 
+  const arboretum = await prisma.eventLocation.create({
+    data: {
+      addr: '4312 Scorpius St, Orlando, FL 32816',
+      latitude: 28.6018286,
+      longitude: -81.1991501,
+      uniId: ucf.id,
+      eventId: plantsale.id,
+      Event: { connect: { id: plantsale.id } },
+    },
+  });
+
+  const eng2 = await prisma.eventLocation.create({
+    data: {
+      addr: '12760 Pegasus Dr, Orlando, FL 32816',
+      latitude: 28.6017838,
+      longitude: -81.201102,
+      uniId: ucf.id,
+      eventId: harrymeeting.id,
+      Event: { connect: { id: harrymeeting.id } },
+    },
+  });
+
+  const usfRec = await prisma.eventLocation.create({
+    data: {
+      addr: '12301 USF Genshaft Dr, Tampa, FL 33620',
+      latitude: 28.060257,
+      longitude: -82.4096803,
+      uniId: usf.id,
+      eventId: fitnessclass.id,
+      Event: { connect: { id: fitnessclass.id } },
+    },
+  });
+
   const harryfb = await prisma.feedback.create({
     data: { eventId: harrymeeting.id },
   });
+
   const plantfb = await prisma.feedback.create({
     data: { eventId: plantsale.id },
   });
+
   const fitnessfb = await prisma.feedback.create({
     data: { eventId: fitnessclass.id },
   });
@@ -536,12 +569,14 @@ async function main() {
       feedbackId: harryfb.id,
     },
   });
+
   await prisma.event.update({
     where: { id: plantsale.id },
     data: {
       feedbackId: plantfb.id,
     },
   });
+
   await prisma.event.update({
     where: { id: fitnessclass.id },
     data: {

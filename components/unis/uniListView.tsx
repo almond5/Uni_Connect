@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
-import React, { useState } from 'react';
+import React from 'react';
 import UniView from './uniView';
-import Login from '../../pages/login';
+import router from 'next/router';
 
 const UniListView = (props: { universities: any }) => {
   const { status: sesh } = useSession();
@@ -12,7 +12,7 @@ const UniListView = (props: { universities: any }) => {
   }
 
   if (sesh === 'unauthenticated') {
-    return <Login />;
+    router.push('/login');
   }
 
   if (

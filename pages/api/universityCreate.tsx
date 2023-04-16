@@ -3,7 +3,6 @@ import { type } from 'os';
 import { stringify } from 'querystring';
 import prisma from '../../lib/prismadb';
 
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -23,17 +22,16 @@ export default async function handler(
               latitude: lat,
               longitude: lng,
               name: addr,
-            }
-          }
-        }
+            },
+          },
+        },
       });
-
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
 
-    res.status(201).json(null)
+    res.status(201).json(null);
   } else {
-    res.status(201).json(null)
+    res.status(201).json(null);
   }
 }
