@@ -28,27 +28,27 @@ model Event {
   description     String?        @db.Text
   date            String?        @db.Text
   phone_no        String?        @db.Text
-  email           String?        @db.Text
   type            EventType
-  university      University?    @relation(fields: [universityId], references: [id])
   feedbackId      String?        @unique
-  feedback        Feedback?      @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
-  eventlocation   EventLocation? @relation(fields: [eventlocationId], references: [id], onDelete: Cascade)
   eventlocationId String?        @unique
   universityId    String?
-  RSO             RSO?           @relation(fields: [rSOId], references: [id])
   rSOId           String?
   approved        String
+  email           String?        @db.Text
+  university      University?    @relation(fields: [universityId], references: [id])
+  feedback        Feedback?      @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+  eventlocation   EventLocation? @relation(fields: [eventlocationId], references: [id], onDelete: Cascade)
+  RSO             RSO?           @relation(fields: [rSOId], references: [id])
 
   @@index([id])
 }
 
 model Feedback {
   id       String    @id @default(cuid())
+  eventId  String    @unique
   comments Comment[]
   ratings  Rating[]
   Event    Event[]
-  eventId  String    @unique
 
   @@index([id, eventId])
 }
@@ -56,11 +56,11 @@ model Feedback {
 model Comment {
   id         String    @id @default(cuid())
   comment    String
-  author     String
+  feedbackId String?
+  author     String?
   email      String
   userId     String?
   user       User?     @relation(fields: [userId], references: [id])
-  feedbackId String?
   Feedback   Feedback? @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
 }
 
@@ -68,8 +68,8 @@ model Rating {
   id         String    @id @default(cuid())
   rating     Int
   userId     String?
-  user       User?     @relation(fields: [userId], references: [id])
   feedbackId String?
+  user       User?     @relation(fields: [userId], references: [id])
   Feedback   Feedback? @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
 }
 
@@ -101,10 +101,10 @@ model University {
   description  String?
   num_students Float
   phone_no     String?   @db.Text
+  locationId   String?   @unique
   location     Location? @relation(fields: [locationId], references: [id])
   User         User[]
   Event        Event[]
-  locationId   String?   @unique
   RSO          RSO[]
 
   @@index([id])
@@ -115,11 +115,11 @@ model RSO {
   name        String
   adminID     String
   uniId       String
-  uni         University @relation(fields: [uniId], references: [id])
   description String?    @db.Text
+  active      String
+  uni         University @relation(fields: [uniId], references: [id])
   members     Member[]
   events      Event[]
-  active      String
 
   @@index([id, uniId])
 }
@@ -128,14 +128,14 @@ model Member {
   id       String @id @default(cuid())
   rsoId    String
   userId   String
-  user     User   @relation(fields: [userId], references: [id])
-  rso      RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
   rsoName  String
-  name     String
+  name     String?
   email    String
   uniId    String
   approved String
   isAdmin  String
+  user     User   @relation(fields: [userId], references: [id])
+  rso      RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
 
   @@index([id, rsoId])
 }
