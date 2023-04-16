@@ -3,6 +3,10 @@ import React, { useState } from 'react';
 const ApprovalEventView = (props: { event: any }) => {
   const event = props.event;
   const [id, setId] = useState(event.id);
+  
+  const timeout = (delay: number) => {
+    return new Promise((res) => setTimeout(res, delay));
+  };
 
   const handleAccept = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -20,10 +24,6 @@ const ApprovalEventView = (props: { event: any }) => {
     await timeout(1000);
     window.location.reload();
     setId('');
-  };
-
-  const timeout = (delay: number) => {
-    return new Promise((res) => setTimeout(res, delay));
   };
 
   const accepted = async (approval: { id: string | undefined | null }) => {

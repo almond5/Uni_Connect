@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
 
 const SignUpView = (props: { unis: any }) => {
   const [fName, setFname] = useState('');
@@ -120,7 +119,6 @@ const SignUpView = (props: { unis: any }) => {
               maxLength={55}
               value={userEmail}
               type="email"
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}"
               onChange={(e) => setUserEmail(e.target.value)}
               required
               className="block p-2 w-full text-md text-gray-900 bg-neutral-50 rounded-lg border-[0.175rem] 

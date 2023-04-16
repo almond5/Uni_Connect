@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
-import React, { useState } from 'react';
-import Login from '../../pages/login';
+import React from 'react';
 import RSOLeaveView from './rsoLeaveView';
+import router from 'next/router';
 
 const RSOSLeaveListView = (props: { rsosToLeave: any }) => {
   const { status: sesh } = useSession();
@@ -12,7 +12,7 @@ const RSOSLeaveListView = (props: { rsosToLeave: any }) => {
   }
 
   if (sesh === 'unauthenticated') {
-    return <Login />;
+    router.push('/login');
   }
 
   if (rsosToLeave === null || rsosToLeave === undefined || rsosToLeave.length === 0) {

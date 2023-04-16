@@ -1,4 +1,4 @@
-import { signOut, useSession, getProviders } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import React from 'react';
 import Link from 'next/link';
 import router from 'next/router';
@@ -14,11 +14,11 @@ const WelcomePage = (props: { role: any }) => {
     router.push('/login');
   }
 
-  if (props.role === null) {
+  if (props.role === null || props.role === undefined) {
     router.push('/login');
   }
 
-  if (props.role[0] === null) {
+  if (props.role[0] === null || props.role[0] === undefined) {
     router.push('/login');
   }
 

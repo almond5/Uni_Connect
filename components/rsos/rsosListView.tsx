@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import React from 'react';
-import Login from '../../pages/login';
 import RSOView from './rsoView';
+import router from 'next/router';
 
 const RSOSListView = (props: { rsos: any }) => {
   const { status: sesh } = useSession();
@@ -12,7 +12,7 @@ const RSOSListView = (props: { rsos: any }) => {
   }
 
   if (sesh === 'unauthenticated') {
-    return <Login />;
+    router.push('/login');
   }
 
   if (rsos === null || rsos === undefined || rsos.length === 0) {

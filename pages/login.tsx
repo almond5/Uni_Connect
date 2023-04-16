@@ -43,7 +43,7 @@ const LoginView = ({ universitiesFromDB }: { universitiesFromDB: any }) => {
         text-center"
         >
           <div className="flex flex-col py-8 font-semibold text-3xl">
-            Term Project
+            College Event Website
           </div>
           <div className="py-[8px]">
             <Link
@@ -60,6 +60,7 @@ const LoginView = ({ universitiesFromDB }: { universitiesFromDB: any }) => {
           <div className="py-[8px]">
             <button
               onClick={(e) => {
+                e.preventDefault();
                 toggleSignUpView();
               }}
               className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-[0.11rem] font-bold transition bg-neutral-50 text-lg hover:bg-neutral-400 hover:text-gray-800"

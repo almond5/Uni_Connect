@@ -1,12 +1,14 @@
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
-import { FaStar, FaRegStar } from 'react-icons/fa';
 
 const RatingCreateView = (props: { event: any }) => {
   const [ratingVal, setRatingVal] = useState('');
-  const [hover, setHover] = useState(0);
   const { data: sesh } = useSession();
   const event = props.event;
+
+  const timeout = (delay: number) => {
+    return new Promise((res) => setTimeout(res, delay));
+  };
 
   const submitRating = async (rating: {
     email: string | undefined | null;
@@ -20,10 +22,6 @@ const RatingCreateView = (props: { event: any }) => {
 
     const data = await response.json();
     console.log(data);
-  };
-
-  const timeout = (delay: number) => {
-    return new Promise((res) => setTimeout(res, delay));
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {

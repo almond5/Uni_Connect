@@ -1,12 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../lib/prismadb';
 
-const EventType = {
-  PUBLIC: 'PUBLIC',
-  PRIVATE: 'PRIVATE',
-  RSO_EVENT: 'RSO_EVENT',
-};
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -25,7 +19,8 @@ export default async function handler(
         uniSelected,
         rsoSelected,
         approved,
-        userEmail
+        userEmail,
+        email
       } = JSON.parse(req.body);
 
       const dateForDb = new Date(date);
@@ -109,6 +104,7 @@ export default async function handler(
             RSO: { connect: { id: findRSO!.id } },
             approved: approved,
             university: { connect: { id: findUser!.uni!.id! } },
+            email: email
           },
         });
       } else if (type === 'PRIVATE') {
@@ -127,6 +123,7 @@ export default async function handler(
             phone_no: phoneNumber,
             approved: approved,
             university: { connect: { id: findUni!.id! } },
+            email: email
           },
         });
       } else {
@@ -138,6 +135,7 @@ export default async function handler(
             date: dateForDb.toLocaleString(),
             phone_no: phoneNumber,
             approved: approved,
+            email: email
           },
         });
       }

@@ -4,6 +4,10 @@ const RSORequestView = (props: { member: any }) => {
   const member = props.member;
   const [memId, setMemId] = React.useState(member.id);
 
+  const timeout = (delay: number) => {
+    return new Promise((res) => setTimeout(res, delay));
+  };
+
   const handleDecline = async () => {
     await declined(memId);
     await timeout(1000);
@@ -14,10 +18,6 @@ const RSORequestView = (props: { member: any }) => {
     await accepted(memId);
     await timeout(1000);
     window.location.reload();
-  };
-
-  const timeout = (delay: number) => {
-    return new Promise((res) => setTimeout(res, delay));
   };
 
   const accepted = async (request: { memId: string | undefined | null }) => {

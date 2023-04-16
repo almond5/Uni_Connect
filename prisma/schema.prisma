@@ -10,20 +10,18 @@ datasource db {
 }
 
 model User {
-  id            String      @id @default(cuid())
-  name          String?
-  email         String      @unique
-  password      String
-  emailVerified DateTime?
-  image         String?
-  role          Role        @default(STUDENT)
-  universityId  String?
-  accounts      Account[]
-  sessions      Session[]
-  uni           University? @relation(fields: [universityId], references: [id])
-  Comment       Comment[]
-  Rating        Rating[]
-  Member        Member[]
+  id           String      @id @default(cuid())
+  name         String?
+  email        String      @unique
+  password     String
+  role         Role        @default(STUDENT)
+  universityId String?
+  accounts     Account[]
+  sessions     Session[]
+  uni          University? @relation(fields: [universityId], references: [id])
+  Comment      Comment[]
+  Rating       Rating[]
+  Member       Member[]
 }
 
 model Account {
@@ -66,10 +64,10 @@ model VerificationToken {
 model Event {
   id              String         @id @default(cuid())
   name            String         @db.Text
-  category        String?        @db.Text
   description     String?        @db.Text
   date            String?        @db.Text
   phone_no        String?        @db.Text
+  email           String?        @db.Text
   type            EventType
   university      University?    @relation(fields: [universityId], references: [id])
   feedbackId      String?        @unique
@@ -88,8 +86,8 @@ model Feedback {
   id       String    @id @default(cuid())
   comments Comment[]
   ratings  Rating[]
-  eventId  String    @unique
   Event    Event[]
+  eventId  String    @unique
 
   @@index([id, eventId])
 }
@@ -97,12 +95,12 @@ model Feedback {
 model Comment {
   id         String    @id @default(cuid())
   comment    String
-  feedbackId String?
   author     String
   email      String
-  user       User?     @relation(fields: [userId], references: [id])
-  Feedback   Feedback? @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
   userId     String?
+  user       User?     @relation(fields: [userId], references: [id])
+  feedbackId String?
+  Feedback   Feedback? @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
 }
 
 model Rating {
@@ -172,8 +170,8 @@ model Member {
   user     User   @relation(fields: [userId], references: [id])
   rso      RSO    @relation(fields: [rsoId], references: [id], onDelete: Cascade)
   rsoName  String
-  name     String    
-  email    String    
+  name     String
+  email    String
   uniId    String
   approved String
   isAdmin  String

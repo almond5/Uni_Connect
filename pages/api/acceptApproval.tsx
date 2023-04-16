@@ -9,7 +9,6 @@ export default async function handler(
     try {
       const { id } = JSON.parse(req.body);
 
-
       const updateEvent = await prisma.event.update({
         where: { id: id },
         data: { approved: 'TRUE' },

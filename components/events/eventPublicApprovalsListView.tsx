@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ApprovalEventView from './eventPublicApprovalEventView';
 
 const ApprovalsListView = (props: { events: any }) => {

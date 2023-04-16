@@ -3,24 +3,24 @@ import RatingListView from './eventRatingsListView';
 import RatingCreateView from './eventRatingCreateView';
 
 const RatingModalView = (props: {
-    setRatingModalView: any;
-    event: any;
-    role: any;
+  setRatingModalView: any;
+  event: any;
+  role: any;
 }) => {
-    const [newRating, setNewRating] = useState(false);
-    const event = props.event
-    const role = props.role
+  const [newRating, setNewRating] = useState(false);
+  const event = props.event;
+  const role = props.role;
 
-    const handleClose = () =>{
-        props.setRatingModalView(false);
-    };
+  const handleClose = () => {
+    props.setRatingModalView(false);
+  };
 
-    const handleNewRating = () => {
-        setNewRating(!newRating);
-    };
+  const handleNewRating = () => {
+    setNewRating(!newRating);
+  };
 
-    return(
-        <div
+  return (
+    <div
       className="h-[22rem] outline bg-stone-50
         p-7 rounded-lg overflow-y-scroll"
     >
@@ -56,7 +56,10 @@ const RatingModalView = (props: {
       lg:grid-cols-1"
       >
         <div className={`${!newRating ? '' : 'hidden'}`}>
-          <RatingListView feedback={event.feedback} role={role}></RatingListView>
+          <RatingListView
+            feedback={event.feedback}
+            role={role}
+          ></RatingListView>
         </div>
       </div>
     </div>

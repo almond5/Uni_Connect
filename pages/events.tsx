@@ -1,4 +1,4 @@
-import { getSession, signOut, useSession, getProviders } from 'next-auth/react';
+import { getSession, signOut, useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import prisma from '../lib/prismadb';

@@ -20,6 +20,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
   const [rsoSelected, setRso] = useState('');
   const { data: sesh } = useSession();
   const [userEmail, setUserEmail] = useState(sesh?.user!.email!);
+  const [email, setEmail] = useState(sesh?.user!.email!);
 
   useEffect(() => {
     if (
@@ -76,6 +77,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
     rsoSelected: string | undefined | null;
     approved: string | undefined | null;
     userEmail: string | undefined | null;
+    email: string | undefined | null;
   }) => {
     const response = await fetch('/api/eventCreate', {
       method: 'POST',
@@ -126,6 +128,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
     setUni('');
     setRso('');
     setUserEmail('');
+    setEmail('');
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -146,6 +149,7 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
       rsoSelected,
       approved,
       userEmail,
+      email,
     };
     await submitEvent(event);
     await timeout(1000);
@@ -329,7 +333,27 @@ const EventsCreateView = (props: { rsos: any; unis: any }) => {
               maxLength={11}
             />
           </div>
-
+          <div className="mb-4 text-lg">
+            <div
+              className="rounded-[0.175rem] w-max border-l-[0.175rem] 
+              border-t-[0.175rem] border-r-[0.175rem] 
+                border-neutral-700 px-2 font-bold transition 
+                bg-neutral-300 text-lg"
+            >
+              Email:
+            </div>
+            <textarea
+              maxLength={30}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              rows={1}
+              cols={1}
+              className="block p-2 w-full text-md text-gray-900 
+              bg-neutral-50 rounded-lg border-[0.175rem] 
+              rounded-tl-none border-neutral-700 "
+            ></textarea>{' '}
+          </div>
           <div className="mb-4 text-lg">
             <div
               className="rounded-[0.175rem] w-max border-l-[0.175rem] border-t-[0.175rem] border-r-[0.175rem] 

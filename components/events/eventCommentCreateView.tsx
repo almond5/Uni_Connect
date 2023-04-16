@@ -6,6 +6,10 @@ const CommentCreateView = (props: { event: any }) => {
   const { data: sesh } = useSession();
   const event = props.event;
 
+  const timeout = (delay: number) => {
+    return new Promise((res) => setTimeout(res, delay));
+  };
+
   const submitComment = async (comment: {
     email: string | undefined | null;
     event: Event | undefined | null;
@@ -18,10 +22,6 @@ const CommentCreateView = (props: { event: any }) => {
 
     const data = await response.json();
     console.log(data);
-  };
-
-  const timeout = (delay: number) => {
-    return new Promise((res) => setTimeout(res, delay));
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {

@@ -35,7 +35,7 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
         className={`${!commentModalView && !ratingModalView ? '' : 'hidden'}`}
       >
         <div
-          className="h-[26.5rem] outline bg-stone-50
+          className="h-[30rem] outline bg-stone-50
             p-7 rounded-lg"
         >
           <div className="h-0 min-h-[72%]">
@@ -45,6 +45,18 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
                 <div className="font-bold">Time: &nbsp;</div>
                 <div>
                   {event.date}
+                </div>
+              </div>
+              <div className="flex">
+                <div className="font-bold">Email: &nbsp;</div>
+                <div>
+                  {event.email}
+                </div>
+              </div>
+              <div className="flex">
+                <div className="font-bold">Phone #: &nbsp;</div>
+                <div>
+                  {event.phone_no}
                 </div>
               </div>
               <div className="flex">
@@ -61,7 +73,7 @@ const SingleEventView = (props: { event: any; role: any; user: any }) => {
               {event.description}
             </p>
           </div>
-          <div className="flex flex-col mt-7">
+          <div className="flex flex-col mt-10">
             <button
               className="mx-auto rounded-[0.5rem] w-max border-[0.175rem] border-neutral-700 px-3 py-0.5 font-bold transition
              bg-neutral-50 text-md hover:bg-neutral-400 hover:text-gray-800 mb-2"
