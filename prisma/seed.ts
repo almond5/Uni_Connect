@@ -74,6 +74,7 @@ async function main() {
       adminID: admin1.id,
       uniId: ucf.id,
       active: 'TRUE',
+      description: 'Team Harry is the best team!!!!, Feel free to join us! We have plenty of events and activities for you!',
     },
   });
 
@@ -83,6 +84,7 @@ async function main() {
       adminID: admin2.id,
       uniId: ucf.id,
       active: 'TRUE',
+      description: 'Team Ron is the best team!!!!, Feel free to join us! We have plenty of events and activities for you!',
     },
   });
 
@@ -92,6 +94,7 @@ async function main() {
       adminID: admin3.id,
       uniId: usf.id,
       active: 'TRUE',
+      description: 'Team Hermione is the best team!!!!, Feel free to join us! We have plenty of events and activities for you!',
     },
   });
 
