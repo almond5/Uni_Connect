@@ -3,9 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "prisma": {
-    "seed": "ts-node ./prisma/seed.ts"
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
-  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
