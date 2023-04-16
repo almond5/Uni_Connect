@@ -3,10 +3,10 @@ const prisma = new PrismaClient();
 
 async function main() {
   const ucfLoc = await prisma.location.create({
-    data: { name: 'UCF', latitude: 28.6024, longitude: 81.2001 },
+    data: { name: '', latitude: 28.6024, longitude: 81.2001 },
   });
   const usfLoc = await prisma.location.create({
-    data: { name: 'USF', latitude: 28.0587, longitude: 82.4139 },
+    data: { name: '4202 E Fowler Ave, Tampa, FL 33620', latitude: 28.0587, longitude: 82.4139 },
   });
 
   const ucf = await prisma.university.create({

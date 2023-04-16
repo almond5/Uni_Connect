@@ -2,13 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 const UniView = (props: { university: any }) => {
   const university = props.university;
-  const [numStudents, setNumStudents] = useState(0);
-
-  useEffect(() => {
-    if (university.User === undefined || university.User === null)
-      setNumStudents(0);
-    else setNumStudents(university.User?.length);
-  });
 
   return (
     <div className="py-[0.8rem]">
@@ -32,7 +25,7 @@ const UniView = (props: { university: any }) => {
           </div>
           <div className="flex">
             <div className="font-bold">Number of Students:&nbsp;</div>
-            <p>{numStudents}</p>
+            <p>{university.num_students}</p>
           </div>
           <p className="mb-1 text-md text-left break-all">
             <div className="font-bold">Description:&nbsp;</div>
