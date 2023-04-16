@@ -29,6 +29,15 @@ async function main() {
     },
   });
 
+  const superAdmin = await prisma.user.create({
+    data: {
+      name: 'Super Admin',
+      email: 'SA@email.com',
+      password: 'superadmin',
+      role: 'SUPERADMIN',
+    },
+  });
+
   const admin1 = await prisma.user.create({
     data: {
       name: 'Harry Potter',
@@ -458,7 +467,6 @@ async function main() {
       date: '4/22/2023, 8:00:00 AM',
       phone_no: '1234567890',
       email: 'harryrsoemail@knights.ucf.edu',
-      // eventlocationId: eng2.id,
       type: 'RSO_EVENT',
       rSOId: harryrso.id,
       universityId: ucf.id,
