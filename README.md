@@ -3,6 +3,8 @@
 ```bash
 Install all the dependencies: 'npm i'
 
+Run the prisma generation command: 'npx prisma generate'
+
 Run the seed file: 'npx prisma db seed'
 
 Run the development server: 'npm run dev'
