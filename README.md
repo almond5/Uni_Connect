@@ -13,4 +13,4 @@
 
 ## Extras:
 
-**Viewing the database:** ```npx prisma studio```
+**Viewing the database with prisma:** ```npx prisma studio```
