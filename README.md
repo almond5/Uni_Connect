@@ -1,7 +1,7 @@
 ## Getting Started
 
 
-**Install all the dependencies:** npm i
+**Install all the dependencies:** ```npm i```
 
 Run the prisma client generation command: npx prisma generate
 
