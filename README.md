@@ -1,11 +1,11 @@
 ## Getting Started
 
 ```bash
-Install all the dependencies: 'npm i'
+Install all the dependencies: npm i'
 
 Run the prisma client generation command: 'npx prisma generate'
 
-Run the seed file: 'npx prisma db seed'
+Run the seed file: __npx prisma db seed__
 
 Run the development server: 'npm run dev'
 
