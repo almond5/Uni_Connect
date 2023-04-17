@@ -1,13 +1,13 @@
 ## Getting Started
 
 
-**Install all the dependencies:** ```npm i```
+**1) Install all the dependencies:** ```npm i```
 
-**Run the prisma client generation command:** ```npx prisma generate```
+**2) Run the prisma client generation command:** ```npx prisma generate```
 
-**Run the seed file:** ```npx prisma db seed```
+**3) Run the seed file:** ```npx prisma db seed```
 
-**Run the development server:** ```npm run dev```
+**4) Run the development server:** ```npm run dev```
 
-**Open the link provided within the terminal:** ```http://localhost:3000```
+**5) Open the link provided within the terminal:** ```http://localhost:3000```
 
