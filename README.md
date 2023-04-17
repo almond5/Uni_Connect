@@ -11,6 +11,6 @@
 
 **5) Open the link provided within the terminal:** ```http://localhost:3000```
 
-**Extras:**
+## Extras:
 
-## Viewing the database:** ```npx prisma studio```
+**Viewing the database:** ```npx prisma studio```
